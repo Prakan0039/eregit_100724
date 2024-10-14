@@ -193,6 +193,7 @@ const propsVar = defineProps({
   },
 });
 
+
 let metaData = ref(propsVar.metaDataMultiChoiceAlign);
 
 const addChoice = () => {
