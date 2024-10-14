@@ -38,21 +38,31 @@
 
 <script setup>
 import { reactive, watch } from "vue";
-import UploadScore from "@/components/survey/forms/uploads-control/UploadScore.vue";
+import UploadScore from "@/components/survey/forms/uploads-control/UploadScoreMgmt.vue";
+
+const emit = defineEmits(["on-update"]);
 
 const dataInput = reactive({
   totalScore: 0,
   listOfScore: [],
 });
+
 const handleAddScoreCard = () => {
   dataInput.listOfScore.push({
-    question: "",
-    answer: "",
-    isRequire: false,
-    totalScore: "",
+    score: "",
+    rank: "",
+    desc: "",
     files: [],
   });
 };
+
+watch(
+  () => dataInput,
+  () => {
+    emit("on-update", dataInput);
+  },
+  { deep: true }
+);
 
 watch(dataInput.listOfScore, (newValue) => {
   dataInput.totalScore = newValue.reduce(
@@ -64,7 +74,6 @@ watch(dataInput.listOfScore, (newValue) => {
 const handleUpdateScore = (item) => {
   const { upload_file_score, index } = item;
   dataInput.listOfScore[index] = upload_file_score;
-  console.log(JSON.stringify(dataInput));
 };
 
 const handleRemoveScoreById = (index) => {

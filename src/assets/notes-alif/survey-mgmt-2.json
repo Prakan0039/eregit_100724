@@ -1,0 +1,96 @@
+{
+  "nameQuestionnaire": {
+    "title": "TEST_LAST แบบสอบถาม",
+    "description": "TEST_LAST_DESC แบบสอบถาม"
+  },
+  "createQuestionnaire": [
+    {
+      "id": "0",
+      "index": 1,
+      "typeQuestionCard": "None",
+      "data": {
+        "controlType": "Paragraph",
+        "metaData": {
+          "question": "คำถามที่ 1",
+          "answer": "",
+          "isRequire": true
+        }
+      }
+    },
+    {
+      "id": "1",
+      "index": 2,
+      "typeQuestionCard": "None",
+      "data": {
+        "controlType": "Multichoice",
+        "metaData": {
+          "question": "คำถามที่ 2",
+          "isRequired": true,
+          "choices": [
+            {
+              "title": "chioce",
+              "isChecked": false,
+              "answer": "Choice - 1",
+              "nextQuestion": 3
+            },
+            {
+              "title": "chioce",
+              "isChecked": false,
+              "answer": "Choice - 2",
+              "nextQuestion": 3
+            },
+            {
+              "title": "other",
+              "isChecked": false,
+              "specify": "",
+              "answer": "Other",
+              "nextQuestion": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "2",
+      "index": 3,
+      "typeQuestionCard": "None",
+      "data": {
+        "controlType": "Checkbox",
+        "metaData": {
+          "question": "คำถามที่ 3",
+          "isRequired": true,
+          "choices": [
+            { "title": "chioce", "isChecked": false, "answer": "Check - 1" },
+            { "title": "chioce", "isChecked": false, "answer": "Check - 2" },
+            { "title": "other", "isChecked": false, "answer": "Other - 1" }
+          ]
+        }
+      }
+    },
+    {
+      "id": "3",
+      "index": 4,
+      "typeQuestionCard": "None",
+      "data": {
+        "controlType": "Dropdown",
+        "metaData": {
+          "question": "คำถามที่ 4",
+          "isRequired": true,
+          "choices": [
+            { "answer": "Item - 1", "nextQuestion": "" },
+            { "answer": "Item - 2", "nextQuestion": "" }
+          ]
+        }
+      }
+    },
+    {
+      "id": "4",
+      "index": 5,
+      "typeQuestionCard": "None",
+      "data": {
+        "controlType": "Uploads",
+        "metaData": { "question": "คำถามที่ 5", "isRequire": true, "files": [] }
+      }
+    }
+  ]
+}

@@ -19,7 +19,7 @@
         </v-col>
         <v-col cols="3" align-self="center" class="pa-1">
           <v-btn class="me-2 text-none" color="secondary" variant="outlined" rounded
-            @click="handlePreview(item?.file_url)">
+            @click="handlePreview(item?.id)">
             Preview
           </v-btn>
           <v-btn v-if="props.actionId === 1" class="me-2 text-none" color="secondary" variant="flat" rounded
@@ -106,9 +106,7 @@ const handleAction = (rspSurveyId, action) => {
 const handlePreview = async (rspSurveyId) => {
   try {
     const response = await RspService.getRspSurveyQuestionaire(rspSurveyId)
-    //console.log(response)
-    //const file_url = response.data?.data?.file_url
-    //await exportService.exportBase64(`${rspSurveyName}`, 'xlsx', file_url);
+    console.log(response.data)
   } catch (e) {
     if (e.response) {
       const val = e.response.data
@@ -118,11 +116,10 @@ const handlePreview = async (rspSurveyId) => {
     handlingErrorsMessage("unknown", e.message);
   }
 }
-const handleExportResult = async (rspSurveyId, rspSurveyName) => {
+const handleExportResult = async (rspSurveyId) => {
   try {
     const response = await RspService.exportRspSurveyResult(rspSurveyId)
     const file_url = response.data?.data?.file_url
-    // await exportService.exportBase64(`${rspSurveyName}`, 'xlsx', file_url);
     await exportService.downloadFileV2(file_url);
   } catch (e) {
     if (e.response) {

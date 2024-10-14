@@ -1,7 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <v-container fluid>
-    {{ stepper }}
     <div>
       <h2>Mangement > Survey</h2>
       <!-- <v-stepper
@@ -57,6 +56,7 @@
           variant="outlined"
           width="140"
           class="text-capitalize mr-2"
+          v-if="stepper === 2 || stepper === 3"
           rounded
           @click="
             stepper === 2
@@ -127,7 +127,7 @@
       </div>
       <div v-show="stepper === 4">
         <v-form ref="suveyScoreMgmt">
-          <SuveyScoreManament />
+          <SuveyScoreManament @on-update="handleScoreMgmtUpdated" />
         </v-form>
       </div>
       <div class="text-center mt-5">
@@ -148,7 +148,7 @@
           style="width: 100px"
           @click="next"
         >
-          <strong>ต่อไป</strong>
+          <strong>{{ stepper != 4 ? "ต่อไป" : "เสร็จ" }}</strong>
         </v-btn>
       </div>
     </div>
@@ -160,19 +160,23 @@ import SurveyQuestion from "@/views/SDTeamMangement/Survey/SurveyQuestion.vue";
 import SuveyOtherQuestion from "@/views/SDTeamMangement/Survey/SuveyOtherQuestion.vue";
 import SuveyScoreManament from "@/views/SDTeamMangement/Survey/SuveyScoreManament.vue";
 import { ref, watch } from "vue";
+import ResService from "@/apis/RspService.js";
+import { useAlertDialogDialog }  from "@/components/dialogs/AlertSuccessDialogService";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
+const { showAlert } = useAlertDialogDialog();
 
 const stepper = ref(1);
 
 const descForm = ref(null);
 const suveyOtherQuestionForm = ref(null);
 const suveyQuestionForm = ref(null);
-const suveyScoreMgmt = ref();
+const suveyScoreMgmt = ref(null);
 
 const itemQuestion = ref([]);
 const itemOtherQuest = ref([]);
+const itemScoreMgmt = ref({});
 
 const setp2Quest = ref({
   nameQuestionnaire: {
@@ -467,6 +471,10 @@ watch(
 //   ],
 // };
 
+const handleScoreMgmtUpdated = (dataInput) => {
+  itemScoreMgmt.value = dataInput;
+};
+
 const handleItemSuevayOhterUpdate = (data) => {
   itemOtherQuest.value = data;
   setp2Quest.value.createQuestionnaire = itemOtherQuest.value;
@@ -479,12 +487,27 @@ const handleItemSuevayQuestionUpdate = (data) => {
   console.log("setp3Quest : ", JSON.stringify(setp2Quest.value));
 };
 
+let rsp_survey_id = null;
 const next = async () => {
   if (stepper.value == 1) {
     const is_valid = await descForm.value.validate();
-    console.log(is_valid);
     if (!is_valid["valid"]) {
       console.warn("Show Warning Alart Desc Form Ivalidation Error");
+      return;
+    }
+    try {
+      const response = await ResService.createRspSuvey(
+        setp2Quest.value.nameQuestionnaire.title,
+        setp2Quest.value.nameQuestionnaire.description,
+        new Date()
+      );
+      if (response.data.is_success) {
+        rsp_survey_id = response.data.data.id;
+      } else {
+        return;
+      }
+    } catch (error) {
+      console.log(error.message);
       return;
     }
   }
@@ -495,12 +518,70 @@ const next = async () => {
       console.warn("Show Warning Alart Other Form Ivalidation Error");
       return;
     }
+    const bodyRequest = {
+      rsp_survey_id,
+      sections: [
+        generateQuestionsBody(
+          1,
+          0,
+          "Additional Question",
+          setp2Quest.value.createQuestionnaire
+        ),
+      ],
+    };
+
+    try {
+      const response = await ResService.createRspSuveyQusetion(bodyRequest);
+      if (!response.data.is_success) return;
+    } catch (error) {
+      console.log(error.message);
+      return;
+    }
   }
 
   if (stepper.value == 3) {
     const is_valid = await suveyQuestionForm.value.validate();
     if (!is_valid["valid"]) {
       console.warn("Show Warning Alart Suvey Question Form Ivalidation Error");
+      return;
+    }
+    const bodyRequest = {
+      rsp_survey_id,
+      sections: setp3Quest.value.createQuestionnaire.map((section, index) => {
+        return generateQuestionsBody(2, index + 1, section.title, section.data);
+      }),
+    };
+
+    try {
+      const response = await ResService.createRspSuveyQusetion(bodyRequest);
+      if (!response.data.is_success) return;
+    } catch (error) {
+      console.log(error.message);
+      return;
+    }
+  }
+
+  if (stepper.value == 4) {
+    const bodyRequest = {
+      rsp_survey_id,
+      evaluation_criteria: itemScoreMgmt.value.listOfScore.map((item) => {
+        return {
+          name: item.rank,
+          minimum_score_criteria: getScore(item.score),
+          description: item.desc,
+          image_url: "",
+        };
+      }),
+    };
+
+    try {
+      const response = await ResService.createRspSuveyEvaluationCriteria(
+        bodyRequest
+      );
+      if (!response.data.is_success) return;
+      await showAlert("Success", response.data.message);
+    } catch (error) {
+      console.log(error.message);
       return;
     }
   }
@@ -511,11 +592,126 @@ const next = async () => {
 const back = () => {
   if (stepper.value > 1) stepper.value--;
 };
+
+const generateQuestionsBody = (
+  section_type_id,
+  sequence,
+  name,
+  questionnaire = []
+) => {
+  const result = {
+    section_type_id: section_type_id,
+    sequence,
+    name,
+    questions: [],
+  };
+  result.questions = questionnaire.map((item) => {
+    if (item.data.controlType == "Paragraph") {
+      return {
+        is_alignment_question: isAligned(item.typeQuestionCard),
+        question_type_id: 1,
+        question: item.data.metaData.question,
+        sequence: item.index,
+        score: getScore(item.data.metaData?.totalScore),
+        is_required: item.data.metaData.isRequired,
+      };
+    }
+    if (item.data.controlType == "Multichoice") {
+      return {
+        is_alignment_question: isAligned(item.typeQuestionCard),
+        question_type_id: 2,
+        question: item.data.metaData.question,
+        sequence: item.index,
+        score: getScore(item.data.metaData?.totalScore),
+        is_required: item.data.metaData.isRequired,
+        choices: item.data.metaData.choices.map((choice, index) => {
+          return {
+            answer: choice.answer,
+            is_aligned: isAligned(choice.isAlign) ?? false,
+            is_other_choice: isOtherChoice(choice.title),
+            sequence: index + 1,
+            score: getScore(choice?.score),
+            next_question_sequence: getNextQuestion(choice?.nextQuestion),
+          };
+        }),
+      };
+    }
+    if (item.data.controlType == "Checkbox") {
+      return {
+        is_alignment_question: isAligned(item.typeQuestionCard),
+        question_type_id: 3,
+        question: item.data.metaData.question,
+        sequence: item.index,
+        is_required: item.data.metaData.isRequired,
+        choices: item.data.metaData.choices.map((choice, index) => {
+          return {
+            answer: choice.answer,
+            is_aligned: isAligned(choice.isAlign) ?? false,
+            is_other_choice: isOtherChoice(choice.title),
+            sequence: index + 1,
+            score: getScore(choice?.score),
+            next_question_sequence: getNextQuestion(choice?.nextQuestion),
+          };
+        }),
+      };
+    }
+    if (item.data.controlType == "Uploads") {
+      return {
+        is_alignment_question: isAligned(item.typeQuestionCard),
+        question_type_id: 5,
+        question: item.data.metaData.question,
+        sequence: item.index,
+        score: getScore(item.data.metaData?.totalScore),
+        is_required: item.data.metaData.isRequired,
+      };
+    }
+    if (item.data.controlType == "Dropdown") {
+      return {
+        is_alignment_question: isAligned(item.typeQuestionCard),
+        question_type_id: 3,
+        question: item.data.metaData.question,
+        sequence: item.index,
+        is_required: item.data.metaData.isRequired,
+        choices: item.data.metaData.choices.map((choice, index) => {
+          return {
+            answer: choice.answer,
+            is_aligned: isAligned(choice.isAlign) ?? false,
+            is_other_choice: isOtherChoice(choice.title),
+            sequence: index + 1,
+            score: getScore(choice?.score),
+            next_question_sequence: getNextQuestion(choice?.nextQuestion),
+          };
+        }),
+      };
+    }
+  });
+  return result;
+};
+
+const getNextQuestion = (nextQuestionId) => {
+  if (!nextQuestionId || nextQuestionId == "") return 0;
+  return Number(nextQuestionId);
+};
+
+const getScore = (elementScore) => {
+  if (!elementScore || elementScore == "") return 0;
+  return Number(elementScore);
+};
+
+const isAligned = (typeQuestionCard) => {
+  return typeQuestionCard && typeQuestionCard == "Align";
+};
+
+const isOtherChoice = (typeChoice) => {
+  return typeChoice && typeChoice == "other";
+};
+
 const previewSecond = () => {
   const jsonArray = JSON.stringify(setp2Quest.value);
   sessionStorage.setItem("preview_question_second", jsonArray);
   router.push("/SDTeamMangement/Survey/Preview/QuestionSecond");
 };
+
 const previewThird = () => {
   // const itemsSuveyThird = sessionStorage.getItem("preview_question_third")
   const jsonArray = JSON.stringify(setp3Quest.value);

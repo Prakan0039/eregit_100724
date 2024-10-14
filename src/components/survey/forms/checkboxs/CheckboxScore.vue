@@ -147,6 +147,10 @@ const propsVar = defineProps({
       };
     },
   },
+  items_selection: {
+    type: Array,
+    default: () => [1, 2, 3, 4],
+  },
 });
 
 let metaData = ref(propsVar.metaDataCheckboxScore);

@@ -26,7 +26,8 @@ const getVendorRspStatus = async (
   if (!isStringEmpty(activity_id)) url += `&activity_id=${activity_id}`;
   if (!isStringEmpty(activity_status))
     url += `&activity_status=${activity_status}`;
-  if (!isStringEmpty(completed_from)) url += `&completed_from=${completed_from}`;
+  if (!isStringEmpty(completed_from))
+    url += `&completed_from=${completed_from}`;
   if (!isStringEmpty(completed_to)) url += `&completed_from=${completed_from}`;
   if (!isStringEmpty(sort_by)) url += `&sort-by=${sort_by}`;
 
@@ -235,6 +236,16 @@ const getRspSurveysActive = async () => {
   });
 };
 
+const exportRspSurveyResult = async (survey_id) => {
+  return await axiosBase({
+    method: "get",
+    url: `/rsp//export-rsp-survey-result/${survey_id}?exporter_user_id=${Number(
+      sessionStorage.getItem("userId")
+    )}`,
+    data: {},
+  });
+};
+
 const getRspSurveyQuestionaire = async (survey_id) => {
   return await axiosBase({
     method: "get",
@@ -261,6 +272,41 @@ const createRspSurveyResult = async (bp_number, rsp_survey_id) => {
     data: {
       bp_number,
       rsp_survey_id: Number(rsp_survey_id),
+      created_user_id: Number(sessionStorage.getItem("userId")),
+    },
+  });
+};
+
+const createRspSuvey = async (name, description, published_at) => {
+  return await axiosBase({
+    method: "post",
+    url: "/rsp/create-rsp-survey",
+    data: {
+      name,
+      description,
+      published_at,
+      created_user_id: Number(sessionStorage.getItem("userId")),
+    },
+  });
+};
+
+const createRspSuveyQusetion = async (objQuestion = {}) => {
+  return await axiosBase({
+    method: "post",
+    url: "/rsp/create-rsp-survey-questionnaire",
+    data: {
+      ...objQuestion,
+      created_user_id: Number(sessionStorage.getItem("userId")),
+    },
+  });
+};
+
+const createRspSuveyEvaluationCriteria = async (objQuestion = {}) => {
+  return await axiosBase({
+    method: "post",
+    url: "/rsp/create-rsp-survey-evaluation-criteria",
+    data: {
+      ...objQuestion,
       created_user_id: Number(sessionStorage.getItem("userId")),
     },
   });
@@ -408,6 +454,40 @@ const PermanentlyDeleteRspRolicy = async (_rsp_policy_id) => {
   });
 };
 
+const DeleteRspSurvey = async (rsp_survey_id) => {
+  return await axiosBase({
+    method: "post",
+    url: `/rsp/delete-rsp-survey`,
+    data: {
+      rsp_survey_id: Number(rsp_survey_id),
+      updated_user_id: Number(sessionStorage.getItem("userId")),
+    },
+  });
+};
+
+const PermanentlyDeleteRspSurvey = async (rsp_survey_id) => {
+  return await axiosBase({
+    method: "post",
+    url: `/rsp/permanently-delete-rsp-survey`,
+    data: {
+      rsp_survey_id: Number(rsp_survey_id),
+      updated_user_id: Number(sessionStorage.getItem("userId")),
+    },
+  });
+};
+
+const UndeleteRspSurvey = async (rsp_survey_id) => {
+  return await axiosBase({
+    method: "post",
+    url: `/rsp/undelete-rsp-survey`,
+    data: {
+      rsp_survey_id: Number(rsp_survey_id),
+      updated_user_id: Number(sessionStorage.getItem("userId")),
+    },
+  });
+};
+
+
 //newSD_Management
 const getRspPolicyPagination = async (_state, _offset, _limit) => {
   return await axiosBase({
@@ -444,9 +524,7 @@ const getRspTraining = async (
   });
 };
 
-
 const createRspTraining = async (name, file, role_id, active_at) => {
-
   return await axiosBase({
     method: "post",
     url: `/rsp/create-rsp-training`,
@@ -541,7 +619,6 @@ const permanentlyDeleteRspTraining = async (_rsp_traning_id) => {
   });
 };
 
-
 export default {
   getRspTraining,
   createRspTraining,
@@ -584,6 +661,12 @@ export default {
   exportRspPolicyResult,
   PermanentlyDeleteRspRolicy,
   getRspSurveys,
-
-  getRspPolicyPagination
+  createRspSuvey,
+  getRspPolicyPagination,
+  createRspSuveyQusetion,
+  createRspSuveyEvaluationCriteria,
+  exportRspSurveyResult,
+  DeleteRspSurvey,
+  PermanentlyDeleteRspSurvey,
+  UndeleteRspSurvey
 };
