@@ -120,7 +120,11 @@ const handleExportResult = async (rspSurveyId) => {
   try {
     const response = await RspService.exportRspSurveyResult(rspSurveyId)
     const file_url = response.data?.data?.file_url
-    await exportService.downloadFileV2(file_url);
+    if(file_url){
+      await exportService.downloadFileV2(file_url);
+    }else{
+      handlingErrorsMessage("Not found",  "Url is null")
+    }
   } catch (e) {
     if (e.response) {
       const val = e.response.data

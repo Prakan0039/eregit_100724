@@ -114,7 +114,10 @@
       </div>
       <div v-show="stepper === 2">
         <v-form ref="suveyOtherQuestionForm">
-          <SuveyOtherQuestion @on-data-input="handleItemSuevayOhterUpdate" />
+          <SuveyOtherQuestion
+            :default-item="setp2Quest.createQuestionnaire"
+            @on-data-input="handleItemSuevayOhterUpdate"
+          />
         </v-form>
       </div>
       <div v-show="stepper === 3">
@@ -159,9 +162,9 @@ import StepperControl from "@/components/controls/StepperControl.vue";
 import SurveyQuestion from "@/views/SDTeamMangement/Survey/SurveyQuestion.vue";
 import SuveyOtherQuestion from "@/views/SDTeamMangement/Survey/SuveyOtherQuestion.vue";
 import SuveyScoreManament from "@/views/SDTeamMangement/Survey/SuveyScoreManament.vue";
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import ResService from "@/apis/RspService.js";
-import { useAlertDialogDialog }  from "@/components/dialogs/AlertSuccessDialogService";
+import { useAlertDialogDialog } from "@/components/dialogs/AlertSuccessDialogService";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -178,6 +181,12 @@ const itemQuestion = ref([]);
 const itemOtherQuest = ref([]);
 const itemScoreMgmt = ref({});
 
+// import data_2 from "@/assets/notes-alif/survey-mgmt-2.json";
+// import data_3 from "@/assets/notes-alif/survey-mgmt-3.json";
+
+const jsonStep2 = ref([]);
+const jsonStep3 = ref([]);
+
 const setp2Quest = ref({
   nameQuestionnaire: {
     title: "",
@@ -192,6 +201,11 @@ const setp3Quest = ref({
     description: "",
   },
   createQuestionnaire: [],
+});
+
+onMounted(() => {
+  if (jsonStep2.value) setp2Quest.value = jsonStep2.value;
+  if (jsonStep3.value) setp3Quest.value = jsonStep3.value;
 });
 
 watch(

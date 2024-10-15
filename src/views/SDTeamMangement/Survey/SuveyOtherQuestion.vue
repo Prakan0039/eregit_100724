@@ -12,15 +12,15 @@
           <v-row>
             <v-col cols="12">
               <!-- <v-form ref="form"> -->
-                <QuestionOption
-                  :type="element.typeQuestionCard"
-                  :id="element.id.toString()"
-                  :index="Number(index)"
-                  :data="element.data"
-                  :count-question="items_question.length"
-                  @on-update="handleQuestionUpdate"
-                  @on-remove="handleQuestionRemove"
-                />
+              <QuestionOption
+                :type="element.typeQuestionCard"
+                :id="element.id.toString()"
+                :index="Number(index)"
+                :data="element.data"
+                :count-question="items_question.length"
+                @on-update="handleQuestionUpdate"
+                @on-remove="handleQuestionRemove"
+              />
               <!-- </v-form> -->
             </v-col>
           </v-row>
@@ -40,13 +40,24 @@
   </v-row>
 </template>
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, watchEffect } from "vue";
 import draggable from "vuedraggable";
 import QuestionOption from "@/components/survey/QuestionOption.vue";
+
+const propsVar = defineProps({
+  defaultItem: {
+    type: Array,
+    default: () => [],
+  },
+});
 
 const emit = defineEmits(["on-data-input"]);
 
 const items_question = ref([]);
+
+watchEffect(() => {
+  items_question.value = propsVar.defaultItem;
+});
 
 const handleQuestionUpdate = (item) => {
   const indexUpdate = items_question.value.findIndex((el) => el.id === item.id);
