@@ -1,44 +1,7 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <v-container fluid>
     <div>
       <h2>Mangement > Survey</h2>
-      <!-- <v-stepper
-      v-model="stepper"
-      alt-labels
-      elevation="0"
-      bg-color="transparent"
-    >
-      <v-stepper-header>
-        <v-stepper-item
-          value="1"
-          color="secondary"
-          class="text-secondary font-weight-medium"
-          >ชื่อแบบสอบถาม</v-stepper-item
-        >
-        <v-divider></v-divider>
-        <v-stepper-item
-          value="2"
-          color="secondary"
-          class="text-secondary font-weight-medium"
-          >คำถามเพิ่มเติม</v-stepper-item
-        >
-        <v-divider></v-divider>
-        <v-stepper-item
-          value="3"
-          color="secondary"
-          class="text-secondary font-weight-medium"
-          >สร้างแบบสอบถาม</v-stepper-item
-        >
-        <v-divider></v-divider>
-        <v-stepper-item
-          value="4"
-          color="secondary"
-          class="text-secondary font-weight-medium"
-          >สร้างเกณฑ์การประเมิน</v-stepper-item
-        >
-      </v-stepper-header>
-    </v-stepper> -->
       <v-col color="12" style="margin-left: 0px; margin-top: 0px">
         <StepperControl
           :currentStepNumber="stepper"
@@ -124,6 +87,7 @@
         <v-form ref="suveyQuestionForm">
           <SurveyQuestion
             ref="suveyQuestion"
+            :default-item="setp3Quest.createQuestionnaire"
             @on-data-input="handleItemSuevayQuestionUpdate"
           />
         </v-form>
@@ -165,8 +129,11 @@ import SuveyScoreManament from "@/views/SDTeamMangement/Survey/SuveyScoreManamen
 import { ref, watch, onMounted } from "vue";
 import ResService from "@/apis/RspService.js";
 import { useAlertDialogDialog } from "@/components/dialogs/AlertSuccessDialogService";
+import { useRoute, useRouter } from "vue-router";
+import RspService from "@/apis/RspService.js";
+import mapperSurvay from "@/utils/mapperSurvay";
 
-import { useRouter } from "vue-router";
+const route = useRoute();
 const router = useRouter();
 const { showAlert } = useAlertDialogDialog();
 
@@ -184,8 +151,8 @@ const itemScoreMgmt = ref({});
 // import data_2 from "@/assets/notes-alif/survey-mgmt-2.json";
 // import data_3 from "@/assets/notes-alif/survey-mgmt-3.json";
 
-const jsonStep2 = ref([]);
-const jsonStep3 = ref([]);
+// const jsonStep2 = ref([]);
+// const jsonStep3 = ref([]);
 
 const setp2Quest = ref({
   nameQuestionnaire: {
@@ -203,10 +170,40 @@ const setp3Quest = ref({
   createQuestionnaire: [],
 });
 
-onMounted(() => {
-  if (jsonStep2.value) setp2Quest.value = jsonStep2.value;
-  if (jsonStep3.value) setp3Quest.value = jsonStep3.value;
+const id = route.query.rsp_survey_id;
+const name = route.query.name;
+const description = route.query.description;
+
+onMounted(async () => {
+  if (id) {
+    await getRspSurvey();
+  }
 });
+
+const getRspSurvey = async () => {
+  try {
+    const response = await RspService.getRspSurveyQuestionaire(id);
+    if (response.data.is_success) {
+      if (response.data?.is_success) {
+        const questionnaireData = response.data.data;
+        const { mySurvayStructureTwo, mySurvayStructureThree } =
+          mapperSurvay.MapperSurvay(
+            questionnaireData,
+            { name, description },
+            null,
+            null
+          );
+        console.log(JSON.stringify(mySurvayStructureTwo));
+        console.log(JSON.stringify(mySurvayStructureThree));
+        setp2Quest.value = mySurvayStructureTwo;
+        setp3Quest.value = mySurvayStructureThree
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+};
 
 watch(
   () => setp2Quest.value.nameQuestionnaire,
@@ -214,276 +211,6 @@ watch(
     setp3Quest.value.nameQuestionnaire = setp2Quest.value.nameQuestionnaire;
   }
 );
-
-// const mock_step2 = {
-//   nameQuestionnaire: {
-//     title: "แบบสำรวจด้านความยังยืนคู่ค้า 2023",
-//     description:
-//       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione debitis quis est labore voluptatibus! Eaque cupiditate minima, at placeat totam, magni doloremque veniam neque porro libero rerum unde voluptatem!",
-//   },
-//   createQuestionnaire: [
-//     {
-//       id: 3,
-//       index: 1,
-//       typeQuestionCard: "None",
-//       data: {
-//         controlType: "Paragraph",
-//         metaData: {
-//           question: "แบบสำรวจด้านความยังยืนคู่ค้า 2023",
-//           answer: "",
-//           isRequired: true,
-//         },
-//       },
-//     },
-//     {
-//       id: 3,
-//       index: 2,
-//       typeQuestionCard: "None",
-//       data: {
-//         controlType: "Multichoice",
-//         metaData: {
-//           question: "Multichoice",
-//           isRequired: true,
-//           answer: null,
-//           choices: [
-//             {
-//               title: "chioce",
-//               answer: "ตอบ-1",
-//               nextQuestion: 1,
-//             },
-//             {
-//               title: "chioce",
-//               answer: "ตอบ-2",
-//               nextQuestion: 3,
-//             },
-//             {
-//               title: "other",
-//               answer: "เพิมเติม",
-//               specify: "",
-//               nextQuestion: "",
-//             },
-//           ],
-//         },
-//       },
-//     },
-//     {
-//       id: 3,
-//       index: 3,
-//       typeQuestionCard: "None",
-//       data: {
-//         controlType: "Checkbox",
-//         metaData: {
-//           question: "Checkbox",
-//           isRequired: true,
-//           answer: [],
-//           choices: [
-//             {
-//               title: "chioce",
-//               answer: "ตอบ-1",
-//             },
-//             {
-//               title: "chioce",
-//               answer: "ตอบ-2",
-//             },
-//             {
-//               title: "other",
-//               answer: "เพิมเติม",
-//               specify: "",
-//             },
-//           ],
-//         },
-//       },
-//     },
-//     {
-//       id: 3,
-//       index: 4,
-//       typeQuestionCard: "None",
-//       data: {
-//         controlType: "Dropdown",
-//         metaData: {
-//           question: "Dropdown",
-//           isRequired: true,
-//           answer: null,
-//           choices: [
-//             {
-//               answer: "item-1",
-//               nextQuestion: 2,
-//             },
-//             {
-//               answer: "item-2",
-//               nextQuestion: 2,
-//             },
-//           ],
-//         },
-//       },
-//     },
-//     {
-//       id: 3,
-//       index: 5,
-//       typeQuestionCard: "None",
-//       data: {
-//         controlType: "Uploads",
-//         metaData: {
-//           question: "Uploads files",
-//           isRequired: true,
-//           files: null,
-//         },
-//       },
-//     },
-//   ],
-// };
-
-// const mock_preview_third = {
-//   nameQuestionnaire: {
-//     title: "แบบสำรวจด้านความยังยืนคู่ค้า 2023",
-//     description:
-//       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione debitis quis est labore voluptatibus! Eaque cupiditate minima, at placeat totam, magni doloremque veniam neque porro libero rerum unde voluptatem!",
-//   },
-//   createQuestionnaire: [
-//     {
-//       id: "0",
-//       title: "header",
-//       data: [
-//         {
-//           id: "0",
-//           index: 1,
-//           typeQuestionCard: "Align",
-//           data: {
-//             controlType: "Multichoice",
-//             metaData: {
-//               question: "Radio",
-//               isRequired: true,
-//               totalScore: 15,
-//               answer: null,
-//               choices: [
-//                 {
-//                   title: "chioce",
-//                   isAlign: true,
-//                   score: "10",
-//                   answer: "chioce-1",
-//                   nextQuestion: 2,
-//                 },
-//                 {
-//                   title: "chioce",
-//                   isAlign: false,
-//                   score: "15",
-//                   answer: "chioce-2",
-//                   nextQuestion: 2,
-//                 },
-//                 {
-//                   title: "other",
-//                   isAlign: true,
-//                   score: "10",
-//                   answer: "ระบุ",
-//                   specify: "",
-//                   nextQuestion: 2,
-//                 },
-//               ],
-//             },
-//           },
-//         },
-//         {
-//           id: "1",
-//           index: 2,
-//           typeQuestionCard: "None",
-//           data: {
-//             controlType: "Paragraph",
-//             metaData: {
-//               question: "Paragraph",
-//               answer: "",
-//               isRequire: true,
-//             },
-//           },
-//         },
-//         {
-//           id: "2",
-//           index: 3,
-//           typeQuestionCard: "Align",
-//           data: {
-//             controlType: "Checkbox",
-//             metaData: {
-//               question: "Checkbox",
-//               isRequired: true,
-//               isAlign: true,
-//               totalScore: 25,
-//               answer: [],
-//               choices: [
-//                 {
-//                   title: "chioce",
-//                   score: "10",
-//                   answer: "chioce-1",
-//                   isAlign: true,
-//                 },
-//                 {
-//                   title: "chioce",
-//                   score: "15",
-//                   answer: "chioce-2",
-//                   isAlign: false,
-//                 },
-//                 {
-//                   title: "other",
-//                   score: "15",
-//                   answer: "เพิมเติม",
-//                   specify: "",
-//                   isAlign: false,
-//                 },
-//               ],
-//             },
-//           },
-//         },
-//         {
-//           id: "3",
-//           index: 4,
-//           typeQuestionCard: "None",
-//           data: {
-//             controlType: "Uploads",
-//             metaData: {
-//               question: "File",
-//               isRequire: false,
-//               files: null,
-//             },
-//           },
-//         },
-//       ],
-//     },
-//     {
-//       id: "1",
-//       title: "header+",
-//       data: [
-//         {
-//           id: "0",
-//           index: 1,
-//           typeQuestionCard: "Align",
-//           data: {
-//             controlType: "Multichoice",
-//             metaData: {
-//               question: "Multichoice",
-//               isRequired: false,
-//               totalScore: 15,
-//               answer: null,
-//               choices: [
-//                 {
-//                   title: "chioce",
-//                   isAlign: true,
-//                   score: "15",
-//                   answer: "Multichoice",
-//                   nextQuestion: 2,
-//                 },
-//                 {
-//                   title: "other",
-//                   isAlign: false,
-//                   answer: "เพิมเติม",
-//                   specify: "",
-//                   nextQuestion: "",
-//                 },
-//               ],
-//             },
-//           },
-//         },
-//       ],
-//     },
-//   ],
-// };
 
 const handleScoreMgmtUpdated = (dataInput) => {
   itemScoreMgmt.value = dataInput;

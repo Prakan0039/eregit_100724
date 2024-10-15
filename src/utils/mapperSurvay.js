@@ -24,9 +24,9 @@ const mySurvayStructureThree = {
 const mapperSurvayStepTwo = (el, rspSurvayActive) => {
   if (el?.section_type.id == 1) {
     mySurvayStructureTwo.id = el.rsp_survey_section_id;
-    mySurvayStructureTwo.nameQuestionnaire.title = rspSurvayActive.name;
+    mySurvayStructureTwo.nameQuestionnaire.title = rspSurvayActive?.name ?? "";
     mySurvayStructureTwo.nameQuestionnaire.description =
-      rspSurvayActive.description;
+      rspSurvayActive?.description ?? "";
 
     mySurvayStructureTwo.name = el.name;
 
@@ -230,12 +230,12 @@ const mapperSurvayStepTwo = (el, rspSurvayActive) => {
 
 const mapperSurvayStepThree = (el) => {
   if (el?.section_type.id == 2) {
-
     const questionnaire = {
       id: el?.rsp_survey_section_id,
       index: el.sequence,
       title: el?.name,
       score: el?.score,
+      sumScore: el?.score,
       nextSectionId: el?.next_section_id,
       inprogressSectionId: el.next_section_id,
       data: [],
@@ -470,13 +470,13 @@ const mapperSurvayStepThree = (el) => {
 };
 
 const MapperSurvay = (data, rspSurvayActive, rspActivityStatusId) => {
-  mySurvayStructureTwo.rspActivityStatusId = rspActivityStatusId;
-  mySurvayStructureThree.rspActivityStatusId = rspActivityStatusId;
+  mySurvayStructureTwo.rspActivityStatusId = rspActivityStatusId ?? "";
+  mySurvayStructureThree.rspActivityStatusId = rspActivityStatusId ?? "";
 
   // mySurvayStructureTwo.inprogressSectionId = inprogressSectionId;
   // mySurvayStructureThree.inprogressSectionId = inprogressSectionId;
 
-  mySurvayStructureThree.nameQuestionnaire.title = rspSurvayActive.name;
+  mySurvayStructureThree.nameQuestionnaire.title = rspSurvayActive?.name ?? "";
 
   mySurvayStructureThree.createQuestionnaire = [];
   mySurvayStructureTwo.createQuestionnaire = [];
@@ -488,7 +488,5 @@ const MapperSurvay = (data, rspSurvayActive, rspActivityStatusId) => {
   }
   return { mySurvayStructureTwo, mySurvayStructureThree };
 };
-
-
 
 export default { MapperSurvay };

@@ -39,7 +39,6 @@
       <template v-slot:item="{ element, index }">
         <v-row>
           <v-col cols="12">
-            <!-- <v-form ref="form"> -->
             <QuestionOption
               :type="element.typeQuestionCard"
               :id="element.id.toString()"
@@ -49,7 +48,6 @@
               @on-update="handleQuestionUpdate"
               @on-remove="handleQuestionRemove"
             />
-            <!-- </v-form> -->
           </v-col>
         </v-row>
       </template>
@@ -87,17 +85,28 @@ const propsVar = defineProps({
     type: Number,
     required: true,
   },
+  items: {
+    type: Object,
+    required: null,
+  },
 });
 
 import draggable from "vuedraggable";
 import QuestionOption from "@/components/survey/QuestionOption.vue";
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, watchEffect } from "vue";
 
 const emit = defineEmits(["on-group-update", "on-group-title-update"]);
 
 const items_menu = [{ title: "Option" }, { title: "Preview" }];
 const items_question = ref([]);
 const item_title = ref("");
+
+watchEffect(() => {
+  if (propsVar.items) {
+    item_title.value = propsVar?.items?.title ?? "";
+    items_question.value = propsVar?.items?.data ?? [];
+  }
+});
 
 const handleQuestionUpdate = (item) => {
   const indexUpdate = items_question.value.findIndex((el) => el.id === item.id);

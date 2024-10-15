@@ -663,6 +663,7 @@ export default {
   getRspSurveys,
   createRspSuvey,
   getRspPolicyPagination,
+  // getRspSuveyQusetion,
   createRspSuveyQusetion,
   createRspSuveyEvaluationCriteria,
   exportRspSurveyResult,

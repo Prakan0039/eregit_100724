@@ -3,7 +3,8 @@
     <v-col cols="12" v-for="(i, index) in itemQuestionUpdate" :key="index">
       <GroupQuestionOption
         :index="index"
-        :id="i.id"
+        :id="i.id.toString()"
+        :items="i"
         @on-group-title-update="handleGroupTitleUpdate"
         @on-group-update="handleGroupQuestionUpdate"
       />
@@ -23,11 +24,23 @@
 
 <script setup>
 import GroupQuestionOption from "@/components/survey/GroupQuestionOption.vue";
-import { ref, watch } from "vue";
+import { ref, watch, watchEffect } from "vue";
 
 const emit = defineEmits(["on-data-input"]);
 
+const propsVar = defineProps({
+  defaultItem: {
+    type: Array,
+    default: () => [],
+  },
+});
+
 const itemQuestionUpdate = ref([]);
+
+watchEffect(() => {
+  itemQuestionUpdate.value = propsVar.defaultItem;
+});
+
 
 const handleGroupTitleUpdate = ({ index, title }) => {
   itemQuestionUpdate.value[index].title = title;
