@@ -76,7 +76,7 @@ const handleQuestionRemove = (id) => {
 const questionCounter = ref(0);
   
 const handleAddQuestion = () => {
-  const id = (questionCounter++).toString();
+  const id = (questionCounter.value++).toString();
   items_question.value.push({
     id,
     index: items_question.value.length,
