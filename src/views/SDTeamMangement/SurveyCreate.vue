@@ -37,66 +37,69 @@
           Save Darft
         </v-btn>
       </v-col>
-      <div v-show="stepper === 1">
-        <v-row justify="end" class="mt-2 mb-2"> </v-row>
-        <v-card class="elevation-1">
-          <v-card-text>
-            <v-form ref="descForm">
-              <v-row no-gutters dense>
-                <v-col>
-                  <h4>ชื่อแบบสอบถาม</h4>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="setp2Quest.nameQuestionnaire.title"
-                    variant="outlined"
-                    placeholder="ชื่อแบบสอบถาม"
-                    required
-                    density="compact"
-                    :rules="[(v) => !!v || 'ชื่อแบบสอบถาม เป็นสิ่งจำเป็น.']"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row no-gutters dense>
-                <v-col>
-                  <h4>คำอธิบาย</h4>
-                </v-col>
-                <v-col cols="12">
-                  <v-textarea
-                    v-model="setp2Quest.nameQuestionnaire.description"
-                    variant="outlined"
-                    required
-                    placeholder="คำอธิบาย"
-                    :rules="[(v) => !!v || 'คำอธิบาย เป็นสิ่งจำเป็น.']"
-                  ></v-textarea>
-                </v-col>
-              </v-row>
-            </v-form>
-          </v-card-text>
-        </v-card>
+      <div class="mr-15 ml-15">
+        <div v-show="stepper === 1">
+          <v-row justify="end" class="mt-2 mb-2"> </v-row>
+          <v-card class="elevation-1">
+            <v-card-text>
+              <v-form ref="descForm">
+                <v-row no-gutters dense>
+                  <v-col>
+                    <h4>ชื่อแบบสอบถาม</h4>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="setp2Quest.nameQuestionnaire.title"
+                      variant="outlined"
+                      placeholder="ชื่อแบบสอบถาม"
+                      required
+                      density="compact"
+                      :rules="[(v) => !!v || 'ชื่อแบบสอบถาม เป็นสิ่งจำเป็น.']"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters dense>
+                  <v-col>
+                    <h4>คำอธิบาย</h4>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-textarea
+                      v-model="setp2Quest.nameQuestionnaire.description"
+                      variant="outlined"
+                      required
+                      placeholder="คำอธิบาย"
+                      :rules="[(v) => !!v || 'คำอธิบาย เป็นสิ่งจำเป็น.']"
+                    ></v-textarea>
+                  </v-col>
+                </v-row>
+              </v-form>
+            </v-card-text>
+          </v-card>
+        </div>
+        <div v-show="stepper === 2">
+          <v-form ref="suveyOtherQuestionForm">
+            <SuveyOtherQuestion
+              :default-item="setp2Quest.createQuestionnaire"
+              @on-data-input="handleItemSuevayOhterUpdate"
+            />
+          </v-form>
+        </div>
+        <div v-show="stepper === 3">
+          <v-form ref="suveyQuestionForm">
+            <SurveyQuestion
+              ref="suveyQuestion"
+              :default-item="setp3Quest.createQuestionnaire"
+              @on-data-input="handleItemSuevayQuestionUpdate"
+            />
+          </v-form>
+        </div>
+        <div v-show="stepper === 4">
+          <v-form ref="suveyScoreMgmt">
+            <SuveyScoreManament @on-update="handleScoreMgmtUpdated" />
+          </v-form>
+        </div>
       </div>
-      <div v-show="stepper === 2">
-        <v-form ref="suveyOtherQuestionForm">
-          <SuveyOtherQuestion
-            :default-item="setp2Quest.createQuestionnaire"
-            @on-data-input="handleItemSuevayOhterUpdate"
-          />
-        </v-form>
-      </div>
-      <div v-show="stepper === 3">
-        <v-form ref="suveyQuestionForm">
-          <SurveyQuestion
-            ref="suveyQuestion"
-            :default-item="setp3Quest.createQuestionnaire"
-            @on-data-input="handleItemSuevayQuestionUpdate"
-          />
-        </v-form>
-      </div>
-      <div v-show="stepper === 4">
-        <v-form ref="suveyScoreMgmt">
-          <SuveyScoreManament @on-update="handleScoreMgmtUpdated" />
-        </v-form>
-      </div>
+
       <div class="text-center mt-5">
         <v-btn
           rounded
@@ -196,7 +199,7 @@ const getRspSurvey = async () => {
         console.log(JSON.stringify(mySurvayStructureTwo));
         console.log(JSON.stringify(mySurvayStructureThree));
         setp2Quest.value = mySurvayStructureTwo;
-        setp3Quest.value = mySurvayStructureThree
+        setp3Quest.value = mySurvayStructureThree;
       }
     }
   } catch (error) {
@@ -219,13 +222,13 @@ const handleScoreMgmtUpdated = (dataInput) => {
 const handleItemSuevayOhterUpdate = (data) => {
   itemOtherQuest.value = data;
   setp2Quest.value.createQuestionnaire = itemOtherQuest.value;
-  console.log("setp2Quest : ", JSON.stringify(setp2Quest.value));
+  // console.log("setp2Quest : ", JSON.stringify(setp2Quest.value));
 };
 
 const handleItemSuevayQuestionUpdate = (data) => {
   itemQuestion.value = data;
   setp3Quest.value.createQuestionnaire = itemQuestion.value;
-  console.log("setp3Quest : ", JSON.stringify(setp2Quest.value));
+  // console.log("setp3Quest : ", JSON.stringify(setp2Quest.value));
 };
 
 let rsp_survey_id = null;

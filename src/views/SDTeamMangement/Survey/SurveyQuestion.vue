@@ -24,9 +24,14 @@
 
 <script setup>
 import GroupQuestionOption from "@/components/survey/GroupQuestionOption.vue";
-import { ref, watch, watchEffect } from "vue";
+import { ref, watch, onMounted } from "vue";
 
 const emit = defineEmits(["on-data-input"]);
+
+import { useSurveyStore } from "@/stores/surveyStore";
+const store = useSurveyStore();
+
+const questionCounter = ref(0);
 
 const propsVar = defineProps({
   defaultItem: {
@@ -35,12 +40,42 @@ const propsVar = defineProps({
   },
 });
 
-const itemQuestionUpdate = ref([]);
-
-watchEffect(() => {
-  itemQuestionUpdate.value = propsVar.defaultItem;
+onMounted(() => {
+  let countDataQuest = 0;
+  itemQuestionUpdate.value.forEach((item) => {
+    countDataQuest += item.data.length;
+  });
+  if (countDataQuest == 0) {
+    store.survey3.tempId = 0;
+    store.survey3.tempQuestionIds = [];
+  }
 });
 
+const itemQuestionUpdate = ref([]);
+
+watch(()=> propsVar.defaultItem, () => {
+  if (propsVar.defaultItem && itemQuestionUpdate.value.length == 0) {
+    console.log("Survey watchEffect")
+    itemQuestionUpdate.value = propsVar.defaultItem;
+    itemQuestionUpdate.value.forEach((item) => {
+      store.survey3.tempQuestionIds.push(...item.data.map((el) => el.id));
+      store.survey3.tempId =
+        store.survey3.tempQuestionIds[store.survey3.tempQuestionIds.length - 1];
+    });
+  }
+})
+
+// watchEffect(() => {
+//   if (propsVar.defaultItem && itemQuestionUpdate.value.length == 0) {
+//     console.log("Survey watchEffect")
+//     itemQuestionUpdate.value = propsVar.defaultItem;
+//     itemQuestionUpdate.value.forEach((item) => {
+//       store.survey3.tempQuestionIds.push(...item.data.map((el) => el.id));
+//       store.survey3.tempId =
+//         store.survey3.tempQuestionIds[store.survey3.tempQuestionIds.length - 1];
+//     });
+//   }
+// });
 
 const handleGroupTitleUpdate = ({ index, title }) => {
   itemQuestionUpdate.value[index].title = title;
@@ -51,7 +86,7 @@ const handleGroupQuestionUpdate = ({ index, question }) => {
   itemQuestionUpdate.value[index].data = question;
   console.log(JSON.stringify(itemQuestionUpdate.value));
 };
-const questionCounter = ref(0);
+
 const handleAddQuestion = () => {
   itemQuestionUpdate.value.push({
     id: (questionCounter.value++).toString(),

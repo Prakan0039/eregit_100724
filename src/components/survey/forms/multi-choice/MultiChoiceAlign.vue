@@ -19,9 +19,8 @@
       <v-text-field
         class="centered-placeholder"
         placeholder="คะแนนคำถาม"
-        required
+        :rules="[(v) => v !== null && v !== undefined && v !== '' || 'Required.']"
         v-model="metaData.totalScore"
-        :rules="[(v) => !!v || 'Required.']"
         variant="outlined"
         density="compact"
         disabled
@@ -67,8 +66,7 @@
             placeholder="คะแนนคำตอบ"
             variant="outlined"
             type="number"
-            required
-            :rules="[(v) => !!v || 'Required.']"
+            :rules="[(v) => v !== null && v !== undefined && v !== '' || 'Required.']"
             density="compact"
             v-model="item.score"
           ></v-text-field>
@@ -120,8 +118,7 @@
             placeholder="คะแนนคำตอบ"
             type="number"
             variant="outlined"
-            required
-            :rules="[(v) => !!v || 'Required.']"
+            :rules="[(v) => v !== null && v !== undefined && v !== '' || 'Required.']"
             v-model="item.score"
             density="compact"
           ></v-text-field>

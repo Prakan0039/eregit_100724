@@ -23,8 +23,7 @@
         color="gray"
         disabled
         variant="outlined"
-        required
-        :rules="[(v) => !!v || 'Required.']"
+        :rules="[(v) => v !== null && v !== undefined && v !== '' || 'Required.']"
         density="compact"
       ></v-text-field>
     </v-col>
@@ -59,8 +58,7 @@
             type="number"
             variant="outlined"
             v-model="item.score"
-            required
-            :rules="[(v) => !!v || 'Required.']"
+            :rules="[(v) => v !== null && v !== undefined && v !== '' || 'Required.']"
             density="compact"
           ></v-text-field>
         </v-col>
@@ -87,8 +85,7 @@
         <v-col cols="2">
           <v-text-field
             class="centered-placeholder"
-            required
-            :rules="[(v) => !!v || 'Required.']"
+            :rules="[(v) => v !== null && v !== undefined && v !== '' || 'Required.']"
             placeholder="คะแนนคำตอบ"
             variant="outlined"
             type="number"

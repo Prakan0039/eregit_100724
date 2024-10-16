@@ -52,7 +52,6 @@
           </v-col>
           <v-col cols="12" class="mt-n5">
             <div>
-              <!-- <p>{{ dataForm.controlType }}</p> -->
               <ParagrahpNone
                 :meta-data-paragrahp-none="dataForm.control"
                 @on-update="handleFormUpdated"
@@ -63,7 +62,7 @@
                 "
               />
               <MultiChoiceNone
-                :items_selection="countQuestions"
+                :items_selection="propsVar.itemsId"
                 :meta-data-multi-choice-none="dataForm.control"
                 @on-update="handleFormUpdated"
                 @on-remove="handleQuestRemove"
@@ -73,7 +72,7 @@
                 "
               />
               <CheckboxNone
-                :items_selection="countQuestions"
+                :items_selection="propsVar.itemsId"
                 :meta-data-checkbox-none="dataForm.control"
                 @on-update="handleFormUpdated"
                 @on-remove="handleQuestRemove"
@@ -83,7 +82,7 @@
                 "
               />
               <DropdownNone
-                :items_selection="countQuestions"
+                :items_selection="propsVar.itemsId"
                 :meta-data-dropdown-none="dataForm.control"
                 @on-update="handleFormUpdated"
                 @on-remove="handleQuestRemove"
@@ -111,7 +110,7 @@
                 "
               />
               <MultiChoiceScore
-                :items_selection="countQuestions"
+                :items_selection="propsVar.itemsId"
                 :meta-data-multi-choice-score="dataForm.control"
                 @on-update="handleFormUpdated"
                 @on-remove="handleQuestRemove"
@@ -121,7 +120,7 @@
                 "
               />
               <CheckboxScore
-                :items_selection="countQuestions"
+                :items_selection="propsVar.itemsId"
                 :meta-data-checkbox-score="dataForm.control"
                 @on-update="handleFormUpdated"
                 @on-remove="handleQuestRemove"
@@ -131,7 +130,7 @@
                 "
               />
               <DropdownScore
-                :items_selection="countQuestions"
+                :items_selection="propsVar.itemsId"
                 :meta-data-dropdown-score="dataForm.control"
                 @on-update="handleFormUpdated"
                 @on-remove="handleQuestRemove"
@@ -151,7 +150,7 @@
               />
 
               <MultiChoiceAlign
-                :items_selection="countQuestions"
+                :items_selection="propsVar.itemsId"
                 :meta-data-multi-choice-align="dataForm.control"
                 @on-update="handleFormUpdated"
                 @on-remove="handleQuestRemove"
@@ -161,7 +160,7 @@
                 "
               />
               <CheckboxAlign
-                :items_selection="countQuestions"
+                :items_selection="propsVar.itemsId"
                 :meta-data-checkbox-align="dataForm.control"
                 @on-update="handleFormUpdated"
                 @on-remove="handleQuestRemove"
@@ -171,7 +170,7 @@
                 "
               />
               <DcropdownAlign
-                :items_selection="countQuestions"
+                :items_selection="propsVar.itemsId"
                 :meta-data-dropdown-align="dataForm.control"
                 @on-update="handleFormUpdated"
                 @on-remove="handleQuestRemove"
@@ -183,15 +182,13 @@
             </div>
           </v-col>
         </v-row>
-        <!-- </v-card-title>
-  </v-card> -->
       </template>
     </v-hover>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import ParagrahpNone from "@/components/survey/forms/paragrahps/ParagrahpNone.vue";
 import MultiChoiceNone from "@/components/survey/forms/multi-choice/MultiChoiceNone.vue";
 import CheckboxNone from "@/components/survey/forms/checkboxs/CheckboxNone.vue";
@@ -235,19 +232,12 @@ const propsVar = defineProps({
     type: Number,
     default: 0,
   },
+  itemsId: {
+    typeof: Array,
+    default: [],
+  },
 });
 
-const countQuestions = computed(() => {
-  const itemsSelection = [];
-  for (
-    let index = propsVar.index + 2;
-    index <= propsVar.countQuestion;
-    index++
-  ) {
-    itemsSelection.push(index);
-  }
-  return itemsSelection;
-});
 
 const emit = defineEmits(["on-update", "on-remove"]);
 const dataForm = ref({

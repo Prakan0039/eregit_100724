@@ -17,6 +17,11 @@
                 :id="element.id.toString()"
                 :index="Number(index)"
                 :data="element.data"
+                :items-id="
+                  items_question
+                    .slice(Number(index) + 1)
+                    .map((item) => item.id.toString())
+                "
                 :count-question="items_question.length"
                 @on-update="handleQuestionUpdate"
                 @on-remove="handleQuestionRemove"
@@ -40,7 +45,7 @@
   </v-row>
 </template>
 <script setup>
-import { ref, watch, watchEffect } from "vue";
+import { ref, watch } from "vue";
 import draggable from "vuedraggable";
 import QuestionOption from "@/components/survey/QuestionOption.vue";
 
@@ -55,9 +60,9 @@ const emit = defineEmits(["on-data-input"]);
 
 const items_question = ref([]);
 
-watchEffect(() => {
+watch(()=> propsVar.defaultItem,()=>{
   items_question.value = propsVar.defaultItem;
-});
+})
 
 const handleQuestionUpdate = (item) => {
   const indexUpdate = items_question.value.findIndex((el) => el.id === item.id);
@@ -74,7 +79,7 @@ const handleQuestionRemove = (id) => {
 };
 
 const questionCounter = ref(0);
-  
+
 const handleAddQuestion = () => {
   const id = (questionCounter.value++).toString();
   items_question.value.push({

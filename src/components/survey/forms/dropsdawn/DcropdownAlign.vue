@@ -20,10 +20,9 @@
         class="centered-placeholder"
         placeholder="คะแนนคำถาม"
         variant="outlined"
-        required
+        :rules="[(v) => v !== null && v !== undefined && v !== '' || 'Required.']"
         v-model="metaData.totalScore"
         disabled
-        :rules="[(v) => !!v || 'Required.']"
         density="compact"
       ></v-text-field>
     </v-col>
@@ -58,9 +57,8 @@
             class="centered-placeholder"
             placeholder="คะแนนคำตอบ"
             v-model="item.score"
-            required
             type="number"
-            :rules="[(v) => !!v || 'Required.']"
+            :rules="[(v) => v !== null && v !== undefined && v !== '' || 'Required.']"
             variant="outlined"
             density="compact"
           ></v-text-field>

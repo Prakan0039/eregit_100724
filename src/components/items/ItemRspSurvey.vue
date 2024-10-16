@@ -11,7 +11,7 @@
           >
         </v-col>
         <v-col cols="3" align-self="center" class="pa-1">
-          <strong>{{ item?.name.split('<br>')[0] }}</strong>
+          <strong>{{ item?.name.split('<br />')[0] }}</strong>
           <strong class="text-grey">(V.{{ item?.version }})</strong>
         </v-col>
         <v-divider vertical class="ma-2"></v-divider>
@@ -149,10 +149,10 @@ const handleAction = (rspSurveyId, action) => {
 };
 
 const handlePreview = async (rspSurveyId) => {
-  await getRspSurvey(rspSurveyId);
-  // router.push(
-  //   `/SDTeamMangement/Survey/Created?rsp_survey_id=${rspSurveyId}&name=${props.item.name}&description=${props.item.description}`
-  // );
+  // await getRspSurvey(rspSurveyId);
+  router.push(
+    `/SDTeamMangement/Survey/Created?rsp_survey_id=${rspSurveyId}&name=${props.item.name}&description=${props.item.description}`
+  );
 };
 
 const setp2Quest = ref({

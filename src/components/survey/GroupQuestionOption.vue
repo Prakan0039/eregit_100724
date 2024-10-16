@@ -44,6 +44,11 @@
               :id="element.id.toString()"
               :index="Number(index)"
               :data="element.data"
+              :itemsId="
+                store.survey3.tempQuestionIds.slice(
+                  getIndex(element.id.toString()) + 1
+                )
+              "
               :count-question="items_question.length"
               @on-update="handleQuestionUpdate"
               @on-remove="handleQuestionRemove"
@@ -93,20 +98,28 @@ const propsVar = defineProps({
 
 import draggable from "vuedraggable";
 import QuestionOption from "@/components/survey/QuestionOption.vue";
-import { ref, watch, computed, watchEffect } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
 
+import { useSurveyStore } from "@/stores/surveyStore";
+const store = useSurveyStore();
 const emit = defineEmits(["on-group-update", "on-group-title-update"]);
 
 const items_menu = [{ title: "Option" }, { title: "Preview" }];
 const items_question = ref([]);
 const item_title = ref("");
 
-watchEffect(() => {
+onMounted(() => {
   if (propsVar.items) {
     item_title.value = propsVar?.items?.title ?? "";
     items_question.value = propsVar?.items?.data ?? [];
   }
 });
+
+const getIndex = (id) => {
+  const index = store.survey3.tempQuestionIds.findIndex((el) => el == id);
+  if (index != -1) return index;
+  return 0;
+};
 
 const handleQuestionUpdate = (item) => {
   const indexUpdate = items_question.value.findIndex((el) => el.id === item.id);
@@ -119,13 +132,17 @@ const handleQuestionUpdate = (item) => {
 
 const handleQuestionRemove = (id) => {
   const indexOfById = items_question.value.findIndex((el) => el.id == id);
+  const indexTempQuestId = store.survey3.tempQuestionIds.findIndex(
+    (el) => el == id
+  );
+
+  if (indexTempQuestId > -1) store.survey3.tempQuestionIds.splice(indexTempQuestId, 1);
   if (indexOfById > -1) items_question.value.splice(indexOfById, 1);
 };
 
 const handleAddQuestionAlignment = () => {
-  // let id = "0";
-  // if (items_question.value.length > 0)
-  const id = items_question.value.length.toString();
+  const id = (store.survey3.tempId++).toString();
+  store.survey3.tempQuestionIds.push(id);
   items_question.value.push({
     id,
     index: items_question.value.length,
@@ -138,7 +155,8 @@ const handleAddQuestionAlignment = () => {
 };
 
 const handleAddQuestion = () => {
-  const id = items_question.value.length.toString();
+  const id = (store.survey3.tempId++).toString();
+  store.survey3.tempQuestionIds.push(id);
   items_question.value.push({
     id,
     index: items_question.value.length,
@@ -163,7 +181,7 @@ watch(items_question.value, (newValue) => {
 
 const totalScoreSum = computed(() => {
   return items_question.value.reduce(
-    (sum, question) => sum + question.data?.metaData?.totalScore || 0,
+    (sum, question) => sum + (question.data?.metaData?.totalScore ?? 0),
     0
   );
 });

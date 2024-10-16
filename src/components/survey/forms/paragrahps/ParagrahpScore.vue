@@ -21,8 +21,9 @@
         placeholder="คะแนนคำถาม"
         v-model="metaData.totalScore"
         type="number"
-        required
-        :rules="[(v) => !!v || 'Required.']"
+        :rules="[
+          (v) => (v !== null && v !== undefined && v !== '') || 'Required.',
+        ]"
         variant="outlined"
         density="compact"
       ></v-text-field>
