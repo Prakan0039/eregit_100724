@@ -51,10 +51,10 @@ const handleGroupQuestionUpdate = ({ index, question }) => {
   itemQuestionUpdate.value[index].data = question;
   console.log(JSON.stringify(itemQuestionUpdate.value));
 };
-
+const questionCounter = ref(0);
 const handleAddQuestion = () => {
   itemQuestionUpdate.value.push({
-    id: itemQuestionUpdate.value.length.toString(),
+    id: (questionCounter.value++).toString(),
     title: "",
     sumScore: 0,
     data: [],
