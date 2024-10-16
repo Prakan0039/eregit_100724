@@ -73,10 +73,10 @@ const handleQuestionRemove = (id) => {
   if (indexOfById > -1) items_question.value.splice(indexOfById, 1);
 };
 
+const questionCounter = ref(0);
+  
 const handleAddQuestion = () => {
-  //   let id = "0";
-  //   if (items_question.value.length > 0)
-  const id = items_question.value.length.toString();
+  const id = (questionCounter++).toString();
   items_question.value.push({
     id,
     index: items_question.value.length,
@@ -89,7 +89,6 @@ const handleAddQuestion = () => {
 };
 
 watch(items_question.value, (newValue) => {
-  // console.log(JSON.stringify(newValue));
   emit("on-data-input", newValue);
 });
 </script>
