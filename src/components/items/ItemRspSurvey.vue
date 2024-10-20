@@ -36,7 +36,7 @@
             color="secondary"
             variant="flat"
             rounded
-            :to="`/SDTeamMangement/RspPolicyUpsert?id=${item?.id}&name=${item?.name}`"
+            @click="handleContinune(item?.id)"
           >
             Continue
           </v-btn>
@@ -148,11 +148,17 @@ const handleAction = (rspSurveyId, action) => {
   emit("action-menus", rspSurveyId, action);
 };
 
-const handlePreview = async (rspSurveyId) => {
-  // await getRspSurvey(rspSurveyId);
+const handleContinune = async (rspSurveyId) => {
   router.push(
     `/SDTeamMangement/Survey/Created?rsp_survey_id=${rspSurveyId}&name=${props.item.name}&description=${props.item.description}`
   );
+};
+
+const handlePreview = async (rspSurveyId) => {
+  await getRspSurvey(rspSurveyId);
+  // router.push(
+  //   `/SDTeamMangement/Survey/Created?rsp_survey_id=${rspSurveyId}&name=${props.item.name}&description=${props.item.description}`
+  // );
 };
 
 const setp2Quest = ref({

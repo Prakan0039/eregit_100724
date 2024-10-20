@@ -334,6 +334,10 @@ const next = async () => {
 };
 
 const back = () => {
+  if(stepper.value ==1) {
+    router.push("/SDTeamMangement/Survey");
+    return;
+  }
   if (stepper.value > 1) stepper.value--;
 };
 

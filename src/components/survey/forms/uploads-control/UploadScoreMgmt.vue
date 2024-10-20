@@ -10,6 +10,7 @@
         placeholder="คะแนน"
         variant="outlined"
         required
+        type="number"
         :rules="[(v) => !!v || 'Required.']"
         v-model="metaData.score"
         density="compact"
@@ -20,7 +21,6 @@
         class="centered-placeholder"
         placeholder="ตัววัด"
         required
-        type="number"
         :rules="[(v) => !!v || 'Required.']"
         v-model="metaData.rank"
         variant="outlined"
@@ -56,9 +56,9 @@
         label="Require"
       ></v-checkbox> -->
     </v-col>
-    <v-col cols="6" class="d-flex justify-end pa-2">
+    <!-- <v-col cols="6" class="d-flex justify-end pa-2">
       <v-btn variant="outlined" rounded> Preview </v-btn>
-    </v-col>
+    </v-col> -->
   </v-row>
 </template>
 

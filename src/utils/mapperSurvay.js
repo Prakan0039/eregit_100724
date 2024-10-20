@@ -50,6 +50,7 @@ const mapperSurvayStepTwo = (el, rspSurvayActive) => {
             index: 0,
             score: 0,
             nextQuestionId: 0,
+            nextQuestion: 0,
           },
         },
       };
@@ -102,6 +103,7 @@ const mapperSurvayStepTwo = (el, rspSurvayActive) => {
             answer: item.answer,
             isAligned: item.is_aligned,
             nextQuestionId: item.next_question_id,
+            nextQuestion: item.next_question_id,
             index: item.sequence,
             score: item.score,
           };
@@ -144,6 +146,7 @@ const mapperSurvayStepTwo = (el, rspSurvayActive) => {
               index: item.sequence,
               score: item.score,
               nextQuestionId: item.next_question_id,
+              nextQuestion: item.next_question_id,
             };
           }
 
@@ -155,6 +158,7 @@ const mapperSurvayStepTwo = (el, rspSurvayActive) => {
             index: item.sequence,
             score: item.score,
             nextQuestionId: item.next_question_id,
+            nextQuestion: item.next_question_id,
             specify: "",
           };
         });
@@ -174,6 +178,7 @@ const mapperSurvayStepTwo = (el, rspSurvayActive) => {
             isRequired: true,
             files: null,
             nextQuestionId: 0,
+            nextQuestion: 0,
           },
         },
       };
@@ -220,6 +225,7 @@ const mapperSurvayStepTwo = (el, rspSurvayActive) => {
             id: item.rsp_survey_choice_id,
             answer: item.answer,
             nextQuestionId: item.next_question_id,
+            nextQuestion: item.next_question_id,
           };
         });
         mySurvayStructureTwo.createQuestionnaire.push(DropdawnType);
@@ -257,6 +263,7 @@ const mapperSurvayStepThree = (el) => {
             answer: "",
             isRequire: true,
             nextQuestionId: 0,
+            nextQuestion: 0,
           },
         },
       };
@@ -315,6 +322,7 @@ const mapperSurvayStepThree = (el) => {
               isAlign: item.is_aligned,
               index: item.sequence,
               nextQuestionId: item.next_question_id,
+              nextQuestion: item.next_question_id,
             };
           }
 
@@ -326,6 +334,7 @@ const mapperSurvayStepThree = (el) => {
             isAlign: item.is_aligned,
             index: item.sequence,
             nextQuestionId: item.next_question_id,
+            nextQuestion: item.next_question_id,
           };
         });
 
@@ -368,6 +377,7 @@ const mapperSurvayStepThree = (el) => {
               answer: item.answer,
               specify: "",
               nextQuestionId: item.next_question_id,
+              nextQuestion: item.next_question_id,
               score: item.score,
             };
           }
@@ -379,6 +389,7 @@ const mapperSurvayStepThree = (el) => {
             isAlign: item.is_aligned,
             answer: item.answer,
             nextQuestionId: item.next_question_id,
+            nextQuestion: item.next_question_id,
             score: item.score,
           };
         });
@@ -422,6 +433,7 @@ const mapperSurvayStepThree = (el) => {
               specify: "",
               answer: item.answer,
               nextQuestionId: item.next_question_id,
+              nextQuestion: item.next_question_id,
             };
           }
 
@@ -432,6 +444,7 @@ const mapperSurvayStepThree = (el) => {
             isAlign: item.is_aligned,
             answer: item.answer,
             nextQuestionId: item.next_question_id,
+            nextQuestion: item.next_question_id,
           };
         });
         questionnaire.data.push(DropdawnType);
@@ -450,6 +463,7 @@ const mapperSurvayStepThree = (el) => {
             isRequired: true,
             files: null,
             nextQuestionId: 0,
+            nextQuestion: 0,
           },
         },
       };

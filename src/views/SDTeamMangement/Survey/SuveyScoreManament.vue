@@ -65,13 +65,16 @@ watch(
 );
 
 watch(dataInput.listOfScore, (newValue) => {
+  console.log(newValue);
   dataInput.totalScore = newValue.reduce(
-    (sum, question) => Number(sum) + Number(question.totalScore) || 0,
+    (sum, question) => sum + (Number(question.score) || 0),
     0
   );
-});
+},{deep: true});
+
 
 const handleUpdateScore = (item) => {
+  // console.log(JSON.stringify(dataInput.listOfScore))
   const { upload_file_score, index } = item;
   dataInput.listOfScore[index] = upload_file_score;
 };

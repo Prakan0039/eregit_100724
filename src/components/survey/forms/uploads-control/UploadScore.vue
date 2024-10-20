@@ -71,7 +71,7 @@ const propsVar = defineProps({
         question: "",
         answer: "",
         isRequire: false,
-        totalScore: "",
+        totalScore: 0,
         files: [],
       };
     },
