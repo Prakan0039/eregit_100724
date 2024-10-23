@@ -16,7 +16,7 @@
         <v-col cols="2" align-self="center" class="pa-1">
           <strong>Created by</strong>
           <br />
-          <strong class="text-secondary">{{ item?.created_user_id }}</strong>
+          <strong class="text-secondary">{{ item?.created_user?.email }}</strong>
         </v-col>
         <v-col cols="3" align-self="center" class="pa-1">
           <v-btn
