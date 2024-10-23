@@ -86,6 +86,7 @@ import Choosefile from "@/components/forms/Choosefile.vue";
 import DatePickerControl from "@/components/controls/DatePickerControl.vue";
 import dateUtils from "@/utils/dateUtils";
 import RspService from "@/apis/RspService";
+import ExportService from "@/apis/ExportService";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -97,7 +98,7 @@ import { useConfirmationDialog } from "@/components/dialogs/ConfirmationDialogSe
 const { showDialog } = useConfirmationDialog();
 
 import { useAlertDialogDialog } from "@/components/dialogs/AlertSuccessDialogService";
-import ExportService from "@/apis/ExportService";
+
 const { showAlert } = useAlertDialogDialog();
 
 const id = ref(null);
@@ -129,29 +130,8 @@ onBeforeMount(() => {
 
 });
 const  handleInitFile = async (file_path)=>{
-   try {
-    const response = await fetch(file_path, {  mode: "cors",});
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-      const mimeTypeMap = {
-      'png': 'image/png',
-      'jpg': 'image/jpeg',
-      'jpeg': 'image/jpeg',
-      'pdf': 'application/pdf',
-      'txt': 'text/plain',
-      'xls': 'application/vnd.ms-excel',
-      'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    };
-
-      const extension = file_path.split('.').pop();
-      const fileName = file_path.substr(file_path.lastIndexOf("/") + 1)
-      const mimeType = mimeTypeMap[extension.toLowerCase()];
-      const blob = new Blob([response.data], { type: mimeType });
-      file.value =   new File([blob], fileName, { type: mimeType });
-  } catch (error) {
-    console.error("Error downloading file:", error);
-  }
+  const fileObject = await ExportService.downloadFileObject(file_path)
+ file.value = fileObject
 }
 const handleOnChangeFile = async (val) => {
   file.value = val;

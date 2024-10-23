@@ -15,6 +15,51 @@ import { saveAs } from 'file-saver'
 //    saveAs(blob, `${_name}.${_type}`)
 // }
 
+const downloadFileObject = async (_url) => {
+  try {
+    const response = await axiosBase({
+      method: 'get',
+      url: _url,
+      responseType: 'arraybuffer', // Ensure we get the raw binary data
+    });
+
+    const mimeTypeMap = {
+      'png': 'image/png',
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'pdf': 'application/pdf',
+      'txt': 'text/plain',
+      'xls': 'application/vnd.ms-excel',
+      'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    };
+
+  const extension = _url.split('.').pop();
+  const fileName = _url.substr(_url.lastIndexOf("/") + 1)
+  const mimeType = mimeTypeMap[extension.toLowerCase()];
+  //     console.log(response)
+     const   blob = new Blob([response.data], { type: mimeType });
+    const file =   new File([blob], fileName, { type: mimeType });
+
+  // } catch (error) {
+// console.log(response)
+// console.log(fileName)
+// console.log(mimeType)
+// console.log(blob)
+// console.log(file)
+
+return  file
+    // const mimeType = mimeTypeMap[_type.toLowerCase()];
+    // if (!mimeType) {
+    //   throw new Error('Unsupported file type');
+    // }
+
+    // const blob = new Blob([response.data], { type: mimeType });
+    // saveAs(blob, `${_name}.${_type}`);
+  } catch (error) {
+    console.error('Error exporting file:', error);
+  }
+};
+
 const exportBase64 = async (_name, _type, _url) => {
   try {
     const response = await axiosBase({
@@ -129,5 +174,6 @@ export default {
   downloadFile,
   downloadFileV2,
   downloadFileV3,
-  getBase64
+  getBase64,
+  downloadFileObject
  }
