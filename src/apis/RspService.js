@@ -470,10 +470,10 @@ const createRspPolicy = async (_name, _file, _start_at) => {
 const updateRspPolicy = async (_rsp_policy_id, _name, _file, _start_at) => {
   return await axiosBase({
     method: "post",
-    url: `/rsp/update-rsp-policy`,
+    url: `/partner/update-rsp-policy`,
     data: {
       rsp_policy_id: Number(_rsp_policy_id),
-      name: _name,
+      name: String(_name),
       data: _file && _file == "" ? "" : _file.split(",")[1],
       published_at: _start_at,
       updated_user_id: Number(sessionStorage.getItem("userId")),
@@ -591,12 +591,12 @@ const updateRspTraining = async (
 ) => {
   return await axiosBase({
     method: "post",
-    url: `/rsp/update-rsp-training`,
+    url: `/partner/update-rsp-training`,
     data: {
       rsp_training_id: training_id,
-      name: name,
-      data: file,
-      role_id: role_id,
+      name: String(name),
+      data:  String(file),
+      role_id:  String(role_id),
       published_at: active_at,
       updated_user_id: Number(sessionStorage.getItem("userId")),
     },
