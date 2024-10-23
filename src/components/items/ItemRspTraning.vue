@@ -24,11 +24,9 @@
             {{ role.name + (i < (props.item?.roles.length - 1) ? '&nbsp;,&nbsp;' : '') }} </strong>
         </v-col>
         <v-col cols="2" align-self="center" class="pa-1">
-          <a :href="props.item?.file_url" target="_blank">
-            <v-btn class="me-2 text-none" color="secondary" variant="outlined" size="small" rounded>
+            <v-btn class="me-2 text-none" color="secondary" variant="outlined" size="small" rounded @click="handeLink(props.item?.file_url)">
               Link วีดีโอ
             </v-btn>
-          </a>
           <v-btn v-if="props.isDraft" class="me-2 text-none" color="secondary" variant="flat" size="small" rounded @click="handleContinue(props.item)">
             Continue
           </v-btn>
@@ -114,6 +112,9 @@ const ActionMenus = computed({
     }
   },
 });
+const handeLink=(link)=>{
+  window.open(link,'_blank');
+ }
 // eslint-disable-next-line no-unused-vars
 const handleContinue = (i)=>{
   const traning = {
