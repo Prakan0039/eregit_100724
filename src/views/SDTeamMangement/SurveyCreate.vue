@@ -143,7 +143,7 @@ const route = useRoute();
 const router = useRouter();
 const { showAlert } = useAlertDialogDialog();
 
-const stepper = ref(4);
+const stepper = ref(1);
 
 const descForm = ref(null);
 const suveyOtherQuestionForm = ref(null);
@@ -155,12 +155,6 @@ const itemOtherQuest = ref([]);
 const itemScoreMgmt = ref({});
 
 const itemScoreMgmtFetch = ref([]);
-
-// import data_2 from "@/assets/notes-alif/survey-mgmt-2.json";
-// import data_3 from "@/assets/notes-alif/survey-mgmt-3.json";
-
-// const jsonStep2 = ref([]);
-// const jsonStep3 = ref([]);
 
 const setp2Quest = ref({
   nameQuestionnaire: {
@@ -202,13 +196,13 @@ const getRspSurvey = async () => {
             null,
             null
           );
-        // console.log(JSON.stringify(mySurvayStructureTwo));
-        // console.log(JSON.stringify(mySurvayStructureThree));
         setp2Quest.value = mySurvayStructureTwo;
         setp3Quest.value = mySurvayStructureThree;
       }
     }
   } catch (error) {
+    setp2Quest.value.nameQuestionnaire.title = name;
+    setp2Quest.value.nameQuestionnaire.description = description;
     console.log(error);
     return;
   }
@@ -259,10 +253,12 @@ const next = async () => {
     }
     try {
       const currDate = new Date();
+      currDate.setDate(currDate.getDate() + 1);
+      const isoDate = currDate.toISOString();
       const response = await ResService.createRspSuvey(
         setp2Quest.value.nameQuestionnaire.title,
         setp2Quest.value.nameQuestionnaire.description,
-        currDate
+        isoDate
       );
       if (response.data.is_success) {
         rsp_survey_id = response.data.data.id;
@@ -480,7 +476,6 @@ const previewSecond = () => {
 };
 
 const previewThird = () => {
-  // const itemsSuveyThird = sessionStorage.getItem("preview_question_third")
   const jsonArray = JSON.stringify(setp3Quest.value);
   sessionStorage.setItem("preview_question_third", jsonArray);
   router.push("/SDTeamMangement/Survey/Preview/QuestionThird");
