@@ -156,12 +156,6 @@ const itemScoreMgmt = ref({});
 
 const itemScoreMgmtFetch = ref([]);
 
-// import data_2 from "@/assets/notes-alif/survey-mgmt-2.json";
-// import data_3 from "@/assets/notes-alif/survey-mgmt-3.json";
-
-// const jsonStep2 = ref([]);
-// const jsonStep3 = ref([]);
-
 const setp2Quest = ref({
   nameQuestionnaire: {
     title: "",
@@ -202,8 +196,6 @@ const getRspSurvey = async () => {
             null,
             null
           );
-        // console.log(JSON.stringify(mySurvayStructureTwo));
-        // console.log(JSON.stringify(mySurvayStructureThree));
         setp2Quest.value = mySurvayStructureTwo;
         setp3Quest.value = mySurvayStructureThree;
       }
