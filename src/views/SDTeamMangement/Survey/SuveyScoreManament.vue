@@ -40,6 +40,13 @@
 import { reactive, watch } from "vue";
 import UploadScore from "@/components/survey/forms/uploads-control/UploadScoreMgmt.vue";
 
+const propsVar = defineProps({
+  defaultItem: {
+    type: Array,
+    default: () => [],
+  },
+});
+
 const emit = defineEmits(["on-update"]);
 
 const dataInput = reactive({
@@ -57,6 +64,21 @@ const handleAddScoreCard = () => {
 };
 
 watch(
+  () => propsVar.defaultItem,
+  () => {
+    propsVar.defaultItem.forEach((item) => {
+      dataInput.listOfScore.push({
+        score: item.minimum_score_criteria,
+        rank: item.name,
+        desc: item.description,
+        files: [],
+      });
+    });
+  },
+  { deep: true }
+);
+
+watch(
   () => dataInput,
   () => {
     emit("on-update", dataInput);
@@ -64,14 +86,17 @@ watch(
   { deep: true }
 );
 
-watch(dataInput.listOfScore, (newValue) => {
-  console.log(newValue);
-  dataInput.totalScore = newValue.reduce(
-    (sum, question) => sum + (Number(question.score) || 0),
-    0
-  );
-},{deep: true});
-
+watch(
+  dataInput.listOfScore,
+  (newValue) => {
+    console.log(newValue);
+    dataInput.totalScore = newValue.reduce(
+      (sum, question) => sum + (Number(question.score) || 0),
+      0
+    );
+  },
+  { deep: true }
+);
 
 const handleUpdateScore = (item) => {
   // console.log(JSON.stringify(dataInput.listOfScore))
