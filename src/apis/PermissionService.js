@@ -30,7 +30,7 @@ const updatedPermissionById = async (role_id, modules = []) => {
     data: {
       role_id: role_id ? Number(role_id) : null,
       module: transformData(modules).module,
-      updated_user_id: 1,
+      updated_user_id: Number(sessionStorage.getItem("userId")),
     },
   });
 };

@@ -47,7 +47,7 @@ module.exports = (app) => {
             ],
           },
         ],
-        updated_user_id: 1,
+        updated_user_id: Number(sessionStorage.getItem("userId")),
       },
     });
   });

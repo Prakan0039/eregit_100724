@@ -391,7 +391,7 @@ const handleOnDaftSave = async () => {
             created_at: new Date(),
             created_user_id: 187,
             updated_at: new Date(),
-            updated_user_id: 1,
+            updated_user_id: Number(sessionStorage.getItem("userId")),
           };
         }),
       change_contact_information:
@@ -533,7 +533,7 @@ const handleOnClick = async () => {
             created_at: new Date(),
             created_user_id: 187,
             updated_at: new Date(),
-            updated_user_id: 1,
+            updated_user_id: Number(sessionStorage.getItem("userId")),
           };
         }),
       change_contact_information:
