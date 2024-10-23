@@ -84,7 +84,7 @@
 import { ref, onBeforeMount } from "vue";
 import Choosefile from "@/components/forms/Choosefile.vue";
 import DatePickerControl from "@/components/controls/DatePickerControl.vue";
-// import dateUtils from "@/utils/dateUtils";
+import dateUtils from "@/utils/dateUtils";
 import RspService from "@/apis/RspService";
 
 import { useRouter } from "vue-router";
@@ -109,14 +109,52 @@ const selectedActiveDate = ref(null);
 onBeforeMount(() => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
+  const mode =  urlParams.get("mode")
+  if(mode === "edit"){
+    const policie =  JSON.parse(sessionStorage.getItem("rsp-policies-item"));
+    id.value = policie.id;
+    name.value = policie.name;
+    selected.value =  "selected"
+    selectedActiveDate.value =  dateUtils.parseDdMmYyyy(policie.published_at)
+    handleInitFile(policie.file_url)
 
-  id.value = urlParams.get("id");
-  name.value = urlParams.get("name");
+  }else{
+    selected.value =  "now"
+    selectedActiveDate.value =   null
+
+    id.value = null;
+    name.value = null;
+    file.value = null;
+  }
+
 });
+const  handleInitFile = async (file_path)=>{
+   try {
+    const response = await fetch(file_path, {  mode: "cors",});
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+      const mimeTypeMap = {
+      'png': 'image/png',
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'pdf': 'application/pdf',
+      'txt': 'text/plain',
+      'xls': 'application/vnd.ms-excel',
+      'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    };
+
+      const extension = file_path.split('.').pop();
+      const fileName = file_path.substr(file_path.lastIndexOf("/") + 1)
+      const mimeType = mimeTypeMap[extension.toLowerCase()];
+      const blob = new Blob([response.data], { type: mimeType });
+      file.value =   new File([blob], fileName, { type: mimeType });
+  } catch (error) {
+    console.error("Error downloading file:", error);
+  }
+}
 const handleOnChangeFile = async (val) => {
   file.value = val;
-
-  // console.log(file.value);
 };
 const handleAcceptConfirmed = async () => {
   const confirmed = await showDialog(
