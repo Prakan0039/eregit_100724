@@ -265,6 +265,15 @@ const getRspPolicyState = async (_state) => {
   });
 };
 
+//Suevey
+const geteValuationCriteriaBySurvey = async (rsp_survey_id) => {
+  return await axiosBase({
+    method: "get",
+    url: `/rsp/get-rsp-survey-evaluation-criteria-by-survey/${rsp_survey_id}`,
+    params: {},
+  });
+};
+
 const createRspSurveyResult = async (bp_number, rsp_survey_id) => {
   return await axiosBase({
     method: "post",
@@ -290,6 +299,19 @@ const createRspSuvey = async (name, description, published_at) => {
   });
 };
 
+const updateRspSuvey = async (name, description, published_at) => {
+  return await axiosBase({
+    method: "post",
+    url: "/rsp/update-rsp-survey",
+    data: {
+      name,
+      description,
+      published_at,
+      updated_user_id: Number(sessionStorage.getItem("userId")),
+    },
+  });
+};
+
 const createRspSuveyQusetion = async (objQuestion = {}) => {
   return await axiosBase({
     method: "post",
@@ -301,12 +323,35 @@ const createRspSuveyQusetion = async (objQuestion = {}) => {
   });
 };
 
+const updateRspSuveyQusetion = async (objQuestion = {}) => {
+  return await axiosBase({
+    method: "post",
+    url: "/rsp/update-rsp-survey-questionnaire",
+    data: {
+      ...objQuestion,
+      updated_user_id : Number(sessionStorage.getItem("userId")),
+    },
+  });
+};
+
 const createRspSuveyEvaluationCriteria = async (objQuestion = {}) => {
   return await axiosBase({
     method: "post",
     url: "/rsp/create-rsp-survey-evaluation-criteria",
     data: {
       ...objQuestion,
+      created_user_id: Number(sessionStorage.getItem("userId")),
+    },
+  });
+};
+
+const updateRspSuveyEvaluationCriteria = async (objQuestion = {}, rsp_survey_evaluation_criteria_id) => {
+  return await axiosBase({
+    method: "post",
+    url: "/rsp/update-rsp-survey-evaluation-criteria",
+    data: {
+      ...objQuestion,
+      rsp_survey_evaluation_criteria_id,
       created_user_id: Number(sessionStorage.getItem("userId")),
     },
   });
@@ -486,7 +531,6 @@ const UndeleteRspSurvey = async (rsp_survey_id) => {
     },
   });
 };
-
 
 //newSD_Management
 const getRspPolicyPagination = async (_state, _offset, _limit) => {
@@ -669,5 +713,10 @@ export default {
   exportRspSurveyResult,
   DeleteRspSurvey,
   PermanentlyDeleteRspSurvey,
-  UndeleteRspSurvey
+  UndeleteRspSurvey,
+
+  updateRspSuvey,
+  updateRspSuveyQusetion,
+  updateRspSuveyEvaluationCriteria,
+  geteValuationCriteriaBySurvey
 };

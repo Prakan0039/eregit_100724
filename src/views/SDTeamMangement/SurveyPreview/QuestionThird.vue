@@ -10,7 +10,7 @@
     <div class="text-center mt-5">
       <v-row>
         <v-col cols="8" class="d-flex">
-          <h3 v-if="sections?.id">{{ number(sections?.id) }}.{{ sections?.title }}</h3>
+          <h3 v-if="sections?.id">{{ sections?.title }}</h3>
         </v-col>
         <!-- <v-col cols="4" class="d-flex justify-end">
           <v-btn color="secondary" variant="outlined" width="140" class="text-capitalize mr-2" rounded>

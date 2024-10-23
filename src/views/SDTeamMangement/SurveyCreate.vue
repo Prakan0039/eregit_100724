@@ -240,10 +240,11 @@ const next = async () => {
       return;
     }
     try {
+      const currDate = new Date();
       const response = await ResService.createRspSuvey(
         setp2Quest.value.nameQuestionnaire.title,
         setp2Quest.value.nameQuestionnaire.description,
-        new Date()
+        currDate
       );
       if (response.data.is_success) {
         rsp_survey_id = response.data.data.id;
