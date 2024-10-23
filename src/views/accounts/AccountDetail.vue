@@ -305,9 +305,9 @@ const handleCustCommit = async (stepper_info_data) => {
       ), // data.register_info_form.term_data.data
       registered_user_email: "user@example.com", // unknow
       // created_at: "2023-11-10T14:20:12", // auto fill
-      // created_user_id: 1, // auto fill
+      // created_user_id: Number(sessionStorage.getItem("userId")), // auto fill
       // updated_at: "2023-11-12T10:30:45", // auto fill
-      // updated_user_id: 1, // auto fill
+      // updated_user_id: Number(sessionStorage.getItem("userId")), // auto fill
     },
 
     business_partner_profile_form: {
@@ -418,9 +418,9 @@ const handleCustCommit = async (stepper_info_data) => {
         input_data.value.stepper_info_form?.step_one?.other?.bank_account ??
         null,
       // created_at: "2023-11-10T14:20:12", // auto fill
-      // created_user_id: 1, // auto fill
+      // created_user_id: Number(sessionStorage.getItem("userId")), // auto fill
       // updated_at: "2023-11-12T10:30:45", // auto fill
-      // updated_user_id: 1, // auto fill
+      // updated_user_id: Number(sessionStorage.getItem("userId")), // auto fill
     },
 
     account_information_form: {
@@ -830,9 +830,9 @@ const handleSaveDaft = async () => {
       ), // data.register_info_form.term_data.data
       registered_user_email: "user@example.com", // unknow
       // created_at: "2023-11-10T14:20:12", // auto fill
-      // created_user_id: 1, // auto fill
+      // created_user_id: Number(sessionStorage.getItem("userId")), // auto fill
       // updated_at: "2023-11-12T10:30:45", // auto fill
-      // updated_user_id: 1, // auto fill
+      // updated_user_id: Number(sessionStorage.getItem("userId")), // auto fill
     },
 
     business_partner_profile_form: {
@@ -938,9 +938,9 @@ const handleSaveDaft = async () => {
         input_data.value.stepper_info_form?.step_one?.other?.bank_account ??
         null,
       // created_at: "2023-11-10T14:20:12", // auto fill
-      // created_user_id: 1, // auto fill
+      // created_user_id: Number(sessionStorage.getItem("userId")), // auto fill
       // updated_at: "2023-11-12T10:30:45", // auto fill
-      // updated_user_id: 1, // auto fill
+      // updated_user_id: Number(sessionStorage.getItem("userId")), // auto fill
     },
 
     account_information_form: {
@@ -1269,7 +1269,7 @@ const handleSaveDaft = async () => {
   } catch (e) {
     if (e.response) {
       const val = e.response.data;
-      
+
       if (val?.data?.error ?? null) {
         handlingErrorsMessage(val.message, val?.data?.error);
       } else {

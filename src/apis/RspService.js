@@ -576,8 +576,8 @@ const createRspTraining = async (name, file, role_id, active_at) => {
       name: name,
       data: file,
       role_id: role_id.toString(),
-      published_at: new Date(active_at),
-      created_user_id: 1,
+      published_at: new Date(active_at), //
+      created_user_id: Number(sessionStorage.getItem("userId")),
     },
   });
 };
@@ -617,7 +617,7 @@ const activateRspTraining = async (_rsp_traning_id) => {
     url: `/rsp/activate-rsp-training`,
     data: {
       rsp_training_id: _rsp_traning_id,
-      updated_user_id: 1,
+      updated_user_id: Number(sessionStorage.getItem("userId")),
     },
   });
 };
@@ -627,7 +627,7 @@ const deactivateRspTraining = async (_rsp_traning_id) => {
     url: `/rsp/deactivate-rsp-training`,
     data: {
       rsp_training_id: _rsp_traning_id,
-      updated_user_id: 1,
+      updated_user_id: Number(sessionStorage.getItem("userId")),
     },
   });
 };
@@ -637,7 +637,7 @@ const undeleteRspTraining = async (_rsp_traning_id) => {
     url: `/rsp/undelete-rsp-training`,
     data: {
       rsp_training_id: _rsp_traning_id,
-      updated_user_id: 1,
+      updated_user_id: Number(sessionStorage.getItem("userId")),
     },
   });
 };
@@ -647,7 +647,7 @@ const deleteRspTraining = async (_rsp_traning_id) => {
     url: `/rsp/delete-rsp-training`,
     data: {
       rsp_training_id: _rsp_traning_id,
-      updated_user_id: 1,
+      updated_user_id: Number(sessionStorage.getItem("userId")),
     },
   });
 };
@@ -658,7 +658,7 @@ const permanentlyDeleteRspTraining = async (_rsp_traning_id) => {
     url: `/rsp/permanently-delete-rsp-training`,
     data: {
       rsp_training_id: _rsp_traning_id,
-      updated_user_id: 1,
+      updated_user_id: Number(sessionStorage.getItem("userId")),
     },
   });
 };

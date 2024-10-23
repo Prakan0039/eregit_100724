@@ -35,7 +35,7 @@ const createdUser = async (
       member_type_id: p_memberTypeId,
       role_id: p_roleId,
       team_id: p_teamId,
-      created_user_id: 1,
+      created_user_id: Number(sessionStorage.getItem("userId")),
       firstname,
       lastname,
       is_register: true,
@@ -61,7 +61,7 @@ const updatedUser = async (
       member_type_id: p_memberTypeId,
       role_id: p_roleId,
       team_id: p_teamId,
-      updated_user_id: 1,
+      updated_user_id: Number(sessionStorage.getItem("userId")),
     },
   });
 };
@@ -80,7 +80,7 @@ const createMultipleUser = async (data = []) => {
           team: i.team,
         };
       }),
-      created_user_id: 1, //  mock id_user
+      created_user_id: Number(sessionStorage.getItem("userId")), //  mock id_user
     },
   });
 };

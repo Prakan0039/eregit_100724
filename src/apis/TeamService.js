@@ -26,7 +26,7 @@ const createdTeam = async (company_id, name_th, name_en) => {
       company_id: company_id,
       name_th: name_th,
       name_en: name_en,
-      created_user_id: 1,
+      created_user_id: Number(sessionStorage.getItem("userId")),
     },
   });
 };
@@ -47,7 +47,7 @@ const updatedTeamById = async (
       name_th,
       name_en,
       is_active,
-      updated_user_id: 1,
+      updated_user_id: Number(sessionStorage.getItem("userId")),
     },
   });
 };
