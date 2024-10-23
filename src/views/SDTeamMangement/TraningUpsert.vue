@@ -113,6 +113,8 @@ onMounted(async () => {
     name.value =  traning?.name;
     link.value =  traning?.link;
     roleId.value =  traning?.roleId;
+    selected.value =  "selected"
+    selectedActiveDate.value =  dateUtils.parseDdMmYyyy(new Date(traning.published_at))
 
   }
   getRoles();

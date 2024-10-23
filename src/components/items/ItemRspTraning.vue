@@ -122,6 +122,7 @@ const handleContinue = (i)=>{
     name:i?.name,
     link:i?.file_url,
     roleId:i?.roles[0].id,
+    published_at : i?.published_at
   }
   const jsonArray = JSON.stringify(traning);
   sessionStorage.setItem("traning_modifiy", jsonArray);
