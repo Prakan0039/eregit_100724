@@ -95,7 +95,10 @@
         </div>
         <div v-show="stepper === 4">
           <v-form ref="suveyScoreMgmt">
-            <SuveyScoreManament @on-update="handleScoreMgmtUpdated" />
+            <SuveyScoreManament
+              :default-item="itemScoreMgmtFetch"
+              @on-update="handleScoreMgmtUpdated"
+            />
           </v-form>
         </div>
       </div>
@@ -140,7 +143,7 @@ const route = useRoute();
 const router = useRouter();
 const { showAlert } = useAlertDialogDialog();
 
-const stepper = ref(1);
+const stepper = ref(4);
 
 const descForm = ref(null);
 const suveyOtherQuestionForm = ref(null);
@@ -150,6 +153,8 @@ const suveyScoreMgmt = ref(null);
 const itemQuestion = ref([]);
 const itemOtherQuest = ref([]);
 const itemScoreMgmt = ref({});
+
+const itemScoreMgmtFetch = ref([]);
 
 // import data_2 from "@/assets/notes-alif/survey-mgmt-2.json";
 // import data_3 from "@/assets/notes-alif/survey-mgmt-3.json";
@@ -180,6 +185,7 @@ const description = route.query.description;
 onMounted(async () => {
   if (id) {
     await getRspSurvey();
+    await geteValuationCriteriaBySurvey();
   }
 });
 
@@ -196,11 +202,23 @@ const getRspSurvey = async () => {
             null,
             null
           );
-        console.log(JSON.stringify(mySurvayStructureTwo));
-        console.log(JSON.stringify(mySurvayStructureThree));
+        // console.log(JSON.stringify(mySurvayStructureTwo));
+        // console.log(JSON.stringify(mySurvayStructureThree));
         setp2Quest.value = mySurvayStructureTwo;
         setp3Quest.value = mySurvayStructureThree;
       }
+    }
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+};
+
+const geteValuationCriteriaBySurvey = async () => {
+  try {
+    const response = await RspService.geteValuationCriteriaBySurvey(id);
+    if (response.data.is_success) {
+      itemScoreMgmtFetch.value = response.data.data;
     }
   } catch (error) {
     console.log(error);
@@ -335,7 +353,7 @@ const next = async () => {
 };
 
 const back = () => {
-  if(stepper.value ==1) {
+  if (stepper.value == 1) {
     router.push("/SDTeamMangement/Survey");
     return;
   }
