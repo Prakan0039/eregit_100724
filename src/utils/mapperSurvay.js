@@ -32,6 +32,8 @@ const mapperSurvayStepTwo = (el, rspSurvayActive) => {
 
     mySurvayStructureTwo.inprogressSectionId = el.next_section_id;
 
+    if (!el.questions) return [];
+
     for (let i = 0; i < el.questions.length; i++) {
       const question = el.questions[i];
 
@@ -246,6 +248,8 @@ const mapperSurvayStepThree = (el) => {
       inprogressSectionId: el.next_section_id,
       data: [],
     };
+
+    if (!el.questions) return [];
 
     for (let i = 0; i < el.questions.length; i++) {
       const question = el.questions[i];

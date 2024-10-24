@@ -53,17 +53,22 @@ onMounted(() => {
 
 const itemQuestionUpdate = ref([]);
 
-watch(()=> propsVar.defaultItem, () => {
-  if (propsVar.defaultItem && itemQuestionUpdate.value.length == 0) {
-    console.log("Survey watchEffect")
-    itemQuestionUpdate.value = propsVar.defaultItem;
-    itemQuestionUpdate.value.forEach((item) => {
-      store.survey3.tempQuestionIds.push(...item.data.map((el) => el.id));
-      store.survey3.tempId =
-        store.survey3.tempQuestionIds[store.survey3.tempQuestionIds.length - 1];
-    });
+watch(
+  () => propsVar.defaultItem,
+  () => {
+    if (propsVar.defaultItem && itemQuestionUpdate.value.length == 0) {
+      itemQuestionUpdate.value = propsVar.defaultItem;
+      itemQuestionUpdate.value.forEach((item) => {
+        store.survey3.tempQuestionIds.push(...item.data.map((el) => el.id));
+        store.survey3.tempId =
+          store.survey3.tempQuestionIds[
+            store.survey3.tempQuestionIds.length - 1
+          ];
+        store.survey3.tempId++;
+      });
+    }
   }
-})
+);
 
 // watchEffect(() => {
 //   if (propsVar.defaultItem && itemQuestionUpdate.value.length == 0) {
@@ -79,17 +84,17 @@ watch(()=> propsVar.defaultItem, () => {
 
 const handleGroupTitleUpdate = ({ index, title }) => {
   itemQuestionUpdate.value[index].title = title;
-  console.log(JSON.stringify(itemQuestionUpdate.value));
+  // console.log(JSON.stringify(itemQuestionUpdate.value));
 };
 
 const handleGroupQuestionUpdate = ({ index, question }) => {
   itemQuestionUpdate.value[index].data = question;
-  console.log(JSON.stringify(itemQuestionUpdate.value));
+  // console.log(JSON.stringify(itemQuestionUpdate.value));
 };
 
 const handleAddQuestion = () => {
   itemQuestionUpdate.value.push({
-    id: (questionCounter.value++).toString(),
+    id:  (questionCounter.value++).toString(),
     title: "",
     sumScore: 0,
     data: [],

@@ -102,6 +102,9 @@
           </v-form>
         </div>
       </div>
+      <div v-show="stepper === 5">
+        <SuveyActived @on-updated="handeldateUpdated" />
+      </div>
 
       <div class="text-center mt-5">
         <v-btn
@@ -132,6 +135,7 @@ import StepperControl from "@/components/controls/StepperControl.vue";
 import SurveyQuestion from "@/views/SDTeamMangement/Survey/SurveyQuestion.vue";
 import SuveyOtherQuestion from "@/views/SDTeamMangement/Survey/SuveyOtherQuestion.vue";
 import SuveyScoreManament from "@/views/SDTeamMangement/Survey/SuveyScoreManament.vue";
+import SuveyActived from "@/views/SDTeamMangement/SurveyQuestion/SurveyActived.vue";
 import { ref, watch, onMounted } from "vue";
 import ResService from "@/apis/RspService.js";
 import { useAlertDialogDialog } from "@/components/dialogs/AlertSuccessDialogService";
@@ -158,16 +162,16 @@ const itemScoreMgmtFetch = ref([]);
 
 const setp2Quest = ref({
   nameQuestionnaire: {
-    title: "",
-    description: "",
+    title: "TEST",
+    description: "TEST",
   },
   createQuestionnaire: [],
 });
 
 const setp3Quest = ref({
   nameQuestionnaire: {
-    title: "",
-    description: "",
+    title: "TEST",
+    description: "TEST",
   },
   createQuestionnaire: [],
 });
@@ -175,6 +179,11 @@ const setp3Quest = ref({
 const id = route.query.rsp_survey_id;
 const name = route.query.name;
 const description = route.query.description;
+const publicDate = route.query.public_date;
+
+const tempSizeQuestStep2 = ref(0);
+const tempSizeQuestStep3 = ref(0);
+const tempSizeScore = ref(0);
 
 onMounted(async () => {
   if (id) {
@@ -183,22 +192,29 @@ onMounted(async () => {
   }
 });
 
+const pulisbDate = ref(publicDate);
+
+const handeldateUpdated = (date) => {
+  pulisbDate.value = date;
+};
+
 const getRspSurvey = async () => {
   try {
     const response = await RspService.getRspSurveyQuestionaire(id);
-    if (response.data.is_success) {
-      if (response.data?.is_success) {
-        const questionnaireData = response.data.data;
-        const { mySurvayStructureTwo, mySurvayStructureThree } =
-          mapperSurvay.MapperSurvay(
-            questionnaireData,
-            { name, description },
-            null,
-            null
-          );
-        setp2Quest.value = mySurvayStructureTwo;
-        setp3Quest.value = mySurvayStructureThree;
-      }
+    if (response.data?.is_success) {
+      const questionnaireData = response.data.data;
+      const { mySurvayStructureTwo, mySurvayStructureThree } =
+        mapperSurvay.MapperSurvay(
+          questionnaireData,
+          { name, description },
+          null,
+          null
+        );
+      setp2Quest.value = mySurvayStructureTwo;
+      setp3Quest.value = mySurvayStructureThree;
+
+      tempSizeQuestStep2.value = setp2Quest.value.createQuestionnaire.length;
+      tempSizeQuestStep3.value = setp3Quest.value.createQuestionnaire.length;
     }
   } catch (error) {
     setp2Quest.value.nameQuestionnaire.title = name;
@@ -213,6 +229,7 @@ const geteValuationCriteriaBySurvey = async () => {
     const response = await RspService.geteValuationCriteriaBySurvey(id);
     if (response.data.is_success) {
       itemScoreMgmtFetch.value = response.data.data;
+      tempSizeScore.value = itemScoreMgmtFetch.value.length;
     }
   } catch (error) {
     console.log(error);
@@ -252,46 +269,34 @@ const next = async () => {
       return;
     }
     try {
-      const currDate = new Date();
-      currDate.setDate(currDate.getDate() + 1);
-      const isoDate = currDate.toISOString();
-      const response = await ResService.createRspSuvey(
-        setp2Quest.value.nameQuestionnaire.title,
-        setp2Quest.value.nameQuestionnaire.description,
-        isoDate
-      );
-      if (response.data.is_success) {
-        rsp_survey_id = response.data.data.id;
+      if (!id) {
+        const currDate = new Date();
+        currDate.setDate(currDate.getDate() + 1);
+        const isoDate = currDate.toISOString();
+        const response = await ResService.createRspSuvey(
+          setp2Quest.value.nameQuestionnaire.title,
+          setp2Quest.value.nameQuestionnaire.description,
+          isoDate
+        );
+        if (response.data.is_success) {
+          rsp_survey_id = response.data.data.id;
+        } else {
+          return;
+        }
       } else {
-        return;
+        const dateObject = new Date(publicDate.split(" ")[0]);
+        const response = await ResService.updateRspSuvey(
+          id,
+          setp2Quest.value.nameQuestionnaire.title,
+          setp2Quest.value.nameQuestionnaire.description,
+          dateObject
+        );
+        if (response.data.is_success) {
+          rsp_survey_id = response.data.data.id;
+        } else {
+          return;
+        }
       }
-    } catch (error) {
-      console.log(error.message);
-      return;
-    }
-  }
-
-  if (stepper.value == 2) {
-    const is_valid = await suveyOtherQuestionForm.value.validate();
-    if (!is_valid["valid"]) {
-      console.warn("Show Warning Alart Other Form Ivalidation Error");
-      return;
-    }
-    const bodyRequest = {
-      rsp_survey_id,
-      sections: [
-        generateQuestionsBody(
-          1,
-          0,
-          "Additional Question",
-          setp2Quest.value.createQuestionnaire
-        ),
-      ],
-    };
-
-    try {
-      const response = await ResService.createRspSuveyQusetion(bodyRequest);
-      if (!response.data.is_success) return;
     } catch (error) {
       console.log(error.message);
       return;
@@ -306,14 +311,46 @@ const next = async () => {
     }
     const bodyRequest = {
       rsp_survey_id,
-      sections: setp3Quest.value.createQuestionnaire.map((section, index) => {
-        return generateQuestionsBody(2, index + 1, section.title, section.data);
-      }),
+      sections: [],
     };
 
+    bodyRequest.sections.push(
+      generateQuestionsBody(
+        1,
+        0,
+        "Additional Question",
+        setp2Quest.value.createQuestionnaire,
+        setp2Quest.value.id ?? undefined,
+        tempSizeQuestStep2.value === 0,
+        true
+      )
+    );
+
+    setp3Quest.value.createQuestionnaire.forEach((section, index) => {
+      bodyRequest.sections.push(
+        generateQuestionsBody(
+          2,
+          index + 1,
+          section.title,
+          section.data,
+          section.id,
+          tempSizeQuestStep3.value === 0,
+          false
+        )
+      );
+    });
+
     try {
-      const response = await ResService.createRspSuveyQusetion(bodyRequest);
-      if (!response.data.is_success) return;
+      if (tempSizeQuestStep3.value === 0 && tempSizeQuestStep2.value === 0) {
+        const response = await ResService.createRspSuveyQusetion(bodyRequest);
+        if (!response.data.is_success) return;
+      } else {
+        const response = await ResService.updateRspSuveyQusetion(
+          id,
+          bodyRequest
+        );
+        if (!response.data.is_success) return;
+      }
     } catch (error) {
       console.log(error.message);
       return;
@@ -321,24 +358,35 @@ const next = async () => {
   }
 
   if (stepper.value == 4) {
-    const bodyRequest = {
-      rsp_survey_id,
-      evaluation_criteria: itemScoreMgmt.value.listOfScore.map((item) => {
-        return {
-          name: item.rank,
-          minimum_score_criteria: getScore(item.score),
-          description: item.desc,
-          image_url: "",
-        };
-      }),
-    };
-
     try {
-      const response = await ResService.createRspSuveyEvaluationCriteria(
-        bodyRequest
-      );
-      if (!response.data.is_success) return;
-      await showAlert("Success", response.data.message);
+      const bodyRequest = {
+        rsp_survey_id,
+        evaluation_criteria: itemScoreMgmt.value.listOfScore.map((item) => {
+          const rsp_survey_evaluation_criteria_id = item.id;
+          return {
+            ...(rsp_survey_evaluation_criteria_id !== undefined && {
+              rsp_survey_evaluation_criteria_id,
+            }),
+            name: item.rank,
+            minimum_score_criteria: getScore(item.score),
+            description: item.desc,
+            image_url: "",
+          };
+        }),
+      };
+      if (itemScoreMgmtFetch.value === 0) {
+        const response = await ResService.createRspSuveyEvaluationCriteria(
+          bodyRequest
+        );
+        await showAlert("Success", response.data.message);
+        if (!response.data.is_success) return;
+      } else {
+        const response = await ResService.updateRspSuveyEvaluationCriteria(
+          bodyRequest
+        );
+        await showAlert("Success", response.data.message);
+        if (!response.data.is_success) return;
+      }
     } catch (error) {
       console.log(error.message);
       return;
@@ -360,33 +408,48 @@ const generateQuestionsBody = (
   section_type_id,
   sequence,
   name,
-  questionnaire = []
+  questionnaire = [],
+  rsp_survey_section_id,
+  is_create = true,
+  isOtherQuestionnaire = true
 ) => {
   const result = {
     section_type_id: section_type_id,
     sequence,
     name,
+    score: 0,
     questions: [],
   };
+
+  if (rsp_survey_section_id && !is_create)
+    result.rsp_survey_section_id = Number(rsp_survey_section_id);
+
   result.questions = questionnaire.map((item) => {
+    const rsp_survey_question_id = !is_create ? Number(item.id) : undefined;
+    // const rsp_survey_question_id = Number(item.id);
+
     if (item.data.controlType == "Paragraph") {
       return {
+        ...(rsp_survey_question_id !== undefined && { rsp_survey_question_id }),
+        // rsp_survey_question_id,
         is_alignment_question: isAligned(item.typeQuestionCard),
         question_type_id: 1,
         question: item.data.metaData.question,
         sequence: item.index,
         score: getScore(item.data.metaData?.totalScore),
-        is_required: item.data.metaData.isRequired,
+        is_required: item.data.metaData.isRequired ?? false,
       };
     }
     if (item.data.controlType == "Multichoice") {
       return {
+        ...(rsp_survey_question_id !== undefined && { rsp_survey_question_id }),
+        // rsp_survey_question_id,
         is_alignment_question: isAligned(item.typeQuestionCard),
         question_type_id: 2,
         question: item.data.metaData.question,
         sequence: item.index,
         score: getScore(item.data.metaData?.totalScore),
-        is_required: item.data.metaData.isRequired,
+        is_required: item.data.metaData.isRequired ?? false,
         choices: item.data.metaData.choices.map((choice, index) => {
           return {
             answer: choice.answer,
@@ -394,18 +457,23 @@ const generateQuestionsBody = (
             is_other_choice: isOtherChoice(choice.title),
             sequence: index + 1,
             score: getScore(choice?.score),
-            next_question_sequence: getNextQuestion(choice?.nextQuestion),
+            next_question_sequence: getNextQuestion(
+              choice?.nextQuestion,
+              isOtherQuestionnaire
+            ),
           };
         }),
       };
     }
     if (item.data.controlType == "Checkbox") {
       return {
+        ...(rsp_survey_question_id !== undefined && { rsp_survey_question_id }),
+        // rsp_survey_question_id,
         is_alignment_question: isAligned(item.typeQuestionCard),
         question_type_id: 3,
         question: item.data.metaData.question,
         sequence: item.index,
-        is_required: item.data.metaData.isRequired,
+        is_required: item.data.metaData.isRequired ?? false,
         choices: item.data.metaData.choices.map((choice, index) => {
           return {
             answer: choice.answer,
@@ -413,28 +481,35 @@ const generateQuestionsBody = (
             is_other_choice: isOtherChoice(choice.title),
             sequence: index + 1,
             score: getScore(choice?.score),
-            next_question_sequence: getNextQuestion(choice?.nextQuestion),
+            next_question_sequence: getNextQuestion(
+              choice?.nextQuestion,
+              isOtherQuestionnaire
+            ),
           };
         }),
       };
     }
     if (item.data.controlType == "Uploads") {
       return {
+        ...(rsp_survey_question_id !== undefined && { rsp_survey_question_id }),
+        // rsp_survey_question_id,
         is_alignment_question: isAligned(item.typeQuestionCard),
         question_type_id: 5,
         question: item.data.metaData.question,
         sequence: item.index,
         score: getScore(item.data.metaData?.totalScore),
-        is_required: item.data.metaData.isRequired,
+        is_required: item.data.metaData.isRequired ?? false,
       };
     }
     if (item.data.controlType == "Dropdown") {
       return {
+        ...(rsp_survey_question_id !== undefined && { rsp_survey_question_id }),
+        // rsp_survey_question_id,
         is_alignment_question: isAligned(item.typeQuestionCard),
         question_type_id: 3,
         question: item.data.metaData.question,
         sequence: item.index,
-        is_required: item.data.metaData.isRequired,
+        is_required: item.data.metaData.isRequired ?? false,
         choices: item.data.metaData.choices.map((choice, index) => {
           return {
             answer: choice.answer,
@@ -442,7 +517,10 @@ const generateQuestionsBody = (
             is_other_choice: isOtherChoice(choice.title),
             sequence: index + 1,
             score: getScore(choice?.score),
-            next_question_sequence: getNextQuestion(choice?.nextQuestion),
+            next_question_sequence: getNextQuestion(
+              choice?.nextQuestion,
+              isOtherQuestionnaire
+            ),
           };
         }),
       };
@@ -451,9 +529,22 @@ const generateQuestionsBody = (
   return result;
 };
 
-const getNextQuestion = (nextQuestionId) => {
-  if (!nextQuestionId || nextQuestionId == "") return 0;
-  return Number(nextQuestionId);
+const getNextQuestion = (nextQuestionId, isOtherQuestionnaire) => {
+  if (!isOtherQuestionnaire) {
+    const items = setp3Quest.value.createQuestionnaire
+      .flatMap((questionnaire) =>
+        questionnaire.data.map((item) => ({
+          ...item,
+        }))
+      )
+      .flat();
+    const findSeq = items.find((item) => item.id == nextQuestionId);
+    return findSeq ? findSeq.index : 0;
+  } else {
+    const items = setp2Quest.value.createQuestionnaire;
+    const findSeq = items.find((item) => item.id == nextQuestionId);
+    return findSeq ? findSeq.index : 0;
+  }
 };
 
 const getScore = (elementScore) => {

@@ -68,6 +68,7 @@ watch(
   () => {
     propsVar.defaultItem.forEach((item) => {
       dataInput.listOfScore.push({
+        id: item.rsp_survey_evaluation_criteria_id,
         score: item.minimum_score_criteria,
         rank: item.name,
         desc: item.description,

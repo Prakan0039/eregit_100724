@@ -18,7 +18,9 @@
         <v-col cols="3" align-self="center" class="pa-1">
           <strong>Created by</strong>
           <br />
-          <strong class="text-secondary">{{ item?.created_user?.email }}</strong>
+          <strong class="text-secondary">{{
+            item?.created_user?.email
+          }}</strong>
         </v-col>
         <v-col cols="3" align-self="center" class="pa-1">
           <v-btn
@@ -150,7 +152,7 @@ const handleAction = (rspSurveyId, action) => {
 
 const handleContinune = async (rspSurveyId) => {
   router.push(
-    `/SDTeamMangement/Survey/Created?rsp_survey_id=${rspSurveyId}&name=${props.item.name}&description=${props.item.description}`
+    `/SDTeamMangement/Survey/Created?rsp_survey_id=${rspSurveyId}&name=${props.item.name}&description=${props.item.description}&public_date=${props.item.published_at}`
   );
 };
 

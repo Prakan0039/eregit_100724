@@ -60,9 +60,16 @@ const emit = defineEmits(["on-data-input"]);
 
 const items_question = ref([]);
 
-watch(()=> propsVar.defaultItem,()=>{
-  items_question.value = propsVar.defaultItem;
-})
+const questionCounter = ref(0);
+
+watch(
+  () => propsVar.defaultItem,
+  () => {
+    items_question.value = propsVar.defaultItem;
+    let lastId = items_question.value[items_question.value.length - 1].id;
+    questionCounter.value = lastId + 1;
+  }
+);
 
 const handleQuestionUpdate = (item) => {
   const indexUpdate = items_question.value.findIndex((el) => el.id === item.id);
@@ -77,8 +84,6 @@ const handleQuestionRemove = (id) => {
   const indexOfById = items_question.value.findIndex((el) => el.id == id);
   if (indexOfById > -1) items_question.value.splice(indexOfById, 1);
 };
-
-const questionCounter = ref(0);
 
 const handleAddQuestion = () => {
   const id = (questionCounter.value++).toString();

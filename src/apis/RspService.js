@@ -299,11 +299,17 @@ const createRspSuvey = async (name, description, published_at) => {
   });
 };
 
-const updateRspSuvey = async (name, description, published_at) => {
+const updateRspSuvey = async (
+  rsp_survey_id,
+  name,
+  description,
+  published_at
+) => {
   return await axiosBase({
     method: "post",
-    url: "/rsp/update-rsp-survey",
+    url: "/partner/update-rsp-survey",
     data: {
+      rsp_survey_id: Number(rsp_survey_id),
       name,
       description,
       published_at,
@@ -323,13 +329,14 @@ const createRspSuveyQusetion = async (objQuestion = {}) => {
   });
 };
 
-const updateRspSuveyQusetion = async (objQuestion = {}) => {
+const updateRspSuveyQusetion = async (rsp_survey_id, objQuestion = {}) => {
   return await axiosBase({
     method: "post",
     url: "/rsp/update-rsp-survey-questionnaire",
     data: {
+      rsp_survey_id,
       ...objQuestion,
-      updated_user_id : Number(sessionStorage.getItem("userId")),
+      updated_user_id: Number(sessionStorage.getItem("userId")),
     },
   });
 };
@@ -345,14 +352,15 @@ const createRspSuveyEvaluationCriteria = async (objQuestion = {}) => {
   });
 };
 
-const updateRspSuveyEvaluationCriteria = async (objQuestion = {}, rsp_survey_evaluation_criteria_id) => {
+const updateRspSuveyEvaluationCriteria = async (
+  objQuestion = {}
+) => {
   return await axiosBase({
     method: "post",
     url: "/rsp/update-rsp-survey-evaluation-criteria",
     data: {
       ...objQuestion,
-      rsp_survey_evaluation_criteria_id,
-      created_user_id: Number(sessionStorage.getItem("userId")),
+      updated_user_id: Number(sessionStorage.getItem("userId")),
     },
   });
 };
@@ -718,5 +726,5 @@ export default {
   updateRspSuvey,
   updateRspSuveyQusetion,
   updateRspSuveyEvaluationCriteria,
-  geteValuationCriteriaBySurvey
+  geteValuationCriteriaBySurvey,
 };

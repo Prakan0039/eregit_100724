@@ -111,6 +111,7 @@ const item_title = ref("");
 onMounted(() => {
   if (propsVar.items) {
     item_title.value = propsVar?.items?.title ?? "";
+    // item_title.value = ">>>>>" ?? "";
     items_question.value = propsVar?.items?.data ?? [];
   }
 });
