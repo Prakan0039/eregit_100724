@@ -84,8 +84,9 @@
 import { ref, onBeforeMount } from "vue";
 import Choosefile from "@/components/forms/Choosefile.vue";
 import DatePickerControl from "@/components/controls/DatePickerControl.vue";
-// import dateUtils from "@/utils/dateUtils";
+import dateUtils from "@/utils/dateUtils";
 import RspService from "@/apis/RspService";
+import ExportService from "@/apis/ExportService";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -97,7 +98,7 @@ import { useConfirmationDialog } from "@/components/dialogs/ConfirmationDialogSe
 const { showDialog } = useConfirmationDialog();
 
 import { useAlertDialogDialog } from "@/components/dialogs/AlertSuccessDialogService";
-import ExportService from "@/apis/ExportService";
+
 const { showAlert } = useAlertDialogDialog();
 
 const id = ref(null);
@@ -109,14 +110,31 @@ const selectedActiveDate = ref(null);
 onBeforeMount(() => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
+  const mode =  urlParams.get("mode")
+  if(mode === "edit"){
+    const policie =  JSON.parse(sessionStorage.getItem("rsp-policies-item"));
+    id.value = policie.id;
+    name.value = policie.name;
+    selected.value =  "selected"
+    selectedActiveDate.value =  dateUtils.parseDdMmYyyy(policie.published_at)
+    handleInitFile(policie.file_url)
 
-  id.value = urlParams.get("id");
-  name.value = urlParams.get("name");
+  }else{
+    selected.value =  "now"
+    selectedActiveDate.value =   null
+
+    id.value = null;
+    name.value = null;
+    file.value = null;
+  }
+
 });
+const  handleInitFile = async (file_path)=>{
+  const fileObject = await ExportService.downloadFileObject(file_path)
+ file.value = fileObject
+}
 const handleOnChangeFile = async (val) => {
   file.value = val;
-
-  // console.log(file.value);
 };
 const handleAcceptConfirmed = async () => {
   const confirmed = await showDialog(

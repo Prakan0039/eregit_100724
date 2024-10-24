@@ -113,6 +113,8 @@ onMounted(async () => {
     name.value =  traning?.name;
     link.value =  traning?.link;
     roleId.value =  traning?.roleId;
+    selected.value =  "selected"
+    selectedActiveDate.value =  dateUtils.parseDdMmYyyy(new Date(traning.published_at))
 
   }
   getRoles();
@@ -148,8 +150,8 @@ const  handleConfirmedCreated = async () =>{
       const v_name = name.value;
       const v_link = link.value;
       const v_role_id = roleId.value;
-      const v_active = (selected.value ==='now') ? dateUtils.parseDdMmYyWithTimeAndSeconds(new Date()) : selectedActiveDate.value;
-      const response = await RspService.createRspTraining(v_name,v_link,v_role_id,v_active);
+      const v_active = (selected.value ==='now') ? dateUtils.parseDdMmYyyy(new Date()) : selectedActiveDate.value;
+      const response = await RspService.createRspTraining(v_name,v_link,v_role_id,dateUtils.convertToISOFormat(v_active));
       if (response.data?.is_success) {
         handleAlertSuccessfully();
       }
@@ -169,7 +171,7 @@ const  handleConfirmedUpdated = async () =>{
       const v_link = link.value;
       const v_role_id = roleId.value;
       const v_active = (selected.value ==='now') ? dateUtils.parseDdMmYyyy(new Date()) : selectedActiveDate.value;
-      const response = await RspService.updateRspTraining(v_id,v_name,v_link,v_role_id,v_active);
+      const response = await RspService.updateRspTraining(v_id,v_name,v_link,v_role_id , dateUtils.convertToISOFormat(v_active));
       if (response.data?.is_success) {
         handleAlertSuccessfully();
       }

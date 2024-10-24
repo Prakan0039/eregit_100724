@@ -36,7 +36,7 @@
             variant="flat"
             density="compact"
             rounded
-            :to="`/SDTeamMangement/RspPolicyUpsert?id=${item?.id}&name=${item?.name}`"
+            @click="handleContinue(item)"
           >
             Continue
           </v-btn>
@@ -84,12 +84,14 @@
 <script setup>
 // eslint-disable-next-line no-unused-vars
 import { ref, onBeforeMount, defineProps, computed } from "vue";
+import { useRouter } from "vue-router";
 import exportService from "@/apis/ExportService";
 import RspService from "@/apis/RspService";
 import dateUtils from "@/utils/dateUtils";
 import { useErrorHandlingDialog } from "@/components/dialogs/ExceptionHandleDialogService";
 const { handlingErrorsMessage } = useErrorHandlingDialog();
 const emit = defineEmits(["action-menus"]);
+const router = useRouter();
 const props = defineProps({
   item: {
     type: Object,
@@ -140,6 +142,13 @@ const handleAction = (rsp_policy_id, action) => {
 const handlePreview = (url) => {
   window.open(url, "_blank");
 };
+const handleContinue = async (item) =>{
+  sessionStorage.removeItem("rsp-policies-item");
+  sessionStorage.setItem("rsp-policies-item",JSON.stringify(item));
+  //console.log(sessionStorage.getItem("rsp-policies-item"))
+  router.push("/SDTeamMangement/RspPolicyUpsert?mode=edit");
+//            :to="`/SDTeamMangement/RspPolicyUpsert?id=${item?.id}&name=${item?.name}`"
+}
 const handleExportResult = async (rsp_policy_id) => {
   try {
     const response = await RspService.exportRspPolicyResult(rsp_policy_id);

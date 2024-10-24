@@ -8,7 +8,7 @@
         </v-col>
         <v-col cols="2">
           <v-btn class="me-2 text-none" color="secondary" density="compact" prepend-icon="mdi-plus" variant="flat" rounded
-            to="/SDTeamMangement/RspPolicyUpsert">
+            to="/SDTeamMangement/RspPolicyUpsert?mode=create">
             Create new
           </v-btn>
         </v-col>
