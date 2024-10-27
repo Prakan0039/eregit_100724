@@ -14,7 +14,7 @@
           <v-col cols="5" class="mt-1">
             <h4>
               <span>คำถามที่</span> <span>{{ propsVar.index + 1 }}</span>
-              <span> id</span> <span>{{ propsVar.id }}</span>
+              <!-- <span> id</span> <span>{{ propsVar.id }}</span> -->
             </h4>
           </v-col>
           <v-col cols="4">
@@ -148,7 +148,8 @@
                   propsVar.type === 'Score'
                 "
               />
-
+              Sequence - {{ propsVar.index }} | Questtion Id - {{ propsVar.id }}
+             | Next question sequence - {{ propsVar.itemsId }}
               <MultiChoiceAlign
                 :items_selection="propsVar.itemsId"
                 :meta-data-multi-choice-align="dataForm.control"
@@ -238,11 +239,10 @@ const propsVar = defineProps({
   },
 });
 
-
 const emit = defineEmits(["on-update", "on-remove"]);
 const dataForm = ref({
   id: propsVar.id,
-  index: propsVar.index + 1,
+  index: propsVar.index,
   control: propsVar.data.metaData,
   controlType: propsVar.data.controlType,
 });
@@ -266,7 +266,7 @@ watch(dataForm.value, (newValue) => {
 });
 
 watch(propsVar, (newValue) => {
-  dataForm.value.index = newValue.index + 1;
+  dataForm.value.index = newValue.index;
 });
 
 const handleFormUpdated = (item) => {
