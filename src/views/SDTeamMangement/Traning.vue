@@ -98,7 +98,7 @@ const infoActive = ref({
   items: [],
   state: 'active',
   offset: 0,
-  limit: 1,
+  limit: 10,
   page: 1,
   pageSize: 1,
 });
@@ -107,7 +107,7 @@ const infoMenus = ref({
   items: [],
   state: 'inactive',
   offset: 0,
-  limit: 1,
+  limit: 10,
   page: 1,
   pageSize: 1,
 });
@@ -135,13 +135,13 @@ onMounted(() => {
       dropdown: 'INACTIVE_RECENTLY'
     },
   ]
-  handleGetRspTrainingActive();
-  handleGetRspTrainingInfoMenus();
+  // handleGetRspTrainingActive();
+  // handleGetRspTrainingInfoMenus();
 });
 watch(menus_index, (newValue) => {
     infoMenus.value.state = menus.value[newValue].state;
     infoMenus.value.offset= 0;
-    infoMenus.value.limit= 1;
+    infoMenus.value.limit= 10;
     infoMenus.value.page= 1;
     infoMenus.value.pageSize= 1;
     handleGetRspTrainingInfoMenus();
