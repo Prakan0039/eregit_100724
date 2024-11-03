@@ -19,14 +19,13 @@
                 :data="element.data"
                 :items-id="
                   items_question
-                    .slice(Number(index) + 1)
-                    .map((item) => item.id.toString())
+                    .slice(Number(index)+1)
+                    .map((item) => (item.index+1).toString())
                 "
                 :count-question="items_question.length"
                 @on-update="handleQuestionUpdate"
                 @on-remove="handleQuestionRemove"
               />
-              <!-- </v-form> -->
             </v-col>
           </v-row>
         </template>

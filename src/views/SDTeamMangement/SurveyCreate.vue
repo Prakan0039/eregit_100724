@@ -321,8 +321,7 @@ const next = async () => {
         "Additional Question",
         setp2Quest.value.createQuestionnaire,
         setp2Quest.value.id ?? undefined,
-        tempSizeQuestStep2.value === 0,
-        true
+        tempSizeQuestStep2.value === 0
       )
     );
 
@@ -334,11 +333,12 @@ const next = async () => {
           section.title,
           section.data,
           section.id,
-          tempSizeQuestStep3.value === 0,
-          false
+          tempSizeQuestStep3.value === 0
         )
       );
     });
+
+    // console.log(JSON.stringify(bodyRequest));
 
     try {
       if (tempSizeQuestStep3.value === 0 && tempSizeQuestStep2.value === 0) {
@@ -410,8 +410,7 @@ const generateQuestionsBody = (
   name,
   questionnaire = [],
   rsp_survey_section_id,
-  is_create = true,
-  isOtherQuestionnaire = true
+  is_create = true
 ) => {
   const result = {
     section_type_id: section_type_id,
@@ -457,10 +456,7 @@ const generateQuestionsBody = (
             is_other_choice: isOtherChoice(choice.title),
             sequence: index + 1,
             score: getScore(choice?.score),
-            next_question_sequence: getNextQuestion(
-              choice?.nextQuestion,
-              isOtherQuestionnaire
-            ),
+            next_question_sequence: Number(choice?.nextQuestion - 1) ?? 0,
           };
         }),
       };
@@ -481,10 +477,7 @@ const generateQuestionsBody = (
             is_other_choice: isOtherChoice(choice.title),
             sequence: index + 1,
             score: getScore(choice?.score),
-            next_question_sequence: getNextQuestion(
-              choice?.nextQuestion,
-              isOtherQuestionnaire
-            ),
+            next_question_sequence: Number(choice?.nextQuestion - 1) ?? 0,
           };
         }),
       };
@@ -517,10 +510,7 @@ const generateQuestionsBody = (
             is_other_choice: isOtherChoice(choice.title),
             sequence: index + 1,
             score: getScore(choice?.score),
-            next_question_sequence: getNextQuestion(
-              choice?.nextQuestion,
-              isOtherQuestionnaire
-            ),
+            next_question_sequence: Number(choice?.nextQuestion - 1) ?? 0,
           };
         }),
       };
@@ -529,23 +519,23 @@ const generateQuestionsBody = (
   return result;
 };
 
-const getNextQuestion = (nextQuestionId, isOtherQuestionnaire) => {
-  if (!isOtherQuestionnaire) {
-    const items = setp3Quest.value.createQuestionnaire
-      .flatMap((questionnaire) =>
-        questionnaire.data.map((item) => ({
-          ...item,
-        }))
-      )
-      .flat();
-    const findSeq = items.find((item) => item.id == nextQuestionId);
-    return findSeq ? findSeq.index : 0;
-  } else {
-    const items = setp2Quest.value.createQuestionnaire;
-    const findSeq = items.find((item) => item.id == nextQuestionId);
-    return findSeq ? findSeq.index : 0;
-  }
-};
+// const getNextQuestion = (nextQuestionId, isOtherQuestionnaire) => {
+//   if (!isOtherQuestionnaire) {
+//     const items = setp3Quest.value.createQuestionnaire
+//       .flatMap((questionnaire) =>
+//         questionnaire.data.map((item) => ({
+//           ...item,
+//         }))
+//       )
+//       .flat();
+//     const findSeq = items.find((item) => item.id == nextQuestionId);
+//     return findSeq ? findSeq.index : 0;
+//   } else {
+//     const items = setp2Quest.value.createQuestionnaire;
+//     const findSeq = items.find((item) => item.id == nextQuestionId);
+//     return findSeq ? findSeq.index : 0;
+//   }
+// };
 
 const getScore = (elementScore) => {
   if (!elementScore || elementScore == "") return 0;

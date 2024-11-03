@@ -45,9 +45,9 @@
               :index="Number(index)"
               :data="element.data"
               :itemsId="
-                store.survey3.tempQuestionIds.slice(
-                  getIndex(element.id.toString()) + 1
-                )
+                items_question
+                  .slice(Number(index) + 1)
+                  .map((item) => (item.index + 1).toString())
               "
               :count-question="items_question.length"
               @on-update="handleQuestionUpdate"
@@ -116,11 +116,11 @@ onMounted(() => {
   }
 });
 
-const getIndex = (id) => {
-  const index = store.survey3.tempQuestionIds.findIndex((el) => el == id);
-  if (index != -1) return index;
-  return 0;
-};
+// const getIndex = (id) => {
+//   const index = store.survey3.tempQuestionIds.findIndex((el) => el == id);
+//   if (index != -1) return index;
+//   return 0;
+// };
 
 const handleQuestionUpdate = (item) => {
   const indexUpdate = items_question.value.findIndex((el) => el.id === item.id);
@@ -137,7 +137,8 @@ const handleQuestionRemove = (id) => {
     (el) => el == id
   );
 
-  if (indexTempQuestId > -1) store.survey3.tempQuestionIds.splice(indexTempQuestId, 1);
+  if (indexTempQuestId > -1)
+    store.survey3.tempQuestionIds.splice(indexTempQuestId, 1);
   if (indexOfById > -1) items_question.value.splice(indexOfById, 1);
 };
 
