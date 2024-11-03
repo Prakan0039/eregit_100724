@@ -78,6 +78,7 @@ import PaginationControl from '@/components/controls/PaginationControl'
 import { useConfirmationDialog } from '@/components/dialogs/ConfirmationDialogService'
 import { useErrorHandlingDialog } from '@/components/dialogs/ExceptionHandleDialogService'
 import paginationUtils from '@/utils/paginationUtils'
+import dateUtils from '@/utils/dateUtils'
 // eslint-disable-next-line no-unused-vars
 const { handlingErrorsMessage } = useErrorHandlingDialog();
 // eslint-disable-next-line no-unused-vars
@@ -89,7 +90,7 @@ const router = useRouter();
 const menus = ref([]);
 const menus_index = ref(0);
 const filter = ref({
-  roleId: null,
+  roleId: null, // defualt Vender admin
   dateFrom: null,
   dateTo: null,
 });
@@ -135,8 +136,17 @@ onMounted(() => {
       dropdown: 'INACTIVE_RECENTLY'
     },
   ]
-  // handleGetRspTrainingActive();
-  // handleGetRspTrainingInfoMenus();
+
+    // Init defualt
+    const currentYear = new Date().getFullYear();
+    const firstCurrentYear = new Date(currentYear, 0, 1);
+    const lastCurrentYear = new Date(currentYear, 11, 31);
+
+    filter.value.roleId= 5; // defualt Vender admin
+    filter.value.dateFrom =dateUtils.formattedYearMonthDay(firstCurrentYear);
+    filter.value.dateTo =dateUtils.formattedYearMonthDay(lastCurrentYear);
+    handleGetRspTrainingActive();
+    handleGetRspTrainingInfoMenus();
 });
 watch(menus_index, (newValue) => {
     infoMenus.value.state = menus.value[newValue].state;
