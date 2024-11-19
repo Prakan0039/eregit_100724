@@ -61,8 +61,7 @@ const routes = [
       requiresAuth: false,
       module_id: null,
     },
-    component: () =>
-      import("@/views/TermCondition/Termandodition.vue"),
+    component: () => import("@/views/TermCondition/Termandodition.vue"),
   },
   {
     path: "/bp-number",
@@ -71,9 +70,9 @@ const routes = [
       requiresAuth: false,
       module_id: null,
     },
-    component: () => import("@/views/Login/Sub-Login/BpDashBoard/BpnumberLogIn.vue"),
+    component: () =>
+      import("@/views/Login/Sub-Login/BpDashBoard/BpnumberLogIn.vue"),
   },
-
 
   {
     path: "/log-out",
@@ -145,7 +144,6 @@ const routes = [
     component: () =>
       import("@/views/Login/Sub-Login/BpDashBoard/BpnumberOTP.vue"),
   },
-
 
   {
     path: "/SignIn",
@@ -249,7 +247,8 @@ const routes = [
           requiresAuth: false,
           module_id: null,
         },
-        component: () => import("@/views/BusinessPartner/ShareLinkMultipleVendor.vue"),
+        component: () =>
+          import("@/views/BusinessPartner/ShareLinkMultipleVendor.vue"),
       },
 
       // {
@@ -442,28 +441,30 @@ const routes = [
         },
         component: () => import("@/views/SDTeamMangement/SurveyCreate.vue"),
       },
-////////
-{
-  path: "/SDTeamMangement/Survey/Preview/QuestionSecond",
-  name: "SurveyPreviewSecondPage",
-  meta: {
-    requiresAuth: true,
-    module_id: 19,
-  },
-  component: () => import("@/views/SDTeamMangement/SurveyPreview/QuestionSecond.vue"),
-},
+      ////////
+      {
+        path: "/SDTeamMangement/Survey/Preview/QuestionSecond",
+        name: "SurveyPreviewSecondPage",
+        meta: {
+          requiresAuth: true,
+          module_id: 19,
+        },
+        component: () =>
+          import("@/views/SDTeamMangement/SurveyPreview/QuestionSecond.vue"),
+      },
 
-{
-  path: "/SDTeamMangement/Survey/Preview/QuestionThird",
-  name: "SurveyPreviewThirdPage",
-  meta: {
-    requiresAuth: true,
-    module_id: 19,
-  },
-  component: () => import("@/views/SDTeamMangement/SurveyPreview/QuestionThird.vue"),
-},
+      {
+        path: "/SDTeamMangement/Survey/Preview/QuestionThird",
+        name: "SurveyPreviewThirdPage",
+        meta: {
+          requiresAuth: true,
+          module_id: 19,
+        },
+        component: () =>
+          import("@/views/SDTeamMangement/SurveyPreview/QuestionThird.vue"),
+      },
 
-///////////////////
+      ///////////////////
       {
         path: "/SDTeamMangement/Traning",
         name: "TraningPage",
@@ -824,6 +825,16 @@ const routes = [
           import("@/views/SDTeamMangement/SurveyQuestion/QuestionSecond.vue"),
       },
       {
+        path: "/SDTeamMangement/TraningSecord",
+        name: "TraningSecord",
+        meta: {
+          requiresAuth: false,
+          module_id: 7,
+        },
+        component: () =>
+          import("@/views/SDTeamMangement/SurveyQuestion/TraningSecord.vue"),
+      },
+      {
         path: "/SDTeamMangement/Survey/Questionnaire/3",
         name: "SurveyQuestionnaire3Page",
         meta: {
@@ -834,10 +845,10 @@ const routes = [
           import("@/views/SDTeamMangement/SurveyQuestion/QuestionThird.vue"),
       },
       {
-        path: "/SDTeamMangement/Survey/Tranning/1",
+        path: "/SDTeamMangement/Survey/Tranning/:bp_number?",
         name: "TranningFirstPage",
         meta: {
-          requiresAuth: true,
+          requiresAuth: false,
           module_id: 7,
         },
         component: () =>
@@ -894,15 +905,15 @@ router.beforeEach((to, from, next) => {
   // }
   if (to.meta.requiresAuth) {
     let module = sessionStorage.getItem("auth_modules");
-    console.log("moduleeeeeee", module)
+    console.log("moduleeeeeee", module);
     if (module === null || module === undefined || module === "") {
       next("/SignIn");
     }
     if (module !== null || module !== undefined || module !== "") {
       const modules = JSON.parse(module);
       const toModuleId = to.meta.module_id;
-      console.log("toModuleIdooo", toModuleId)
-      console.log("modulespppp", modules )
+      console.log("toModuleIdooo", toModuleId);
+      console.log("modulespppp", modules);
       const allowed = modules.includes(toModuleId);
       if (!allowed) {
         next("/Error?err=NOT_FOUNDsss");

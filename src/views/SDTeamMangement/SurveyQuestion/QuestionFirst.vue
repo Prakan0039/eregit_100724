@@ -38,7 +38,7 @@
             <h5 style="font-weight: bold">
               "การเป็นหุ้นส่วนระหว่างกัน (Partnership-Based Approach)"
             </h5>
-            <h5 style="color: red" v-if="is_progress &&is_can_do_next_step">
+            <h5 style="color: red" v-if="is_progress && is_can_do_next_step">
               สามารถส่งต่อ Email หรือ Link ให้ผู้ร่วมงานอื่นที่รับผิดชอบได้
             </h5>
             <br />
@@ -188,8 +188,7 @@ const getRspSurveyResults = async () => {
         if (response.data.data[0].rsp_activity_status.id != 3) {
           is_can_do_next_step.value = true;
         }
-      }
-       else {
+      } else {
         is_can_do_next_step.value = true;
       }
     }
@@ -227,7 +226,7 @@ const createRspActivitySkippedLog = async () => {
   try {
     await RspService.createRspActivityLog(bp_number.value, 2, true);
     router.push(
-      `/SDTeamMangement/Survey/Tranning/1?prev_completed=completed&state=created&bp_number=${bp_number.value}`
+      `/SDTeamMangement/Survey/Tranning/${bp_number.value}`
     );
   } catch (e) {
     if (e.response) {
@@ -300,7 +299,7 @@ const stepperPrev = () => {
 const stepperNext = () => {
   // console.log("next");
   router.push(
-    `/SDTeamMangement/Survey/Tranning/1?prev_completed=completed&state=created&bp_number=${bp_number.value}`
+    `/SDTeamMangement/Survey/Tranning/${bp_number.value}`
   );
 };
 
