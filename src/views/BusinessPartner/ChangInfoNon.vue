@@ -1,12 +1,30 @@
 <template>
-  <div>
+  <v-app>
+    <!-- <ExceptionHandleDialog /> -->
+    <!-- <confirm-dialog /> -->
+    <!-- <AlertDisclosureDialog /> -->
+    <!-- <showDialog /> -->
+    <v-app-bar :elevation="2" rounded>
+      <v-app-bar-title class="d-flex justify-center">
+        <v-img
+          :width="100"
+          aspect-ratio="16/9"
+          cover
+          src="/frasers.png"
+        ></v-img>
+      </v-app-bar-title>
+    </v-app-bar>
+    <v-main>
+      <v-container >
+
+    <!-- {{ options.scope }} -->
     <ChangeInformation
       v-if="current_view === 1"
       :DataInfo="businessPartnerChangInfo"
       @on-next="handle_update_step"
       @on-input-item-contact="handleInputItemsContact"
     />
-    <v-form ref="formChangeInfo">
+    <!-- <div> -->
     <FormInformation
       v-if="current_view === 2"
       :IsAccount="options.selectedBank"
@@ -18,29 +36,23 @@
       @on-input-files="handleInputDocuments"
       @remove-file="handleFileRemoved"
     />
-    </v-form>
 
-    <!-- <ChooseMultiFiles
-    :max-file="10"
-    icon="mdi mdi-file-document"
-    @input-files="handleInputFiles"
-    @request-remove-file="handleFileRemoved"
-    />-->
-  </div>
+
+  </v-container>
+  </v-main>
+</v-app>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from "vue";
-import ChangeInformation from "@/components/forms/partnerlist/SelectChangInfo.vue";
+import ChangeInformation from "@/components/forms/partnerlist/SelectChangInfoNon.vue";
 import FormInformation from "./FormInformation.vue";
 import { useRoute, useRouter } from "vue-router";
 import PartnerServive from "@/apis/PartnerServive";
 import { useErrorHandlingDialog } from "@/components/dialogs/ExceptionHandleDialogService";
-import { useConfirmationDialog } from "@/components/dialogs/ConfirmationDialogService";
-import ShowDialog from "@/components/dialogs/ConfirmDialog.vue";
 const { handlingErrorsMessage } = useErrorHandlingDialog();
-const { showDialog } = useConfirmationDialog();
-
+// import { useConfirmationDialog } from "@/components/dialogs/ConfirmationDialogService";
+// const { showDialog } = useConfirmationDialog();
 // const router = useRouter();
 const router = useRouter();
 const route = useRoute();
@@ -58,7 +70,6 @@ let options = reactive({
   scope: "",
   vendorDetails: "",
 });
-const formChangeInfo = ref(null);
 
 // Capture emitted items_contects from ChangeInformation
 const handleInputItemsContact = (newItemsContects) => {
@@ -228,9 +239,6 @@ const dataBodyChangInfo = ref({
   ],
 });
 const handleFormInformationCommit = async (data) => {
-  const is_valid = await formChangeInfo.value.validate();
-  console.log(is_valid["valid"]);
-  if (is_valid && !is_valid["valid"]) return;
   console.log("handleFormInformationCommit", data);
   dataBodyChangInfo.value.bp_number = route.query?.bp_number ?? null;
   dataBodyChangInfo.value.changed_part_id = options.scope;
@@ -375,12 +383,6 @@ const handleFormInformationCommit = async (data) => {
 
     // dataBodyChangInfo.value.change_contact_information[0].remark = "";
   }
-      const confirmed = await showDialog(
-      "ยืยยันการแก้ไขข้อมูล ?",
-      "กรุณาตรวจสอบข้อมูล คุณไม่สามารถกลับมาแก้ไขได้อีก\nคลิกปุ่ม ตกลง เพื่อดำเนินการ"
-    );
-
-    if (!confirmed) return;
 
   try {
     // for (let i = 0; i < dataBodyChangInfo.value.items_contects.length; i++) {
@@ -402,27 +404,27 @@ const handleFormInformationCommit = async (data) => {
       dataBodyChangInfo.value
     );
     if (response.data?.is_success) {
-      
-  if (createDocumentBody.value.length > 0) {
-    await onCreatePartnerDocumentUploads();
-    // window.alert(response.data.message);
-    router.push({
-      path: "/BusinessPartner/BusinessPartnerList",
-    }).then(() => {
+      if (createDocumentBody.value.length > 0) {
+        await onCreatePartnerDocumentUploads();
+        // window.alert(response.data.message);
+        console.log("onCreatePartnerDocumentUploads")
+        router.push({
+          path: "/VendorDashBoard",
+        });
+      } else {
+        console.log("Not onCreatePartnerDocumentUploads")
+      router.push({
+        path: "/VendorDashBoard",
+      });
+      }
+      // handleToComapnyProfile(response.data.data?.form_number);
 
-      window.scrollTo(0, 0);
-    });
-  } else {
-    console.log("Not onCreatePartnerDocumentUploads");
-    router.push({
-      path: "/BusinessPartner/BusinessPartnerList",
-    }).then(() => {
-
-      window.scrollTo(0, 0);
-    });
-  }
-  // handleToComapnyProfile(response.data.data?.form_number);
-}
+    }else {
+      console.log("Not onCreatePartnerDocumentUploads")
+      router.push({
+        path: "/VendorDashBoard",
+      });
+    }
   } catch (e) {
     if (e.response) {
       const val = e.response.data;

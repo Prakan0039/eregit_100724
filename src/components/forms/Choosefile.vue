@@ -4,7 +4,7 @@
     <v-col cols="12" v-if="title != null">
       <h5 style="color: gray;">{{ title }}</h5>
     </v-col>
-
+ 
     <!-- Drag and Drop Zone -->
     <v-col cols="6">
       <v-card
@@ -15,7 +15,7 @@
         @dragover="dragover"
         @dragleave="dragleave"
         @drop="drop"
-        :class="{ 'bg-light-green': isDragging }" 
+        :class="{ 'bg-light-green': isDragging }"
       >
         <v-container class="bg-grey-lighten-3">
           <v-row no-gutters style="height: 200px">
@@ -52,7 +52,7 @@
         </v-container>
       </v-card>
     </v-col>
-
+ 
     <!-- File List Section -->
     <v-col cols="6">
       <h5 v-if="listTitle != null">{{ listTitle }}</h5>
@@ -70,17 +70,17 @@
         <v-divider></v-divider>
       </div>
     </v-col>
-
+ 
     <!-- Description Section -->
     <v-col cols="12">
       <h5 class="text-secondary">{{ descritption }}</h5>
     </v-col>
   </v-row>
 </template>
-
+ 
 <script>
 import convertSize from "convert-size";
-
+ 
 export default {
   props: {
     disabled: {

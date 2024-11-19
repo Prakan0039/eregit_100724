@@ -145,8 +145,8 @@ onBeforeMount(() => {
   const urlParams = new URLSearchParams(queryString);
   email.value = urlParams.get("accessible_email");
   code.value = urlParams.get("code");
-  console.log(code.value);
-  console.log(email.value);
+  // console.log(code.value);
+  // console.log(email.value);
 
   handleVerifyUrl(email.value, code.value);
 });
@@ -155,7 +155,7 @@ const handleVerifyUrl = async (email, code) => {
   try {
     loading.value = true;
     const response = await verifyService.verifyUrl(email, code);
-    console.log(response);
+    // console.log(response);
     if (response?.data?.code !== "200") {
       router.push("/Error?err=EXP_FORM");
     }

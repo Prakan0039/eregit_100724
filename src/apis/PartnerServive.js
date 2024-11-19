@@ -81,6 +81,19 @@ const createExtendCompany = async (body) => {
     },
   });
 };
+
+const createBpExtendCompany = async (body) => {
+  return await axiosBase({
+    method: "post",
+    url: "/partner/create-extend-company-request",
+    data: {
+      ...body,
+      created_user_id: Number(sessionStorage.getItem("userId")),
+    },
+  });
+};
+
+
 const createDraftExtendRole = async (body) => {
   return await axiosBase({
     method: "post",
@@ -131,12 +144,6 @@ const getSearchBusinessPartner = async (
   if(!isStringEmpty(completed_to)) url += `&completed_to=${completed_to}`;
   if(!isStringEmpty(company_category_id)) url += `&company_category_id=${company_category_id}`;
 
-  //&company_id=${company_id}&pb_role_id=${pb_role_id}&bu_id=${bu_id}&is_fpt_affiliate=${is_fpt_affiliate}&bp_type_id=${bp_type_id}&completed_from=${completed_from}&completed_to=${completed_to}&company_category_id=${company_category_id}`;
-
-  // Check if search_value is not null or undefined
-  // if (search_value !== null && search_value !== undefined) {
-  //   url += `&search_field=${search_field}&search_value=${search_value}`;
-  // }
 
   return await axiosBase({
     method: "get",
@@ -366,6 +373,18 @@ const saveChangInfomation = async (databody) => {
   });
 };
 
+const saveDraftChangInfomation = async (databody) => {
+  return await axiosBase({
+    method: "post",
+    url: "/partner/save-draft-change-information",
+    data: {
+      ...databody,
+      // registered_user_email: "co3@co.co",
+      created_user_id: Number(sessionStorage.getItem("userId")),
+    },
+  });
+};
+
 const updateAccountTask = async (account_task_id, state = "Reject") => {
   return await axiosBase({
     method: "post",
@@ -512,7 +531,7 @@ const createImportVendors = async (import_bp_file_id) => {
     method: "post",
     url: "/partner/import-vendors",
     data: {
-      import_bp_file_id,
+      import_bp_file_id, 
       created_user_id: Number(sessionStorage.getItem("userId")),
     },
   });
@@ -529,6 +548,77 @@ const createShareChangeInfo = async (body) => {
   });
 };
 
+const getExtendRoleAmount = async (
+
+  created_from, 
+  created_to, 
+) => {
+  let url = `/partner/get-extend-role-amount`;
+  if(!isStringEmpty(created_from)) url += `?created_from=${created_from}`;
+  if(!isStringEmpty(created_to)) url += `&created_to=${created_to}`;
+
+
+  return await axiosBase({
+    method: "get",
+    url,
+    data: {},
+  });
+};
+
+const getChangeInfoAmount = async (
+
+  created_from,
+  created_to,
+) => {
+  let url = `/partner/get-change-information-amount`;
+  if(!isStringEmpty(created_from)) url += `?created_from=${created_from}`;
+  if(!isStringEmpty(created_to)) url += `&created_to=${created_to}`;
+  return await axiosBase({
+    method: "get",
+    url,
+    data: {},
+  });
+};
+
+const getVendorAmount = async (
+
+  created_from,
+  created_to,
+) => {
+  let url = `/partner/get-vendor-amount`;
+  if(!isStringEmpty(created_from)) url += `?created_from=${created_from}`;
+  if(!isStringEmpty(created_to)) url += `&created_to=${created_to}`;
+  return await axiosBase({
+    method: "get",
+    url,
+    data: {},
+  });
+};
+
+const getCustomerAmount = async (
+
+  created_from,
+  created_to,
+) => {
+  let url = `/partner/get-customer-amount`;
+  if(!isStringEmpty(created_from)) url += `?created_from=${created_from}`;
+  if(!isStringEmpty(created_to)) url += `&created_to=${created_to}`;
+  return await axiosBase({
+    method: "get",
+    url,
+    data: {},
+  });
+};
+
+const getBusinessPartnerMember = async (_bp_number) => {
+  return await axiosBase({
+    method: "post",
+    url: `/partner/get-business-partner-members`,
+    data: {
+      bp_number: _bp_number,
+    },
+  });
+};
 
 export default {
   getBusinessPartnerDetail,
@@ -562,6 +652,7 @@ export default {
   exportAccountTask,
   getBusinessPartnerRegisterFormById,
   saveChangInfomation,
+  saveDraftChangInfomation,
   getBusinessPartnerMemberByBpNumber,
   createBusinessPartnerMember,
   requestAdditionalDocuments,
@@ -577,5 +668,12 @@ export default {
   downloadCreateMultipleVendoeTemplate,
   createValidateImportVendors,
   createImportVendors,
-  createShareChangeInfo
+  createShareChangeInfo,
+  createBpExtendCompany,
+  
+  getExtendRoleAmount,
+  getChangeInfoAmount,
+  getVendorAmount,
+  getCustomerAmount,
+  getBusinessPartnerMember
 };

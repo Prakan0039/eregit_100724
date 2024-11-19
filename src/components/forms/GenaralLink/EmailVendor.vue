@@ -161,7 +161,7 @@ const displayItemsCompany = computed(() => {
 });
 // ];
 watch(data_input.value, (newValue) => {
-  console.log("song", newValue);
+  // console.log("song", newValue);
   emit("form-update", newValue);
 });
 

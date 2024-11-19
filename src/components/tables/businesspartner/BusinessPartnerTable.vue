@@ -369,12 +369,13 @@
                             bp_number: businessPartnerDetail.bp_number,
                           },
                         }"
-                      >Chang Info.</v-btn>
-                    </v-col>
-                    <!-- <v-col cols="12">
+                      >Change Info.</v-btn>
+                    </v-col> 
+
+                  <v-col cols="12">
                       <v-btn
                         block
-                        :disabled="true"
+                
                         :to="{
                           name: 'ExtendCompany',
                           query: {
@@ -384,7 +385,7 @@
                         class="text-capitalize rounded-pill"
                         color="light-blue-accent-2"
                       >Extend Company</v-btn>
-                    </v-col> -->
+                    </v-col> 
 
                     <!-- <v-col cols="12">
                       <v-btn

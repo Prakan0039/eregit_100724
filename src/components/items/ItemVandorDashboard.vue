@@ -1,4 +1,7 @@
+  <!-- eslint-disable-next-line no-unused-vars -->
+
 <template>
+  <!-- {{ props.checkItemDashboard.taxpayerNumberId }} -->
   <div
     v-if="
     props.checkItemDashboard.do_rsp_activity
@@ -100,7 +103,7 @@
                   <v-row no-gutters dense justify="space-around" class="mb-3">
                     <v-col cols="12" md="6" class="pa-1">
                       <div>
-                        <strong>ติดต่อสอบถาม</strong>
+                        <strong>ติดต่อสอบถามd</strong>
                         <br />
                         <!-- <strong class="text-secondary">
                           {{ props.checkItemDashboard?.contactOwner ?? null }}</strong
@@ -195,7 +198,8 @@
                     >
                     <div>
                       <!-- <strong>แบบสำรวจด้านความยั่งยืนของคู่ค้า</strong> -->
-                      <b>{{ items[0]?.name?.split('<br>')[0] }}</b>
+                      <!-- <b>{{ items[0]?.name?.split('<br>')[0] }}</b> -->
+                      <strong>แบบสำรวจด้านความยั่งยืนของคู่ค้า</strong>
                       <br />
                       <strong
                         class="font-weight-medium text-grey-lighten-1"
@@ -340,12 +344,177 @@
       </v-card-item>
     </v-card>
   </div>
-  <!-- eslint-disable-next-line no-unused-vars -->
+
   <div
+  v-if="
+  props.checkItemDashboard.do_rsp_activity
+  "
+>
+  <v-card
+  class="mt-3 mx-1"
+  :style="{ borderLeft: borderLeft2 }"
+  color="white"
+  style="border-radius: 10px !important;"
+  elevation="1"
+  >
+    <v-card-item class="ma-0">
+      <v-row>
+        <v-alert
+          color="white"
+          elevation="1"
+        >
+          <div>
+            <v-row
+              no-gutters
+              dense
+              justify="space-around"
+              class="mb-3 align-center"
+            >
+              <v-col cols="12" md="4" class="pa-1">
+                <div class="d-flex align-center">
+                  <v-icon color="secondary" size="40" class="ml-3 mr-3"
+                    >mdi mdi-laptop-account</v-icon
+                  >
+                  <div>
+                    <strong>รับชมการเรียนรู้ Training</strong>
+                    <br />
+                    <strong class="font-weight-medium text-grey-lighten-1">
+                      ยังไม่ได้เรียนรู้ 
+                      <span class="text-secondary">
+                        {{ training.completed_amount + '/' + training.total_amount }}
+                      </span>
+                    </strong>
+                  </div>
+                </div>
+              </v-col>
+              <v-col cols="12" md="4" class="pa-1">
+                <v-row no-gutters dense justify="space-around" class="mb-3">
+            <v-col cols="12" md="6" class="pa-1">
+                    <div>
+                      <strong>Progress</strong>
+                      <br />
+                      <!-- <div v-if="satus[0]?.rsp?.policy?.status ?? null">
+                        <strong
+                        :class="onColor(satus[0]?.rsp?.policy?.status ?? null)"
+                        >{{
+                          satus[0]?.rsp?.policy?.status ?? null
+                        }}</strong>
+                      </div> -->
+                      <div v-if="training.status === 'completed'">
+                        <strong
+                        class="text-green"
+                        >
+                        Completed
+                        </strong>
+                      </div>
+                      <div v-else>
+                        <strong
+                        class="text-secondary"
+                        >
+                        Not Completed
+                        </strong>
+                      </div>
+
+                    </div>
+                  </v-col>
+                  <v-col cols="12" md="6" class="pa-1">
+                    <div>
+                      <strong class="text-secondary">{{ completed_email.email_training ?? '-' }}</strong>
+                      <br />
+
+                      <div v-if="successfulTime.rsp_sign">
+                        <strong class="font-weight-medium text-grey-lighten-1"
+                        >Recently done :
+                        {{
+                          dateUtils.parseDdMmYyWithTimeAndSeconds(
+                            successfulTime.rsp_training ?? null
+                          ) ?? '-'
+                        }}</strong
+                      >
+                      </div>
+                      <div v-else>
+                        <strong class="font-weight-medium text-grey-lighten-1"
+                        >Recently done :
+                        <br>
+                        {{
+                              '-'
+                        }}</strong
+                      >
+                      </div>
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-col>
+              <v-col cols="12" md="4" class="pa-1">
+                <v-row no-gutters dense justify="space-around" class="mb-3">
+                  <v-col cols="12" md="6" class="pa-1">
+                    <div>
+                      <strong>ติดต่อสอบถามd</strong>
+                      <br />
+                      <!-- <strong class="text-secondary">
+                        {{ props.checkItemDashboard?.contactOwner ?? null }}</strong
+                      > -->
+                      <div v-if="props.checkItemDashboard.contactOwner" >
+                      <strong class="text-secondary">
+                        {{ props.checkItemDashboard.contactOwner  }}</strong
+                      >
+                      </div>
+                      <div v-else>
+                        <strong class="text-secondary">
+                          {{ '-' }}</strong
+                        >
+                      </div>
+                    </div>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    md="6"
+                    class="pa-1 mt-5"
+                   
+                  >
+                    <v-btn
+                      class="me-2 text-none"
+                      color="secondary"
+                      variant="flat"
+                      style="width: 130px"
+                      rounded
+                      :to="`/SDTeamMangement/Survey/Tranning/1?prev_completed=completed&state=created&bp_number=${props?.bpnumber}`"
+                    >
+                      ทำเลย
+                    </v-btn>
+                  </v-col>
+
+                  <!-- <v-col
+                    cols="12"
+                    md="6"
+                    class="pa-1 mt-5"
+                    v-if="rspPolicyResule && rspPolicyResule.length !== 0"
+                  >
+                    <v-btn
+                      class="me-2 text-none"
+                      color="secondary"
+                      variant="flat"
+                      style="width: 130px"
+                      rounded
+                      @click="handleDowload"
+                    >
+                      Download
+                    </v-btn>
+                  </v-col> -->
+                </v-row>
+              </v-col>
+            </v-row>
+          </div>
+        </v-alert>
+      </v-row>
+    </v-card-item>
+  </v-card>
+</div>
+
+<div
     v-if="
      !props.checkItemDashboard.do_rsp_activity?? null
-    "
-  >
+    ">
     <v-card
       elevation="2"
       rounded="0"
@@ -401,10 +570,9 @@
                           >Recently done :
                           {{
                             dateUtils.parseDdMmYyWithTimeAndSeconds(
-                              props?.checkItemDashboard?.created?? null
+                              props.checkItemDashboard?.created?? null
                             )
-                          }}</strong
-                        >
+                          }}</strong>
                         <!-- <span>{{dateUtils.parseDdMmYyWithTimeAndSeconds(props.businessPartnerFormBpNumber.created_at)}}</span> -->
                       </div>
                     </v-col>
@@ -502,13 +670,26 @@ const { handlingErrorsMessage } = useErrorHandlingDialog();
 const successfulTime = ref({
   rsp_sign: "",
   rsp_survey: "",
+
+  rsp_training: "",
+  user_training:"",
+
   user_sign: "",
   user_survey: ""
 
 });
 const completed_email = ref({
   email_sign : null,
-  email_survey: null
+  email_survey: null,
+  email_training: null
+
+})
+
+const training = ref({
+  total_amount : null,
+  completed_amount: null,
+  status:null
+
 })
 onMounted(async () => {
   // props.businessPartnerFormBpNumber()
@@ -729,9 +910,9 @@ const getRspSurveyResults = async () => {
 //   }
 // };
 
-const getRspVendorSatus = async (tax) => {
+const getRspVendorSatus = async () => {
   try {
-    const response = await RspService.getRspVendorSatus("tax_id", tax);
+    const response = await RspService.getRspVendorSatus("tax_id",props.checkItemDashboard.taxpayerNumberId);
     if (response.data?.is_success) {
       satus.value = response.data.data;
       // console.log("stat0000000000",response.data.data);
@@ -740,8 +921,14 @@ const getRspVendorSatus = async (tax) => {
       if (satus.value && satus.value.length > 0 && satus.value[0].rsp) {
         successfulTime.value.rsp_survey = rspData?.survey?.completed_at ?? null;
         successfulTime.value.rsp_sign = rspData?.policy?.completed_at ?? null;
+
+        successfulTime.value.rsp_training = rspData?.training?.completed_at ?? null;
         // console.log("Userid.SERVEY",successfulTime.value.rsp_survey)
         // console.log("Userid.SERVEY",successfulTime.value.rsp_sign)
+        training.value.completed_amount = rspData?.training?.completed_amount ?? 0;
+        training.value.total_amount = rspData?.training?.total_amount ?? 0;
+        training.value.status = rspData?.training?.status ?? null;
+
 
 
         if(rspData.survey.completed_user_id){
@@ -751,11 +938,17 @@ const getRspVendorSatus = async (tax) => {
         if(rspData.policy.completed_user_id){
           successfulTime.value.user_sign = rspData?.policy?.completed_user_id.id ?? null;
         }
+
+        if(rspData.training.completed_user_id){
+          successfulTime.value.user_training = rspData?.training?.completed_user_id.id ?? null;
+        }
         // console.log("Userid.Sign",successfulTime.value.user_sign)
         // console.log("Userid.user_survey",successfulTime.value.user_survey)
       } else {
         successfulTime.value.rsp_survey = null;
         successfulTime.value.rsp_sign = null;
+        successfulTime.value.rsp_training = null;
+        
       }
     // console.log("RSP_SIGn", successfulTime.value.rsp_sign)
     // console.log("successfulTime.value.user_sign", successfulTime.value.user_sign)
@@ -773,8 +966,8 @@ const getRspVendorSatus = async (tax) => {
           return null;
         }
       }
-      if(successfulTime.value.user_sign) {
 
+      if(successfulTime.value.user_sign) {
         const signrespone = await UserService.getUserById(
           successfulTime.value.user_sign
         );
@@ -782,6 +975,20 @@ const getRspVendorSatus = async (tax) => {
         if(signrespone.data?.is_success) {
           completed_email.value.email_sign = signrespone.data?.data?.email ?? null;
           console.log("completed_email.value.email_sign ", completed_email.value.email_sign )
+        } else {
+          return null;
+        }
+
+      }
+
+      if(successfulTime.value.user_training) {
+        const trainingrespone = await UserService.getUserById(
+          successfulTime.value.user_training
+        );
+        console.log("aaaa",successfulTime.value.user_training)
+        if(trainingrespone.data?.is_success) {
+          completed_email.value.email_training = trainingrespone.data?.data?.email ?? null;
+          // console.log("completed_email.value_user_training ", completed_email.value.email_sign )
         } else {
           return null;
         }
@@ -928,8 +1135,8 @@ watchEffect(async () => {
   //   null;
   const contact_id = props.checkItemDashboard.created_userId
   console.log("contact_id", contact_id);
-  if (tax && status.length == 0) {
-    await getRspVendorSatus(tax);
+  if (props.checkItemDashboard.taxpayerNumberId ) {
+    await getRspVendorSatus();
     await getRspPolicies();
 
     // await getVendorRspStatus();

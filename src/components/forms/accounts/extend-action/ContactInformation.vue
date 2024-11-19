@@ -146,14 +146,14 @@ const data_input = ref({
 });
 
 watchEffect(() => {
-  data_input.value.contact_name = propVar.contact.name;
-  data_input.value.telephone = propVar.contact.mobile_number;
-  data_input.value.email = propVar.contact.email;
+  data_input.value.contact_name = propVar.contact.name ?? null;
+  data_input.value.telephone = propVar.contact.mobile_number ?? null;
+  data_input.value.email = propVar.contact.email ?? null;
 
-  data_input.value.branch_code = propVar.contact.branch_code;
-  data_input.value.partner_name = propVar.contact.business_partner_name;
-  data_input.value.partner_number = propVar.contact.business_partner_number;
-  data_input.value.remark = propVar.contact.remark;
+  data_input.value.branch_code = propVar.contact.branch_code ?? null;
+  data_input.value.partner_name = propVar.contact.business_partner_name ?? null;
+  data_input.value.partner_number = propVar.contact.business_partner_number ?? null;
+  data_input.value.remark = propVar.contact.remark ?? null;
 });
 
 watch(

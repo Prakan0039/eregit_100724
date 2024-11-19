@@ -389,6 +389,7 @@ const input_data = ref({
   items_name: [],
   lastname: "",
 });
+let apiCompletedCount = 0;
 
 watch(
   () => input_data.value.radio,
@@ -563,31 +564,68 @@ const handleForm = async (value) => {
       };
     }
   );
-  if (
-    await showAlertDisclosure(
-      "ลงทะเบียนสำเร็จเรียบร้อยเเล้ว",
-      "ระบบทำการส่งการลงทะเบียนแล้ว \nหากพบปัญหากรุณาติดต่อทาง Frasers Property Thailand"
-      // "หากพบปัญหากรุณาติดต่อทาง Frasers Property Thailand"
-    )
-  )
-    try {
+  // if (
+  //   await showAlertDisclosure(
+  //     "ลงทะเบียนสำเร็จเรียบร้อยเเล้ว",
+  //     "ระบบทำการส่งการลงทะเบียนแล้ว \nหากพบปัญหากรุณาติดต่อทาง Frasers Property Thailand"
+  //     // "หากพบปัญหากรุณาติดต่อทาง Frasers Property Thailand"
+  //   )
+  // )
+  try {
       const response = await PartnerServive.createDisclosureForm(
         dataBodySave.value
       );
+      apiCompletedCount++; 
       if (response.data?.is_success) {
         await onCreatePartnerDocumentUploads();
-        const responsenewtask =
+        apiCompletedCount++; 
+
+        if(status_code_bp_number.value != 200){
           await PartnerServive.createNewRegisterAccountTask(
             formNumberOnUrl.value
           );
-        if (responsenewtask.data?.is_success) {
-          handleToLogOutProfile(response.data.data?.form_number);
+          apiCompletedCount++; 
         }
-        // handleToComapnyProfile(response.data.data?.form_number);
 
-        // window.alert(response.data.message);
+        if (apiCompletedCount > 0) {
+          await showAlertDisclosure(
+        "ลงทะเบียนเสร็จเรียบร้อยแล้ว",
+        "ระบบทำการส่งการลงทะเบียนแล้ว \nหากพบปัญหากรุณาติดต่อทาง Frasers Property Thailand"
+      );
+    }
+        if ( response.data?.is_success) {
+          // console.log(
+          //   "responsenewtask.data?.is_success",
+          //   responsenewtask.data?.is_success
+          // );
+          // console.log("do_rsp_activity", do_rsp_activity.value);
+          // console.log("do_rsp_activity", memberType.value);
+          if (memberType.value == 2 && do_rsp_activity.value && store.sessionInfo.link_to !="ChaneInfoNon") {
+            console.log("do_rsp_activity");
+            router.push({
+              path: "/SDTeamMangement/Survey/Document/1",
+              query: {
+                prev_completed: "completed",
+                state: "created",
+                bp_number: formNumberOnUrl.value,
+              },
+            });
+          } else if(store.sessionInfo.link_to =="ChaneInfoNon"){
+            router.push({
+              path: "/change-info-non",
+              query: {
+                bp_number: formNumberOnUrl.value,
+              },
+            });
+          } else{
+            console.log("do_rsp_activity");
+            router.push({
+              path: "/VendorDashBoard",
+            });
+          }
+        }
       }
-    } catch (e) {
+    }catch (e) {
       if (e.response) {
         const val = e.response.data;
         handlingErrorsMessage(val.message, val?.data.error);

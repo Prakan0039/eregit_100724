@@ -1,0 +1,10 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: esg-front
+    volumes:
+      - ./public:/app/public/:rw
+    ports:
+      - 8002:8080

@@ -1,7 +1,8 @@
 <template>
   <v-row dense>
-    <!-- {{ steptwoFormDetail }} -->
-    <!-- {{ steptwoFormDetail[0]?.search }} -->
+    <!-- {{ props.contactItems }} -->
+      <!-- {{ props.contactItems }} -->
+
     <v-col cols="12"><h2>ที่อยู่สาขา</h2></v-col>
     <v-col cols="12">
       <v-card>
@@ -196,7 +197,7 @@
 
 <script setup>
 import { ref } from "vue";
-import { watch, watchEffect } from "vue";
+import { watch, watchEffect, toRefs } from "vue";
 
 import AddressInputTH from "../controls/AddressInput.vue";
 import AddressInputEN from "../controls/AddressInput.vue";
@@ -298,7 +299,7 @@ const data_input_head_comp_branch = ref({
           : props.barnchDesc,
       en:
         props.branchCode === "00000"
-          ? "Head office"
+          ? "HEAD OFFICE"  
           : props.branchCode === "NVAT"
           ? "NVAT"
           : props.barnchDesc,
@@ -313,6 +314,22 @@ const initailContact_1 = ref(true);
 const initailContact_2 = ref(true);
 const initailContact_3 = ref(true);
 const initailEnAddress = ref(true);
+
+// watch(
+//   () => props.contactItems,
+//   (newContactItems) => {
+//     if (newContactItems) {
+//       data_input_head_comp_branch.value.contacts = newContactItems.map((item, index) => ({
+//         index: item.index ?? index,
+//         name: item.name,
+//         email: item.email,
+//         phone: item.phone,
+//       }));
+//       console.log("props.contactItems updated");
+//     }
+//   },
+//   { deep: true, immediate: true }
+// );
 
 const setDataFromFormDetail = async (formDetail) => {
   data_input.value.province = formDetail.branch_province_th_id;
@@ -370,7 +387,7 @@ const setEnglishDataFromFormDetail = (formDetail) => {
     formDetail.branch_postal_code_en_id;
 };
 
-const setEnglishDataFromAddressItem = (addressItemEn) => {
+const setEnglishDataFromAddressItem = async (addressItemEn) => {
   if (addressItemEn) {
     data_input_head_comp_branch.value.address_en.location.province =
       addressItemEn.province;
@@ -588,9 +605,91 @@ watch(
   { deep: true, immediate: true }
 );
 
+
+
+
 watch(data_input_head_comp_branch.value, (newValue) => {
   emit("on-input", newValue);
 });
+
+// watch(
+//   () => props.contactItems, 
+//   (newContactItems) => {
+//     if (newContactItems && Array.isArray(newContactItems)) {
+//       data_input_head_comp_branch.value.contacts = newContactItems.map((item, index) => ({
+//         index: item.index ?? index,
+//         name: item.name,
+//         email: item.email,
+//         phone: item.phone,
+//       }));
+//       console.log("props.contactItems updated", data_input_head_comp_branch.value.contacts);
+//     }
+//   },
+//   { deep: true,  }
+// );
+watch(
+  () => (props.contactItems ? JSON.stringify(props.contactItems) : null), // ตรวจสอบว่า contactItems ไม่ใช่ undefined
+  (newContactItems, oldContactItems) => {
+    if (!newContactItems) {
+      // ถ้า newContactItems เป็น null แสดงว่า props.contactItems เป็น undefined หรือ null
+      data_input_head_comp_branch.value.contacts = [];
+      console.log("Contact items are undefined or null, cleared contacts.");
+      return;
+    }
+
+    // แปลง newContactItems กลับเป็น array หลังจาก JSON.stringify
+    const parsedNewContactItems = JSON.parse(newContactItems);
+
+    console.log("Old contact items:", oldContactItems ? JSON.parse(oldContactItems) : []);
+    console.log("New contact items:", parsedNewContactItems);
+
+    const updatedItems = Array.isArray(parsedNewContactItems) 
+      ? [...parsedNewContactItems] 
+      : [];
+
+    if (updatedItems.length > 0) {
+      data_input_head_comp_branch.value.contacts = updatedItems.map((item, index) => ({
+        index: item.index ?? index,
+        name: item.name || '/',
+        email: item.email || '/',
+        phone: item.phone || '/'
+      }));
+      console.log("Updated contacts:", data_input_head_comp_branch.value.contacts);
+    } else {
+      data_input_head_comp_branch.value.contacts = [];
+      console.log("No valid contact items, cleared contacts.");
+    }
+  },
+  { immediate: true }
+);
+
+
+
+watch(
+  () => props.addressItem,
+  async (newAddressItem) => {
+    if (newAddressItem) {
+      console.error("props.addressItem updated");
+      await setDataFromAddressItem(newAddressItem);
+    }
+  },
+  { deep: true, immediate: true }
+);
+
+
+
+watch(
+  () => props.addressItemEn, 
+  async (newAddressItemEn) => {
+    if (newAddressItemEn) {
+      // console.error("props.addressItemEn updated");
+      await setEnglishDataFromAddressItem(newAddressItemEn);
+    }
+  },
+  { deep: true, immediate: true }
+);
+
+
 </script>
 
 <style scoped>

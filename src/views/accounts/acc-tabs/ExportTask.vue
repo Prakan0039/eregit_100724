@@ -121,15 +121,32 @@ const onHandleMenuClicked = async (value) => {
   const { event_id, item_id, index, form_number } = value;
   switch (event_id) {
     case menu_items[0].id:
-      console.log("แก้ไข: ", item_id);
-      router.push({ name: "AccountDetail", params: { id: form_number } });
-      break;
+  // console.log("แก้ไข: ", form_number);
+
+  // ตรวจสอบเฉพาะรายการที่ตรงกับ form_number ที่คุณกำลังกด
+  const currentItem = content.value.items.find(item => item.form_number === form_number);
+
+  // ถ้าเจอ currentItem และ account_task_action เป็น "New Register"
+  if (currentItem && currentItem.account_task_action === "New Register") {
+    // console.log("พบ New Register!");
+    router.push({ name: "AccountDetail", params: { id: form_number } });
+  } else if(currentItem && currentItem.account_task_action === "Change Information"){
+    // console.log("พบ ChangeInfo");
+    // router.push({ name: "AccountChangeInfo", params: { id: form_number } });
+    router.push({
+        name: "AccountChangeInfo",
+        query: { form_number: form_number },
+      });
+  }else{
+    console.log("ไม่มี New Register หรือข้อมูลไม่ตรงกับ form_number ที่กด");
+  }
+  break;
     case menu_items[1].id:
-      console.log("Export: ", item_id);
+      // console.log("Export: ", item_id);
       await exportAccountTaskById(content.value.items[index]?.form_number);
       break;
     case menu_items[2].id:
-      console.log("Reject: ", item_id);
+      // console.log("Reject: ", item_id);
       if (
         !(await showDialog(
           "ยืนยันการ  Reject Case ?",

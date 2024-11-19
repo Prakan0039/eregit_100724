@@ -4,7 +4,7 @@
     <div class="d-flex align-center justify-center">
       <h3 class="py-5">Change Information</h3>
     </div>
-
+ 
     <div class="d-flex align-center justify-center">
       <h3 class="pa-5">เพิ่มข้อมูลประเภทคู่ค้า และ ประเภทธุรกิจ</h3>
     </div>
@@ -29,7 +29,7 @@
           </v-row>
         </v-card>
       </v-col>
-
+ 
       <v-col cols="12">
         <v-card class="pa-8 ma-8">
           <v-card-title>
@@ -69,7 +69,7 @@
           </v-row>
         </v-card>
       </v-col> -->
-
+ 
       <!-- <v-col cols="6" class="d-flex justify-end mt-5" v-if="!isHideButton">
         <ButtonControl
           color="black"
@@ -87,15 +87,15 @@
         style="min-width: 100px; height: 35px; " @button-clicked="handleNext" />
       </v-col> -->
     </v-row>
-
+ 
     <!-- </div> -->
   </v-container>
 </template>
-
+ 
 <script setup>
 import { ref, watchEffect } from "vue";
 // import ButtonControl from "@/components/controls/ButtonControl.vue";
-
+ 
 import { watch } from "vue";
 // import { computed } from "vue";
 import CompnayService from "@/apis/CompnayService";
@@ -103,7 +103,7 @@ import PartnerServive from "@/apis/PartnerServive";
 import { useErrorHandlingDialog } from "@/components/dialogs/ExceptionHandleDialogService";
 import { onMounted } from "vue";
 const { handlingErrorsMessage } = useErrorHandlingDialog();
-
+ 
 const props = defineProps({
   isVender: {
     type: Boolean,
@@ -123,46 +123,46 @@ const props = defineProps({
     type: String,
   },
 });
-
+ 
 // const rest = ref();
-
+ 
 watchEffect(async () => {
   if (props.businessPartnerType)
     dataInput.value.register.business_partner_type =
       props.businessPartnerType.toString();
 });
-
+ 
 onMounted(async () => {
   // await getCompaniesCategories();
   await getBusinessPartnerType();
   await getCompaniesCategories();
   // await getTaxBusinessRegisterTypeByTaxPayerId();
 });
-
+ 
 const emit = defineEmits([
   "on-is-natural",
   "on-button-ok-click",
   "on-button-cancel-click",
   "on-input",
 ]);
-
+ 
 // const is_natural_person = computed(() => {
 //   return dataInput.value.register.business_partner_type == 1;
 // });
-
+ 
 // const is_service_government = computed(() => {
 //   return dataInput.value.register.business_partner_type == 3;
 // });
-
+ 
 const is_other_comp_catagory = ref(false);
-
+ 
 // const is_other_business_partner_type = computed(() => {
 //   return dataInput.value.register.business_partner_type == 0;
 // });
-
+ 
 const radioRules = [(v) => !!v || "กรุณาเลือก 1 อัน"];
 const textRequired = [(v) => !!v || "กรุณากรอกข้อมูลให้ครบถ้วน"];
-
+ 
 const dataInput = ref({
   register: {
     business_partner_type: "",
@@ -170,14 +170,14 @@ const dataInput = ref({
     product_category: "",
   },
 });
-
-
-
+ 
+ 
+ 
 const itemPartnerType = ref([]);
 const itemCompanyCatagory = ref([]);
 const itemPartnerTypeNumber = ref(""); // Modify this value to 1 or 2 based on conditions
 // const taxBusinessRegisterType = ref({});
-
+ 
 watchEffect(() => {
   if (props.bp_group) {
     itemPartnerTypeNumber.value = props.bp_group; // Convert to number if needed
@@ -194,7 +194,7 @@ watch(
     }
   }
 );
-
+ 
 const shouldDisable = (id) => {
   if (itemPartnerTypeNumber.value === 1) {
     return [2, 3, 4, 5, 6, 7, 8, 16].includes(id);
@@ -212,17 +212,17 @@ const getCompaniesCategories = async () => {
     const response = await CompnayService.getCompanyCategoriesAll();
     if (response.data?.is_success) {
       const sortedData = response.data.data.sort((a, b) => a.id - b.id);
-
+ 
       // Find the index of the "อื่นๆ" (Other) option
       const otherIndex = sortedData.findIndex(
         (item) => item.name_th === "อื่นๆ"
       );
-
+ 
       if (otherIndex !== -1) {
         const otherItem = sortedData.splice(otherIndex, 1)[0];
         sortedData.push(otherItem);
       }
-
+ 
       itemCompanyCatagory.value = sortedData;
     }
   } catch (e) {
@@ -233,8 +233,8 @@ const getCompaniesCategories = async () => {
     }
   }
 };
-
-
+ 
+ 
 const getBusinessPartnerType = async () => {
   try {
     const response = await PartnerServive.getPartnerTypeAll();
@@ -249,29 +249,29 @@ const getBusinessPartnerType = async () => {
     }
   }
 };
-
+ 
 watch(dataInput.value, (newValue) => {
   emit("on-input", newValue);
   console.log("on-input", newValue);
 });
-
+ 
 </script>
-
+ 
 <style scoped>
 :deep(.v-text-field .v-field) {
   border-radius: 10px !important;
 }
-
+ 
 :deep(.v-input__details) {
   padding: 0px !important;
   margin-left: 10px !important;
   margin-top: -7px !important;
 }
-
+ 
 .box {
   position: relative;
 }
-
+ 
 .box :deep(.v-text-field .v-field) {
   width: 300px;
   position: absolute;

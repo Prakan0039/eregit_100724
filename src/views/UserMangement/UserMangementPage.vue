@@ -10,7 +10,8 @@
         :index="1"
         :item="isItem"
         @is-title="toggleTitle"
-        @is-view="toggleView" />
+        @is-view="toggleView"
+         />
   </v-container>
 </template>
 <script setup>

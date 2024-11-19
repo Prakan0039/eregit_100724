@@ -1,5 +1,7 @@
 <!-- eslint-disable no-unused-vars -->
 <template>
+  {{ props.index }}
+
   <div id="form-user">
     <v-form v-model="validateForm" @submit.prevent="handleSubmitEvent">
       <v-card class="elevation-1">
@@ -141,6 +143,8 @@
           :disabled="loading.submit"
           :loading="loading.submit"
           style="width: 100px"
+                @click="handleSubmitEvent"
+
         >
           <strong>ตกลง</strong>
         </v-btn>

@@ -295,7 +295,7 @@ const routes = [
           requiresAuth: true,
           module_id: 16,
         },
-        component: () => import("@/views/HistoryLog/HistoryRolePage.vue"),
+        component: () => import("@/views/historyLog/HistoryRolePage.vue"),
       },
       {
         path: "/MasterDataManagement",
@@ -352,7 +352,7 @@ const routes = [
           requiresAuth: true,
           module_id: 11,
         },
-        component: () => import("@/views/HistoryLog/HistoryTeamPage.vue"),
+        component: () => import("@/views/historyLog/HistoryTeamPage.vue"),
       },
       {
         path: "/HistoryCompanyPage",
@@ -361,7 +361,7 @@ const routes = [
           requiresAuth: true,
           module_id: 11,
         },
-        component: () => import("@/views/HistoryLog/HistoryCompanyPage.vue"),
+        component: () => import("@/views/historyLog/HistoryCompanyPage.vue"),
       },
       {
         path: "/HistoryBusinessPage",
@@ -370,7 +370,7 @@ const routes = [
           requiresAuth: true,
           module_id: 11,
         },
-        component: () => import("@/views/HistoryLog/HistoryBusinessPage.vue"),
+        component: () => import("@/views/historyLog/HistoryBusinessPage.vue"),
       },
 
       {
@@ -380,7 +380,7 @@ const routes = [
           requiresAuth: true,
           module_id: 11,
         },
-        component: () => import("@/views/HistoryLog/HistoryCoparationPage.vue"),
+        component: () => import("@/views/historyLog/HistoryCoparationPage.vue"),
       },
 
       {
@@ -494,6 +494,17 @@ const routes = [
       //   component: () => import("@/views/SDTeamMangement/TraningCreated.vue"),
       // },
 
+      //AdminDashBoard
+      {
+        path: "/AdminDashboard/AdminDashboardPage",
+        name: "AdminDashboardPage",
+        meta: {
+          requiresAuth: true,
+          module_id: 2,
+        },
+        component: () =>
+          import("@/views/AdminDashboard/AdminDashboardPage.vue"),
+      },
 
       //SD_DashBoardPage
       {
@@ -515,6 +526,17 @@ const routes = [
         },
         component: () => import("@/views/SDTeamDashboard/FollowUp.vue"),
       },
+
+      {
+        path: "/Admin/FollowUp/:owner?/:vendor?",
+        name: "AdminFollowUpPage",
+        meta: {
+          requiresAuth: true,
+          module_id: 1,
+        },
+        component: () => import("@/views/SDTeamDashboard/AdminFollowUp.vue"),
+      },
+
       {
         path: "/SDTeamDashboard/Documents",
         name: "DocumentsPage",

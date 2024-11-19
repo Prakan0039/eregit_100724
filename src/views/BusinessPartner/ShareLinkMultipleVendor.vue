@@ -13,10 +13,10 @@
       <h1>Vendor's email list for sending SD activities</h1>
     </div>
     <!-- {{ sharelink_url }} -->
-
+ 
     <div v-if="is_id_form === FORM_ID.Choose_File">
       <v-row justify="end" class="mt-10 mb-6">
-
+ 
         <v-col cols="2">
           <v-btn
             variant="elevated"
@@ -31,7 +31,7 @@
           </v-btn>
         </v-col>
       </v-row>
-
+ 
       <Choosefile
       class="elevation-1 pa-7 mt-10"
       @input-file="handleOnChangeFile"
@@ -39,18 +39,18 @@
       :is-file="file"
     ></Choosefile>
     </div>
-
+ 
     <ImportActiveUserTable
       v-if="is_id_form === FORM_ID.Data_Table"
       class="mt-5 mb-5"
       :items="datatableItem"
     />
-
+ 
     <div v-if="isValid.length > 0" class="pa-0">
       <strong class="text-secondary mt-10 d-block">
         ไฟล์ที่ที่อัพไม่ตรงกับ template กรุณาตรวจสอบและอัพใหม่อีกครั้ง*
       </strong>
-
+ 
       <!-- <div style="max-height: 200px; overflow-y: auto;">
         <v-virtual-scroll
           :items="isValid"
@@ -64,10 +64,10 @@
         </v-virtual-scroll>
       </div> -->
     </div>
-
+ 
     <div v-if="processedErrors.length > 0">
       <v-spacer class=" mt-8"></v-spacer>
-
+ 
       <strong class="text-danger">เกิดข้อผิดพลาด:</strong>
       <div style="max-height: 200px; overflow-y: auto">
         <v-virtual-scroll :items="processedErrors" item-height="30">
@@ -79,8 +79,8 @@
         </v-virtual-scroll>
       </div>
     </div>
-
-
+ 
+ 
     <v-divider class="mt-10 mb-5"></v-divider>
     <v-spacer class="mb-10"></v-spacer>
     <div
@@ -105,7 +105,7 @@
         <strong>ตกลง</strong>
       </v-btn>
     </div>
-
+ 
     <div
     v-if="is_id_form === FORM_ID.Data_Table"
     class="text-center"  >
@@ -147,12 +147,14 @@ import ExportService from "@/apis/ExportService";
 import { ref, reactive, onMounted, computed } from "vue";
 import { useAlerDisclosuretDialogDialog } from "@/components/dialogs/AlertDisclosureDialogService";
 const { showAlertDisclosure } = useAlerDisclosuretDialogDialog();
-
+import { useAlertDialogDialog } from "@/components/dialogs/AlertSuccessDialogService";
+const { showAlert } = useAlertDialogDialog();
+ 
 const emit = defineEmits(["is-title", "is-view"]);
 const { showValidDialog } = useValidDialog();
 const { handlingErrorsMessage } = useErrorHandlingDialog();
 const { showDialog } = useConfirmationDialog();
-
+ 
 const file = ref(null);
 const items = ref([]);
 // const loading = ref({
@@ -170,17 +172,17 @@ const loading = ref(false);
 const comapnies_code = ref([]);
 const isValid = ref([]);
 // const file = ref(null); // existing ref for file
-
+ 
 const datatableItem = ref([]);
 const bp_file_id = ref("");
 const sharelink_url = ref(null);
-
+ 
 onMounted(async () => {
   emit("is-title", "");
-
+ 
   await downloadMultipleLink();
 });
-
+ 
 const processedErrors = computed(() =>
   errorDescription.value.map(error => {
     const row = error.row !== undefined ? `row: ${error.row}, ` : '';
@@ -195,19 +197,19 @@ const processedErrors = computed(() =>
 //   errorDescription.value = [];
 //   console.log("File removed successfully");
 // };
-
+ 
 // const handleOnChangeFile = async (_file) => {
 //   file.value = _file;
 //   items.value = [];
 //   isValid.value = [];
 //   errorDescription.value = [];
-
+ 
 //   const reader = new FileReader();
-
+ 
 //   reader.onload = (e) => {
 //     binaryData.value = e.target.result;
 //   };
-
+ 
 //   reader.readAsArrayBuffer(_file);
 // };
 // Function to handle file input
@@ -216,16 +218,16 @@ const handleOnChangeFile = (_file) => {
   binaryData.value = null;
   isValid.value = [];
   errorDescription.value = [];
-
+ 
   const reader = new FileReader();
   reader.onload = (e) => {
     binaryData.value = e.target.result;
   };
   reader.readAsArrayBuffer(_file);
-
+ 
   console.log("File selected:", _file.name);
 };
-
+ 
 const handleFileRemoved = () => {
   file.value = null; // Reset the file when removed
   binaryData.value = null;
@@ -233,9 +235,9 @@ const handleFileRemoved = () => {
   errorDescription.value = [];
   console.log("File removed successfully");
 };
-
+ 
 const download = async () => {
-
+ 
   await ExportService.downloadFileV3(sharelink_url.value);
   console.log("download");
 };
@@ -257,10 +259,10 @@ const downloadMultipleLink = async () => {
     handlingErrorsMessage("unknown", e.message);
   }
 };
-
+ 
 const submit = async (e) => {
   e.preventDefault();
-
+ 
   // Validate that a file is selected
   if (!file.value) {
     await showValidDialog(
@@ -269,11 +271,11 @@ const submit = async (e) => {
     );
     return;
   }
-
+ 
   const fileName = file.value.name;
   const fileExtension = fileName.split(".").pop();
   const fileSizeMB = file.value.size / (1024 * 1024); // Convert size to MB
-
+ 
   if (fileSizeMB > 10) {
     await showValidDialog(
       "ไฟล์มีขนาดใหญ่เกินไป",
@@ -281,7 +283,7 @@ const submit = async (e) => {
     );
     return;
   }
-
+ 
   if (!validate.isValidExcel(fileExtension)) {
     await showValidDialog(
       "ไฟล์ที่อัพโหลดไม่ใช่ไฟล์ Excel",
@@ -289,7 +291,7 @@ const submit = async (e) => {
     );
     return;
   }
-
+ 
   if (isValid.value.length > 0) {
     await showValidDialog(
       "ไฟล์ที่อัพโหลดไม่ตรงกับ template",
@@ -297,32 +299,28 @@ const submit = async (e) => {
     );
     return;
   }
+ 
 
-  const confirmed = await showDialog(
-    "ยืนยันการบันทึก?",
-    'กรุณาตรวจสอบ คลิกปุ่ม "ตกลง" เพื่อดำเนินการ'
-  );
-
+  const confirmed = true;
   if (confirmed) {
     try {
       loading.value = true;
       const formData = new FormData();
       formData.append("data", file.value);
-
+ 
       const userId = sessionStorage.getItem("userId");
       formData.append("created_user_id", Number(userId));
-
+ 
       const response = await PartnerService.createValidateImportVendors(
         formData
       );
-
+ 
       console.log(response);
-
+ 
       if (response.data?.is_success) {
         datatableItem.value = response.data?.data.email_receivers;
         bp_file_id.value = response.data?.data.import_bp_file_id;
         is_id_form.value = FORM_ID.Data_Table;
-        // dismiss(); // Assuming dismiss() closes the file upload dialog/modal
       } else {
         errorDescription.value = response.data.error_description || [];
         await showValidDialog("เกิดข้อผิดพลาด", "ตรวจสอบข้อความด้านล่าง");
@@ -343,22 +341,22 @@ const submit = async (e) => {
     console.log("Action cancelled.");
   }
 };
-
+ 
 const createImportVendors = async (e) => {
   e.preventDefault();
   const confirmed = await showDialog(
-    "ยืนยันการบันทึก?",
-    'กรุณาตรวจสอบ คลิกปุ่ม "ตกลง" เพื่อดำเนินการ'
+    "ยืนยันการส่ง Email",
+    'ระบบจะทำการส่ง Email ให้ Vendor \nและ Contact owner'
   );
-
+ 
   if (confirmed) {
   try {
     const response = await PartnerService.createImportVendors(bp_file_id.value);
     if (response.data?.is_success){
-      console.log("nfkd")
-      await showAlertDisclosure(
+      // console.log("nfkd")
+      await showAlert(
       "ทำการส่ง Email แล้ว",
-      "ระบบทำการส่ง Email ติดตาการทำ SD activities \nให้ Vendor และ Contact owner แล้ว"
+      "ระบบทำการส่ง Email ติดตามการทำ SD activities \nให้ Vendor และ Contact owner แล้ว"
     )
     }
   } catch (e) {

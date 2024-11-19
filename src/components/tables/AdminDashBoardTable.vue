@@ -32,8 +32,8 @@
           <v-col cols="2" align-self="center" class="mt-n3">
             <strong>Training</strong>
           </v-col>
-          <v-col cols="3" align-self="center" class="mt-n3">
-            <strong>Contact Owner</strong>
+          <v-col cols="2" align-self="center" class="mt-n3">
+            <!-- <strong>Contact Owner</strong> -->
           </v-col>
         </v-row>
       </v-card-item>
@@ -146,20 +146,16 @@
                 }}
               </p>
             </v-col>
-            <v-col cols="3" align-self="center">
-              <v-chip color="secondary" label size="small">
-                <strong>{{ i.contact_owner?.email }}</strong>
-              </v-chip>
-              <br />
-              <div class="mt-2">
-                <strong>{{ i.contact_owner?.business_unit }}</strong>
-                &nbsp;/&nbsp;<span class="text-grey">{{
-                  i.contact_owner?.team
-                }}</span>
-                &nbsp;/&nbsp;<span class="text-grey">{{
-                  i.contact_owner?.company
-                }}</span>
-              </div>
+            <v-col cols="2" align-self="center">
+              <v-btn
+              block
+              :disabled="loader.bp_detail"
+              :loading="loader.bp_detail"
+              class="text-capitalize rounded-pill"
+              color="red"
+            >
+              ติดตาม
+            </v-btn>
             </v-col>
           </v-row>
         </v-expansion-panel-title>
@@ -505,7 +501,7 @@
                         variant="outlined"
                         :disabled="loader.bp_detail"
                         :loading="loader.bp_detail"
-                        :to="`/SDTeamDashboard/FollowUp?bp_number=${businessPartnerDetail.bp_number}&email=${businessPartnerDetail?.contact_owner?.email}`"
+                        :to="`/Admin/FollowUp?bp_number=${businessPartnerDetail.bp_number}&email=${businessPartnerDetail?.contact_owner?.email}`"
                         block
                         class="text-capitalize rounded-pill"
                         color="black"

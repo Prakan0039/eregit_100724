@@ -5,7 +5,7 @@
         <v-col cols="12" class="">
 
           <div class="d-flex align-center justify-center">
-            <h3 class="py-5">Change Information</h3>
+            <h3 class="py-5">Change Profile</h3>
           </div>
 
           <div class="d-flex align-center justify-center">

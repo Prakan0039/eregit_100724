@@ -10,12 +10,12 @@
         />
       </v-app-bar>
       <div class="d-flex justify-end mb-5 mt-5">
-        <ButtonControl
+        <!-- <ButtonControl
           icon="mdi mdi-file-document"
           class="mr-2"
           text="ขอเอกสารเพิ่มเติม"
           @click="handleSwitchToRewwuestDoc"
-        />
+        /> -->
         <ButtonControl
           @click="handleOnDaftSave"
           icon="mdi mdi-content-save-cog"
@@ -33,7 +33,7 @@
       <div v-show="is_id_form === FORM_ID.CHANGE_INFO">
         <v-form ref="formChangeInfo">
           <bank-account
-            v-show="isBankInfo"
+            v-if="isBankInfo"
             v-for="(
               item, index
             ) in dataChangeInfoRequest.change_bank_information"
@@ -50,7 +50,7 @@
             @on-update="handleBankAccountUpdate"
           />
           <add-branch
-            v-show="isAddBranchInfo"
+            v-if="isAddBranchInfo"
             v-for="(
               item, index
             ) in dataChangeInfoRequest.add_branch_information"
@@ -60,7 +60,7 @@
             @on-data-update="handleBranchUpdate"
           />
           <change-address
-            v-show="isChangeAddressInfo"
+            v-if="isChangeAddressInfo"
             v-for="(
               item, index
             ) in dataChangeInfoRequest.change_address_information"
@@ -70,7 +70,7 @@
             @on-data-update="handleAddressUpdate"
           />
           <change-name
-            v-show="isChangeNameInfo"
+            v-if="isChangeNameInfo"
             v-for="(
               item, index
             ) in dataChangeInfoRequest.change_name_information"
@@ -80,7 +80,7 @@
             @on-data-update="handleChangeName"
           />
           <contact-information
-            v-show="isChangeContactInfo"
+            v-if="isChangeContactInfo"
             v-for="(
               item, index
             ) in dataChangeInfoRequest.change_contact_information"
@@ -277,6 +277,7 @@ const handleReqDocumentCommit = () => {
 
 const handleOnDaftSave = async () => {
   const is_valid = await formChangeInfo.value.validate();
+  console.log(is_valid["valid"]);
   if (is_valid && !is_valid["valid"]) return;
   if (
     await showDialog(
@@ -308,16 +309,16 @@ const handleOnDaftSave = async () => {
           return {
             business_partner_number: el.partner_number,
             name_th: el.new_name_th_1,
-            name1_th: el.new_name_th_2,
-            name2_th: el.new_name_th_3,
-            name3_th: el.new_name_th_4,
-            name4_th: el.new_name_th_5,
+            name1_th: el.new_name_th_1,
+            name2_th: el.new_name_th_2,
+            name3_th: el.new_name_th_3,
+            name4_th: el.new_name_th_4,
             search_term1_th: el.new_search_term_th,
             name_en: el.new_name_en_1,
-            name1_en: el.new_name_en_2,
-            name2_en: el.new_name_en_3,
-            name3_en: el.new_name_en_4,
-            name4_en: el.new_name_en_5,
+            name1_en: el.new_name_en_1,
+            name2_en: el.new_name_en_2,
+            name3_en: el.new_name_en_3,
+            name4_en: el.new_name_en_4,
             search_term1_en: el.new_search_term_en,
           };
         }),
@@ -391,7 +392,7 @@ const handleOnDaftSave = async () => {
             created_at: new Date(),
             created_user_id: 187,
             updated_at: new Date(),
-            updated_user_id: Number(sessionStorage.getItem("userId")),
+            updated_user_id: 1,
           };
         }),
       change_contact_information:
@@ -408,7 +409,7 @@ const handleOnDaftSave = async () => {
         }),
     };
 
-    if (await onSaveChangeInfomation(payloadDraft)) {
+    if (await onSaveDraftChangeInfomation(payloadDraft)) {
       router.push({
         name: "AccountManagement",
         query: { path: "DaftTask" },
@@ -419,6 +420,7 @@ const handleOnDaftSave = async () => {
 
 const handleOnClick = async () => {
   const is_valid = await formChangeInfo.value.validate();
+  console.log(is_valid["valid"])
   if (is_valid && !is_valid["valid"]) return;
   if (
     await showDialog(
@@ -426,10 +428,11 @@ const handleOnClick = async () => {
       "กรุณาตรวจสอบข้อมูล คุณไม่สามารถแก้ไขได้แล้ว\nคลิกปุ่ม ตกลง เพื่อดำเนินการ"
     )
   ) {
+    
     const payloadSave = {
       form_number: dataChangeInfoRequest.value.form_number,
       changed_part_id: dataChangeInfoRequest.value.changed_part
-        .map((el) => el.id)
+        .map((el) => el.id ?? null)
         .join(","),
       change_bank_information:
         itemsChangeInfo.value.change_bank_information.map((el) => {
@@ -444,22 +447,22 @@ const handleOnClick = async () => {
             bank_account_number: el.bankAccoutNumber,
             remark: el.remark,
           };
-        }),
+        } ) ,
       change_name_information:
         itemsChangeInfo.value.change_name_information.map((el) => {
           return {
             business_partner_number: el.partner_number,
             name_th: el.new_name_th_1,
-            name1_th: el.new_name_th_2,
-            name2_th: el.new_name_th_3,
-            name3_th: el.new_name_th_4,
-            name4_th: el.new_name_th_5,
+            name1_th: el.new_name_th_1,
+            name2_th: el.new_name_th_2,
+            name3_th: el.new_name_th_3,
+            name4_th: el.new_name_th_4,
             search_term1_th: el.new_search_term_th,
             name_en: el.new_name_en_1,
-            name1_en: el.new_name_en_2,
-            name2_en: el.new_name_en_3,
-            name3_en: el.new_name_en_4,
-            name4_en: el.new_name_en_5,
+            name1_en: el.new_name_en_1,
+            name2_en: el.new_name_en_2,
+            name3_en: el.new_name_en_3,
+            name4_en: el.new_name_en_4,
             search_term1_en: el.new_search_term_en,
           };
         }),
@@ -533,7 +536,7 @@ const handleOnClick = async () => {
             created_at: new Date(),
             created_user_id: 187,
             updated_at: new Date(),
-            updated_user_id: Number(sessionStorage.getItem("userId")),
+            updated_user_id: 1,
           };
         }),
       change_contact_information:
@@ -562,6 +565,23 @@ const handleOnClick = async () => {
 const onSaveChangeInfomation = async (payloadSave) => {
   try {
     const response = await PartnerServive.saveChangInfomation(payloadSave);
+    if (response.data?.is_success) {
+      return true;
+    }
+  } catch (e) {
+    if (e.response) {
+      const val = e.response.data;
+      handlingErrorsMessage(val.message, val?.data.error);
+      return false;
+    }
+    handlingErrorsMessage("unknown", e.message);
+    return false;
+  }
+};
+
+const onSaveDraftChangeInfomation = async (payloadSave) => {
+  try {
+    const response = await PartnerServive.saveDraftChangInfomation(payloadSave);
     if (response.data?.is_success) {
       return true;
     }

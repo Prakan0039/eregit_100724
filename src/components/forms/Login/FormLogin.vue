@@ -100,9 +100,9 @@
 <script setup>
 import { ref, onBeforeMount } from "vue";
 import VerifyService from "@/apis/VerifyService";
-// import UserService from "@/apis/UserService";
+import UserService from "@/apis/UserService";
 import AuthService from "@/apis/OAuthService";
-// import axios from "axios";
+import axios from "axios";
 const Form = ref({
   Email: "",
   Password: ""
@@ -241,7 +241,7 @@ onBeforeMount(() => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   Form.value.Email = urlParams.get("accessible_email");
-  console.log(urlParams.get("accessible_email"));
+  // console.log(urlParams.get("accessible_email"));
 });
 
 const getAuthenticationVerifyToken = async () => {
@@ -256,7 +256,7 @@ const getAuthenticationVerifyToken = async () => {
       );
       // console.log("eww", response.data?.data.accessToken)
       if (responseVertify.data?.success) {
-        console.log("response", responseVertify.data.data.url);
+        // console.log("response", responseVertify.data.data.url);
         // await axios.get(responseVertify.data.data.url);
         // window.open(responseVertify.data.data.url)
         window.location.href = responseVertify.data.data.url;

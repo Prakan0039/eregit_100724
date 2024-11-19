@@ -23,9 +23,9 @@ module.exports = (app) => {
           payment_term: "{valid payment_term object}",
           registered_user_email: "co1@co.co",
           created_at: "2023-11-28T15:41:15.572Z",
-          created_user_id: Number(sessionStorage.getItem("userId")),
+          created_user_id: 1,
           updated_at: "2023-11-28T15:43:15.907Z",
-          updated_user_id: Number(sessionStorage.getItem("userId")),
+          updated_user_id: 1,
         },
       });
     }

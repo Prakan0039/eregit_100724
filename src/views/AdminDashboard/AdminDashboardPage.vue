@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h2>Tracking SD Activities</h2>
+    <h2>Admin DashBoard</h2>
     <div class="mt-5">
       <v-row dense>
         <v-col cols="3">
@@ -91,7 +91,7 @@
           />
         </v-col>
       </v-row>
-      <v-row justify="end" dense>
+      <!-- <v-row justify="end" dense>
         <v-col cols="2">
           <v-btn
             variant="outlined"
@@ -128,9 +128,14 @@
             import BP file
           </v-btn>
         </v-col>
-      </v-row>
+      </v-row> -->
       <!-- {{selected_checked[0-1]}} -->
       <!-- {{selected_checked}} -->
+       
+      <div class="or-divider">
+        <span class="or-text">Vendor in my responsibility</span>
+        <v-divider></v-divider>
+      </div>
       <TrackingSDActiviteTable
         class="mt-5"
         :items="content.items"
@@ -158,7 +163,7 @@ import RegisteredVendorsItem from "@/components/items/RegisteredVendorsItem.vue"
 import RspPolicyItem from "@/components/items/RspPolicyItem.vue";
 import SurveyAlignItem from "@/components/items/SurveyAlignItem.vue";
 import TrainingItem from "@/components/items/TrainingItem.vue";
-import TrackingSDActiviteTable from "@/components/tables/TrackingSDActiviteTable.vue";
+import TrackingSDActiviteTable from "@/components/tables/AdminDashBoardTable.vue";
 import FilterTrackingSDActivite from "@/components/dialogs/FilterTrackingSDActivite.vue";
 import PaginationControl from "@/components/controls/PaginationControl.vue";
 import RspService from "@/apis/RspService";
@@ -455,3 +460,33 @@ const handlePaginationEvent = (page) => {
   getVendorRspStatus();
 };
 </script>
+<style scoped>
+.custom-underline {
+  text-decoration: underline;
+  color: black;
+}
+
+.v-field {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 0px 6px 0px !important;
+}
+
+.or-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px; /* ระยะห่างระหว่างข้อความและเส้นแบ่ง */
+  margin: 20px 0;
+}
+
+.or-text {
+  font-weight: bold;
+  color: gray;
+  white-space: nowrap; /* ทำให้ข้อความไม่ห่อในหลายบรรทัด */
+}
+
+.divider-line {
+  flex-grow: 1; /* ขยาย divider ให้ครอบคลุมความกว้างที่เหลือ */
+  height: 1px; /* กำหนดความสูงของเส้นแบ่ง */
+  background-color: gray; /* เปลี่ยนสีตามต้องการ */
+}
+</style>
