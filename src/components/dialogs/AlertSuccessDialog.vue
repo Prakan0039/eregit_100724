@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center">
     <v-dialog persistent v-model="isVisible" width="320" height="320">
-      <v-card width="370" height="320">
+      <v-card width="410" height="320">
         <v-card-text class="ma-1">
           <v-row justify="center" class="pt-5">
             <v-icon size="100" color="green"

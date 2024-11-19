@@ -179,7 +179,7 @@ const filter = ref({
   date_from: null,
   date_to: null,
   offset: 0,
-  limit: 1000,
+  limit: 20,
   page: 1,
   pageSize: 1,
 });
@@ -216,19 +216,15 @@ const getSearchBusinessPartner = async () => {
       filter.value.comp_categories_id
     );
     // console.log("ddd", filter.value )
-    // const headers = response.headers;
+    const headers = response.headers;
+    const itemsOffset = Number(headers["items-offset"]);
+    const itemsLimit = Number(headers["items-limit"]);
+    const itemsTotal = Number(headers["items-total"]);
 
-    // const itemsOffset = Number(headers["Items-Offset"]);
-    // const itemsLimit = Number(headers["Items-Limit"]);
-    // const itemsTotal = Number(headers["Items-Total"]);
-
-    // console.log(headers["Items-Offset"]);
-    // console.log(itemsOffset, itemsLimit, itemsTotal);
-
-    // filter.value.offset = itemsOffset;
-    // filter.value.limit = itemsLimit;
-
-    // filter.value.pageSize = paginationUtils.pageSize(itemsLimit, itemsTotal);
+    filter.value.offset = itemsOffset;
+    filter.value.limit = itemsLimit;
+    // console.log(itemsLimit);
+    filter.value.pageSize = paginationUtils.pageSize(itemsLimit, itemsTotal);
     if (response.data?.is_success) {
       content.value.items = [];
 

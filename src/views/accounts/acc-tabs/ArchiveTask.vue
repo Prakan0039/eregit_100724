@@ -1,5 +1,7 @@
 <template>
   <v-container fluid>
+    <!-- {{ content.items.account_task_action == New Register }} -->
+      <!-- {{content.items}} -->
     <div style="display: flex; justify-content: flex-end" class="mt-5">
       <v-btn
         variant="outlined"
@@ -8,9 +10,7 @@
         color="black"
         style="min-width: 100px; border-radius: 10px"
       >
-        <v-icon left size="large" class="me-1"
-          >mdi-text-box-search-outline</v-icon
-        >
+        <v-icon left size="large" class="me-1">mdi-text-box-search-outline</v-icon>
         Preview ({{ amountItemSelect }})
       </v-btn>
       <v-btn
@@ -33,11 +33,7 @@
           @handle-selection="onHandleSelection"
           @handle-sort-by="onHAndleSortBy"
         />
-        <v-progress-linear
-          color="red"
-          v-if="isLoading"
-          indeterminate
-        ></v-progress-linear>
+        <v-progress-linear color="red" v-if="isLoading" indeterminate></v-progress-linear>
       </v-col>
       <v-col cols="12">
         <PaginationControl
@@ -70,14 +66,14 @@ const router = useRouter();
 
 const content = ref({
   items: [],
-  itemsToExport: [],
+  itemsToExport: []
 });
 
 const filter = ref({
   offset: 0,
   page: 1,
   limit: 20,
-  pageSize: 1,
+  pageSize: 1
 });
 
 const amountItemSelect = ref(0);
@@ -85,23 +81,23 @@ const menu_items = [
   {
     id: 0,
     title: "แก้ไข",
-    icon: "mdi mdi-wrench-cog",
+    icon: "mdi mdi-wrench-cog"
   },
   {
     id: 1,
     title: "Move to Ready Export",
-    icon: "mdi mdi-arrow-left",
+    icon: "mdi mdi-arrow-left"
   },
   {
     id: 2,
     title: "Reject",
-    icon: "mdi mdi-close-circle",
+    icon: "mdi mdi-close-circle"
   },
   {
     id: 4,
     title: "Export",
-    icon: "mdi mdi-microsoft-excel",
-  },
+    icon: "mdi mdi-microsoft-excel"
+  }
 ];
 
 const isLoading = ref(true);
@@ -114,11 +110,11 @@ const leaveLoading = () => {
   isLoading.value = false;
 };
 
-const preview = async (url) => {
+const preview = async url => {
   window.open(url, "_blank");
 };
 
-const handlePaginationEvent = (page) => {
+const handlePaginationEvent = page => {
   filter.value.page = page;
   filter.value.offset = paginationUtils.pageOffset(page, filter.value.limit);
   getAccountArchiveAll();
@@ -129,7 +125,7 @@ const handlePreviewSelections = async () => {
     const payload = [];
     for (let index = 0; index < content.value.itemsToExport.length; index++) {
       const el = content.value.itemsToExport[index];
-      const findFormNumber = content.value.items.find((item) => item.id == el);
+      const findFormNumber = content.value.items.find(item => item.id == el);
       if (findFormNumber)
         payload.push({ form_number: findFormNumber.form_number });
     }
@@ -158,7 +154,7 @@ const handleToExportSelection = async () => {
     const payload = [];
     for (let index = 0; index < content.value.itemsToExport.length; index++) {
       const el = content.value.itemsToExport[index];
-      const findFormNumber = content.value.items.find((item) => item.id == el);
+      const findFormNumber = content.value.items.find(item => item.id == el);
       if (findFormNumber)
         payload.push({ form_number: findFormNumber.form_number });
     }
@@ -194,14 +190,35 @@ const handleToExportSelection = async () => {
   }
 };
 
-const onHandleMenuClicked = async (value) => {
+const onHandleMenuClicked = async value => {
   const { event_id, item_id, index, form_number } = value;
   console.log(event_id);
   switch (event_id) {
     case menu_items[0].id:
-      console.log("แก้ไข: ", form_number);
-      router.push({ name: "AccountDetail", params: { id: form_number } });
-      break;
+  console.log("แก้ไข: ", form_number);
+
+  const currentItem = content.value.items.find(item => item.form_number === form_number);
+
+  // ถ้าเจอ currentItem และ account_task_action เป็น "New Register"
+  if (currentItem && currentItem.account_task_action === "New Register") {
+    // console.log("New Register!");
+    router.push({ name: "AccountDetail", params: { id: form_number } });
+  } else if(currentItem && currentItem.account_task_action === "Change Information"){
+    router.push({
+        name: "AccountChangeInfo",
+        query: { form_number: form_number },
+      });
+  }else if(currentItem && currentItem.account_task_action === "Extend Company")
+  {
+    router.push({
+        name: "AccountExtendCompany",
+        query: { form_number: form_number },
+      });
+  }
+  {
+    console.log("ไม่มี New Register หรือข้อมูลไม่ตรงกับ form_number ที่กด");
+  }
+  break;
     case menu_items[1].id:
       console.log("Move to Ready Export: ", item_id);
       await updateAccountTaskById(item_id, "ReadyToExport");
@@ -225,7 +242,7 @@ const onHandleMenuClicked = async (value) => {
   }
 };
 
-const exportAccountTaskById = async (form_number) => {
+const exportAccountTaskById = async form_number => {
   try {
     const response = await PartnerServive.exportAccountTask([{ form_number }]);
     if (response.data?.is_success) {
@@ -318,11 +335,11 @@ const getAccountArchiveAll = async (sortBy = "created_at:desc") => {
   }
 };
 
-const onHAndleSortBy = async (sortBy) => {
+const onHAndleSortBy = async sortBy => {
   await getAccountArchiveAll(sortBy);
 };
 
-const onHandleSelection = (value) => {
+const onHandleSelection = value => {
   amountItemSelect.value = value.length;
   content.value.itemsToExport = value;
   // console.log("onHandleSelection: ", JSON.stringify(value));

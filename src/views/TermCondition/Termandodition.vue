@@ -5,25 +5,20 @@
     <confirm-dialog />
     <AlertDisclosureDialog />
     <v-app-bar :elevation="2" rounded>
-     <!-- <p>is_disclosure : {{ is_disclosure }}</p>
+      <!-- <p>is_disclosure : {{ is_disclosure }}</p>
       {{ member_type }}
-      {{ is_completed_profile }} -->
-       <!-- <p>status_profile_form : {{status_profile_form}}</p> -->
-       <!-- {{ bp_group }} -->
+      {{ is_completed_profile }}-->
+      <!-- <p>status_profile_form : {{status_profile_form}}</p> -->
+      <!-- {{ bp_group }} -->
       <v-app-bar-title class="d-flex justify-center">
-        <v-img
-          :width="100"
-          aspect-ratio="16/9"
-          cover
-          src="/frasers.png"
-        ></v-img>
+        <v-img :width="100" aspect-ratio="16/9" cover src="/frasers.png"></v-img>
       </v-app-bar-title>
     </v-app-bar>
     <v-main class="d-flex align-center justify-center">
       <v-container fluid>
         <!-- <div class="d-flex align-center justify-center">
           <h3 class="mb-9">Change Information</h3>
-        </div> -->
+        </div>-->
 
         <div v-if="term_condition_id !== current_term_condition_id">
           <v-card-text>
@@ -33,12 +28,7 @@
           </v-card-text>
           <v-row align="center" dense class="mt-5" justify="center">
             <v-col cols="auto" class="d-flex align-center mt-n5">
-              <input
-                type="checkbox"
-                id="agree"
-                v-model="agreed"
-                class="custom-checkbox mr-2"
-              />
+              <input type="checkbox" id="agree" v-model="agreed" class="custom-checkbox mr-2" />
               <h3 for="agree">ข้าพเจ้าได้อ่านและยอมรับข้อกำหนดและเงื่อนไข</h3>
             </v-col>
           </v-row>
@@ -67,12 +57,7 @@
           </v-card-text>
           <v-row align="center" dense class="mt-5" justify="center">
             <v-col cols="auto" class="d-flex align-center mt-n5">
-              <input
-                type="checkbox"
-                id="agree"
-                v-model="agreed2"
-                class="custom-checkbox mr-2"
-              />
+              <input type="checkbox" id="agree" v-model="agreed2" class="custom-checkbox mr-2" />
               <h3 for="agree">ข้าพเจ้าได้อ่านและยอมรับข้อกำหนดและเงื่อนไข</h3>
             </v-col>
           </v-row>
@@ -92,22 +77,22 @@
             </v-col>
           </v-row>
         </div>
-
+ 
         <div
           v-else-if="
             !is_completed_profile && status_code_completed_profile == 200
           "
         >
           <v-row dense>
-            <v-col cols="12" class="">
+            <v-col cols="12" class>
               <v-form ref="formOne">
                 <!-- <div class="d-flex align-center justify-center">
                 <h3 class="py-5">Change Information</h3>
               </div>
-
+ 
               <div class="d-flex align-center justify-center">
                 <h3 class="pa-5">เพิ่มข้อมูลประเภทคู่ค้า และ ประเภทธุรกิจ</h3>
-              </div> -->
+                </div>-->
                 <CompleteProfileForm
                   :business-partner-type="
                     company_info.business_partner_role?.id.toString()
@@ -115,7 +100,7 @@
                   :bp_group="
                   bp_group
                 "
-                  class=""
+                  class
                   @on-is-natural="handleIsNaturalPerson"
                   @on-button-cancel-click="handleReverse"
                   @on-button-ok-click="handleNext"
@@ -123,7 +108,7 @@
                 />
               </v-form>
             </v-col>
-
+ 
             <v-row>
               <v-col cols="12" class="d-flex justify-center mt-5 mb-5">
                 <ButtonControl
@@ -139,7 +124,7 @@
     </v-main>
   </v-app>
 </template>
-
+ 
 <script setup>
 import PDF from "pdf-vue3";
 import { ref, onMounted, onBeforeMount, watch } from "vue";
@@ -150,7 +135,7 @@ import { useErrorHandlingDialog } from "@/components/dialogs/ExceptionHandleDial
 import { useSessionInfoStore } from "@/stores/papdStore";
 import PartnerServive from "@/apis/PartnerServive";
 import { useRouter } from "vue-router";
-
+ 
 import ButtonControl from "@/components/controls/ButtonControl.vue";
 // import AttacheDocumentProfile from "@/components/forms/companies/AttacheProfile.vue";
 import CompleteProfileForm from "@/components/forms/companies/CompleteProfileForm.vue";
@@ -164,13 +149,13 @@ const user_id = ref("");
 // const url_song = ref("");
 const agreed = ref(false);
 // const song = ref(false);
-
+ 
 const agreed2 = ref(false);
 const fileBase64 = ref(null);
 const fileBase64Policy = ref(null);
 const pdf_url = ref(null);
 let current_view = ref(1);
-
+ 
 //1
 const term_condition_id = ref(null);
 const term_is_accepted = ref(null);
@@ -190,24 +175,24 @@ const bp_group = ref("");
 const is_completed_profile = ref(false);
 const status_code_completed_profile = ref(0);
 const status_profile_form = ref(0);
-
+ 
 const is_disclosure = ref(false);
 const formOne = ref(null);
 const member_type = ref("");
 // const FORM_ID = {
 //   Term_Condition: 0,
 //   Complete_Profile: 1,
-
+ 
 // };
 // const is_id_form = ref(FORM_ID.Term_Condition);
 onBeforeMount(async () => {
   //   let user_id = sessionStorage.getItem("userId");
   // member_type.value = sessionStorage.getItem("member_type");
   // console.log("member_typesss", member_type.value);
-
+ 
   user_id.value = sessionStorage.getItem("userId");
   console.log("Userrrrr", user_id.value);
-
+ 
   bp_number.value = sessionStorage.getItem("bp_numbers");
   console.log("bp_number", bp_number.value);
   //   console.log(auth_email);
@@ -219,13 +204,13 @@ onMounted(async () => {
   await getPrivacyPolicybyId(user_id.value);
   await getCurrentPrivacyPolicyAll();
   await getBusinessPartnerByBpNumber(bp_number.value);
-  await getRegisterFormDetail(formNumberOnUrl.value)
+  await getRegisterFormDetail(formNumberOnUrl.value);
   // current_view.value ++
   store.getsessionlinkstore();
-  console.log("ommount", store.sessionInfo);
+  console.log("ommount", store.sessionInfo.link_to);
 
   // }
-
+ 
   // if (
   //   term_condition_id.value == current_term_condition_id.value &&
   //   privacy_policy_id.value == current_privacy_id.value &&
@@ -233,7 +218,7 @@ onMounted(async () => {
   // ) {
   //   router.push({ name: "AuthorizationPage" });
   // }
-
+ 
   // if (
   //   term_condition_id.value == current_term_condition_id.value &&
   //   privacy_policy_id.value == current_privacy_id.value &&
@@ -273,7 +258,7 @@ onMounted(async () => {
   //   //     break;
   //   // }
   // }
-
+ 
   // if (
   //   term_condition_id.value == current_term_condition_id.value &&
   //   privacy_policy_id.value == current_privacy_id.value &&
@@ -286,7 +271,7 @@ onMounted(async () => {
   //     query: { form_number: formNumberOnUrl.value },
   //   });
   // }
-
+ 
   // if (
   //   term_condition_id.value == current_term_condition_id.value &&
   //   privacy_policy_id.value == current_privacy_id.value &&
@@ -298,7 +283,7 @@ onMounted(async () => {
   //     query: { form_number: formNumberOnUrl.value },
   //   });
   // }
-
+ 
   // if (
   //   term_condition_id.value == current_term_condition_id.value &&
   //   privacy_policy_id.value == current_privacy_id.value &&
@@ -337,37 +322,54 @@ onMounted(async () => {
   //   // }
   // }
   // // if (term_condition_id.value !== current_term_condition_id.value) {
-
+ 
   // // }
-
+ 
   // //   await getCurrentTerms();
   handleToModule(false);
   getUrlArraybuffer();
   getUrlArraybufferpolicy();
 });
-
+ 
 const handleToModule = (is_reload = true) => {
   const termAndPrivacyMatch =
     term_condition_id.value == current_term_condition_id.value &&
     privacy_policy_id.value == current_privacy_id.value;
-
+ 
   if (!termAndPrivacyMatch && is_reload) {
     location.reload();
   }
-
+ 
   if (!termAndPrivacyMatch && !is_reload) {
     return;
   }
-
+ 
   if (member_type.value != 2) {
     router.push({ name: "AuthorizationPage" });
     return;
   }
 
-  if (is_completed_profile.value && is_disclosure.value) {
+  if (is_completed_profile.value && is_disclosure.value && store.sessionInfo.link_to != "ChaneInfoNon") {
     router.push({ name: "AuthorizationPage" });
     return;
   }
+
+  ////change_in-fo
+  if (
+    is_completed_profile.value &&
+    is_disclosure.value &&
+    store.sessionInfo.link_to == "ChaneInfoNon"
+  ) {
+    // router.push({ name: "AuthorizationPage" });
+    router.push({
+      path: "/change-info-non",
+      query: {
+        bp_number: formNumberOnUrl.value
+      }
+    });
+    return;
+  }
+  ////
 
   if (
     !is_completed_profile.value &&
@@ -375,7 +377,7 @@ const handleToModule = (is_reload = true) => {
   ) {
     return;
   }
-
+ 
   if (
     !is_completed_profile.value &&
     status_code_completed_profile.value == 500 &&
@@ -383,19 +385,19 @@ const handleToModule = (is_reload = true) => {
   ) {
     router.push({
       name: "CompanyManagementNon",
-      query: { form_number: formNumberOnUrl.value },
+      query: { form_number: formNumberOnUrl.value }
     });
     return;
   }
-
+ 
   if (!is_disclosure.value) {
     router.push({
       name: "NonDisclosure",
-      query: { form_number: formNumberOnUrl.value },
+      query: { form_number: formNumberOnUrl.value }
     });
     return;
   }
-
+ 
   if (
     !is_completed_profile.value &&
     status_code_completed_profile.value == 500 &&
@@ -405,22 +407,23 @@ const handleToModule = (is_reload = true) => {
     router.push({ name: "AuthorizationPage" });
     return;
   }
-
+ 
   window.location.reload();
 };
-
+ 
 const getBusinessPartnerByBpNumber = async () => {
   try {
     const response = await PartnerServive.getBusinessPartnerByBpNumber(
       bp_number.value
     );
-
+ 
     if (response.data?.is_success) {
+      // console.log("response" , response?.data?.data?.account_business_partner_type?.id)
       // is_successfully.value = response.data?.is_success;
       is_completed_profile.value = response?.data?.data.is_completed_profile;
       status_code_completed_profile.value = 200;
-      bp_group.value = response?.data?.data?.business_partner_group?.id ?? null;
-      console.log("business_partner_group",bp_group.value )
+      bp_group.value = response?.data?.data?.account_business_partner_type?.id;
+      console.log("business_partner_group", bp_group.value);
       // do_rsp_activity.value = response.data?.data?.business_partner_type?.do_rsp_activity ?? null;
     }
   } catch (e) {
@@ -433,20 +436,23 @@ const getBusinessPartnerByBpNumber = async () => {
     // handlingErrorsMessage("unknown", e.message);
   }
 };
-
+ 
 const getRegisterFormDetail = async () => {
   try {
     const responeformdetail = await PartnerServive.getRegisterFormDetail(
       formNumberOnUrl.value
     );
-
+ 
     if (responeformdetail.data?.is_success) {
-      console.log("aaaaaaaaa", responeformdetail.data.data.business_partner_profile_form )
-      if (responeformdetail.data.data.business_partner_profile_form == null  ) {
-        console.log('business_partner_profile_form is null 0000');
+      console.log(
+        "aaaaaaaaa",
+        responeformdetail.data.data.business_partner_profile_form
+      );
+      if (responeformdetail.data.data.business_partner_profile_form == null) {
+        console.log("business_partner_profile_form is null 0000");
         status_profile_form.value = 0;
       } else {
-        console.log('business_partner_profile_form is not null 1111');
+        console.log("business_partner_profile_form is not null 1111");
         status_profile_form.value = 1;
         // const doRspActivity = responeformdetail.data.business_partner_profile_form.business_partner_type.do_rsp_activity ?? null;
         // console.log("do_rsp_activity:", doRspActivity);
@@ -461,13 +467,13 @@ const getRegisterFormDetail = async () => {
     // handlingErrorsMessage("unknown", e.message);
   }
 };
-
+ 
 const getUrlArraybuffer = async () => {
   try {
     const response = await axios({
       method: "get",
       responseType: "arraybuffer",
-      url: current_term_condition_url.value,
+      url: current_term_condition_url.value
     });
     const base64 = arrayBufferToBase64(response.data);
     fileBase64.value = base64;
@@ -475,13 +481,13 @@ const getUrlArraybuffer = async () => {
     handlingErrorsMessage("Failed to load PDF", e.message);
   }
 };
-
+ 
 const getUrlArraybufferpolicy = async () => {
   try {
     const response = await axios({
       method: "get",
       responseType: "arraybuffer",
-      url: current_privacy_url.value,
+      url: current_privacy_url.value
     });
     const base64 = arrayBufferToBase64(response.data);
     fileBase64Policy.value = base64;
@@ -503,7 +509,7 @@ const getTermbyId = async () => {
         term_is_accepted.value = termData?.is_accepted ?? null;
         // term_condition_id.value = response.data.data
         // term_is_accepted.value = response.data.data.is_accepted;
-
+ 
         return;
       }
     }
@@ -586,11 +592,11 @@ const getCurrentPrivacyPolicyAll = async () => {
     handlingErrorsMessage("unknown", e.message);
   }
 };
-
+ 
 //create111
-
+ 
 //create222
-
+ 
 //testPDF
 const getRspPolicyState = async () => {
   try {
@@ -610,15 +616,15 @@ const getRspPolicyState = async () => {
   }
 };
 
-const arrayBufferToBase64 = (buffer) => {
+const arrayBufferToBase64 = buffer => {
   let binary = "";
   const bytes = new Uint8Array(buffer);
-  bytes.forEach((item) => {
+  bytes.forEach(item => {
     binary += String.fromCharCode(item);
   });
   return window.btoa(binary);
 };
-
+ 
 const handleConfirm = async () => {
   console.log("coditionTermbrfor", store.sessionInfo);
   // alert("Proceeding to the next step");
@@ -678,7 +684,7 @@ const handleConfirm = async () => {
         //   //     break;
         //   // }
         // }
-
+ 
         // if (
         //   member_type.value != 2 &&
         //   privacy_policy_id.value == current_privacy_id.value
@@ -687,8 +693,8 @@ const handleConfirm = async () => {
         // }
         // // else {
         // //   console.log("else=term1")
-          // location.reload();
-          // store.getsessionlinkstore();
+        // location.reload();
+        // store.getsessionlinkstore();
         // // }
         handleToModule();
       }
@@ -704,7 +710,7 @@ const handleConfirm = async () => {
     }
   }
 };
-
+ 
 const handleConfirmPolicy = async () => {
   // console.log("term_condition_id.value", term_condition_id.value);
   // console.log(
@@ -805,7 +811,7 @@ const handleConfirmPolicy = async () => {
         const val = e.response.data;
         handlingErrorsMessage(val.message, val?.data?.error);
         console.log("else=catch=policy error");
-
+ 
         return;
       }
       // handlingErrorsMessage("unknown", e.message);
@@ -817,7 +823,7 @@ const handleConfirmPolicy = async () => {
 // complete_profile
 const isHideButton = ref(false);
 const company_info = ref({});
-
+ 
 const formNumberOnUrl = ref("");
 const dataForm = ref({
   partnerRegister: {
@@ -825,23 +831,23 @@ const dataForm = ref({
       bp_number: "",
       business_partner_type: "",
       company_category: "",
-      product_category: "",
-    },
+      product_category: ""
+    }
   },
 
-  partnerDocs: {},
+  partnerDocs: {}
 });
-
+ 
 const createBusinessPartnerProfileBody = ref({
   bp_number: formNumberOnUrl.value,
   business_partner_type_id: "",
   company_category_id: "",
-  product_category: "",
+  product_category: ""
 });
-
+ 
 // const createDocumentBody = ref([]);
 
-const handlePartnerRegisterInput = (data) => {
+const handlePartnerRegisterInput = data => {
   dataForm.value.partnerRegister = data;
 };
 // const encodeFile = (file) => {
@@ -856,7 +862,7 @@ const handlePartnerRegisterInput = (data) => {
 //     reader.readAsDataURL(file);
 //   });
 // };
-
+ 
 // const handleFileRemoved = async (documents) => {
 //   createDocumentBody.value = [];
 //   dataForm.value.partnerDocs = documents;
@@ -904,21 +910,19 @@ onBeforeMount(async () => {
   let auth_email = sessionStorage.getItem("auth_email");
   console.log(auth_email);
   handleAuthorization(auth_email);
-
+ 
   formNumberOnUrl.value = sessionStorage.getItem("bp_numbers");
   console.log("bp_numberdashboard", formNumberOnUrl.value);
-
-
 });
 
-const handleAuthorization = async (email) => {
+const handleAuthorization = async email => {
   try {
     const response = await VerifyService.getAuthenInfo(email);
     if (response.data?.is_success) {
       is_disclosure.value = response.data.data[0].is_disclosure;
       member_type.value = response.data.data[0].member_type.id;
       // console.log("response.data?.is_success", response.data?.is_success)
-
+ 
       // console.log(
       //   "response.data?.is_disclosure",
       //   response.data.data[0].is_disclosure
@@ -934,18 +938,18 @@ const handleAuthorization = async (email) => {
 };
 watch(
   dataForm.value,
-  (newValue) => {
+  newValue => {
     createBusinessPartnerProfileBody.value.bp_number = formNumberOnUrl.value;
     createBusinessPartnerProfileBody.value.business_partner_type_id = Number(
       newValue.partnerRegister.register.business_partner_type
     );
-
+ 
     createBusinessPartnerProfileBody.value.company_category_id =
       newValue.partnerRegister.register.company_category;
-
+ 
     // if (createBusinessPartnerProfileBody.value.company_category_id == "")
     //   createBusinessPartnerProfileBody.value.company_category_id = 0;
-
+ 
     createBusinessPartnerProfileBody.value.product_category =
       newValue.partnerRegister.register.product_category;
   },
@@ -970,46 +974,46 @@ watch(
 //   }
 // };
 // const onSumbitDataInsert = async () => {
-  // // console.log("xxxxxxxxx");
-  // try {
-    // if (!is_disclosure.value) {
-    //   router.push({
-    //     name: "NonDisclosure",
-    //     query: { form_number: formNumberOnUrl.value },
-    //   });
-    // } else {
-    //   store.getsessionlinkstore();
-    //   console.log("coditionTerm", store.sessionInfo);
-    //   switch (store.sessionInfo.actions) {
-    //     case 1:
-    //       router.push({ name: store.sessionInfo.link_to });
-    //       break;
-    //     case 2:
-    //       router.push({
-    //         name: store.sessionInfo.link_to,
-    //         query: { form_number: store.sessionInfo.data },
-    //       });
-    //       break;
-    //     case 3:
-    //       router.push({
-    //         name: store.sessionInfo.link_to,
-    //         query: { form_number: store.sessionInfo.data },
-    //       });
-    //       break;
-    //     case 4:
-    //       router.push({
-    //         name: store.sessionInfo.link_to,
-    //         query: { form_number: store.sessionInfo.data },
-    //       });
-    //       break;
-    //     case 5:
-    //       router.push({
-    //         name: store.sessionInfo.link_to,
-    //         query: { form_number: store.sessionInfo.data },
-    //       });
-    //       break;
-    //   }
-    // }
+// // console.log("xxxxxxxxx");
+// try {
+// if (!is_disclosure.value) {
+//   router.push({
+//     name: "NonDisclosure",
+//     query: { form_number: formNumberOnUrl.value },
+//   });
+// } else {
+//   store.getsessionlinkstore();
+//   console.log("coditionTerm", store.sessionInfo);
+//   switch (store.sessionInfo.actions) {
+//     case 1:
+//       router.push({ name: store.sessionInfo.link_to });
+//       break;
+//     case 2:
+//       router.push({
+//         name: store.sessionInfo.link_to,
+//         query: { form_number: store.sessionInfo.data },
+//       });
+//       break;
+//     case 3:
+//       router.push({
+//         name: store.sessionInfo.link_to,
+//         query: { form_number: store.sessionInfo.data },
+//       });
+//       break;
+//     case 4:
+//       router.push({
+//         name: store.sessionInfo.link_to,
+//         query: { form_number: store.sessionInfo.data },
+//       });
+//       break;
+//     case 5:
+//       router.push({
+//         name: store.sessionInfo.link_to,
+//         query: { form_number: store.sessionInfo.data },
+//       });
+//       break;
+//   }
+// }
 //   } catch (e) {
 //     if (e.response) {
 //       const val = e.response.data;
@@ -1045,7 +1049,7 @@ const onCreateBusinessPartnerProfileForm = async () => {
   }
 };
 const isIsNaturalPerson = ref(false);
-const handleIsNaturalPerson = (value) => {
+const handleIsNaturalPerson = value => {
   isIsNaturalPerson.value = value;
 };
 const handleButtonSend = async () => {
@@ -1055,7 +1059,7 @@ const handleButtonSend = async () => {
   }
 };
 </script>
-
+ 
 <style scoped>
 .pdf-container {
   width: 100%;
@@ -1065,7 +1069,7 @@ const handleButtonSend = async () => {
   align-items: center;
   margin-top: 0px;
 }
-
+ 
 .pdf-card-text {
   margin-top: 0;
 }
@@ -1073,27 +1077,27 @@ const handleButtonSend = async () => {
   width: 70%;
   height: 100%;
 }
-
+ 
 .custom-checkbox {
   width: 20px;
   height: 20px;
   cursor: pointer;
 }
-
+ 
 .btn-active {
   background-color: rgb(var(--v-theme-secondary), 0.1);
   color: rgb(var(--v-theme-secondary)) !important;
   border-bottom-color: red;
   border-bottom-width: 2px;
 }
-
+ 
 @media (min-width: 992px) {
   .box-froms {
     margin-left: 150px;
     margin-right: 150px;
   }
 }
-
+ 
 .v-main {
   background-color: #f7f7f6 !important;
 }

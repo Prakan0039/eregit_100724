@@ -3,17 +3,17 @@
     <!-- <h1 class="text-center">Change Information</h1> -->
     <h2 class="text-center">ข้อมูลผู้ติดต่อ</h2>
 
-    <!-- ฟอร์มเลือก Branch Code -->
     <v-card class="pa-5 mb-5">
       <v-select
         v-model="branchCode"
         :items="branchOptions"
         label="Branch Code"
         required
+        variant="outlined"
+        density="compact"
       ></v-select>
     </v-card>
 
-    <!-- ฟอร์มเพิ่มผู้ติดต่อ -->
     <v-card class="pa-4 mb-5">
       <h3 class="py-3">เพิ่มผู้ติดต่อ</h3>
 
@@ -56,11 +56,7 @@
 
       <!-- ปุ่มเพิ่มฟิลด์ผู้ติดต่อใหม่ -->
       <!-- <v-btn color="green" @click="addNewContact('เพิ่ม')">+ เพิ่มผู้ติดต่อ</v-btn> -->
-      <ButtonControl
-      icon="mdi mdi-plus"
-      text="เพิ่ม"
-      @button-clicked="addNewContact('เพิ่ม')"
-    />
+      <ButtonControl icon="mdi mdi-plus" text="เพิ่ม" @button-clicked="addNewContact('เพิ่ม')" />
     </v-card>
 
     <!-- ฟอร์มยกเลิกผู้ติดต่อ -->
@@ -103,11 +99,7 @@
 
       <!-- ปุ่มเพิ่มฟิลด์ผู้ติดต่อใหม่ -->
       <!-- <v-btn color="red" @click="addNewContact('ยกเลิก')">+ เพิ่มผู้ติดต่อ (ยกเลิก)</v-btn> -->
-      <ButtonControl
-      icon="mdi mdi-plus"
-      text="เพิ่ม"
-      @button-clicked="addNewContact('ยกเลิก')"
-    />
+      <ButtonControl icon="mdi mdi-plus" text="เพิ่ม" @button-clicked="addNewContact('ยกเลิก')" />
     </v-card>
   </v-container>
 </template>
@@ -118,19 +110,16 @@ import ButtonControl from "@/components/controls/ButtonControl.vue";
 
 const emit = defineEmits(["on-data-update"]);
 
-// ข้อมูล Branch Code (ตัวเลือก)
-const branchOptions = ["NVAT", "SVAT", "MVAT"];
+const branchOptions = ["NVAT", "00000"];
 
-// ฟิลด์เลือก branch code
 const branchCode = ref(null);
 
-// ข้อมูลผู้ติดต่อสำหรับ "เพิ่มผู้ติดต่อ"
 const addContacts = ref([
   {
     name: "",
     mobile_number: "",
-    email: "",
-  },
+    email: ""
+  }
 ]);
 
 // ข้อมูลผู้ติดต่อสำหรับ "ยกเลิกผู้ติดต่อ"
@@ -138,26 +127,22 @@ const removeContacts = ref([
   {
     name: "",
     mobile_number: "",
-    email: "",
-  },
+    email: ""
+  }
 ]);
 
-// ใช้งาน emit
-// const emit = defineEmits(["on-data-update"]);
-
-// ฟังก์ชันเพิ่มผู้ติดต่อใหม่
-const addNewContact = (type) => {
+const addNewContact = type => {
   if (type === "เพิ่ม") {
     addContacts.value.push({
       name: "",
       mobile_number: "",
-      email: "",
+      email: ""
     });
   } else if (type === "ยกเลิก") {
     removeContacts.value.push({
       name: "",
       mobile_number: "",
-      email: "",
+      email: ""
     });
   }
 };
@@ -166,34 +151,33 @@ const addNewContact = (type) => {
 const updateData = () => {
   const data = {
     change_contact_information: [
-      ...addContacts.value.map((contact) => ({
+      ...addContacts.value.map(contact => ({
         branch_code: branchCode.value || "",
-        business_partner_name: "", // สามารถเพิ่มฟิลด์นี้ได้หากจำเป็น
+        business_partner_name: "",
         name: contact.name,
         mobile_number: contact.mobile_number,
         email: contact.email,
-        remark: "เพิ่ม",
+        remark: "เพิ่ม"
       })),
-      ...removeContacts.value.map((contact) => ({
+      ...removeContacts.value.map(contact => ({
         branch_code: branchCode.value || "",
-        business_partner_name: "", // สามารถเพิ่มฟิลด์นี้ได้หากจำเป็น
+        business_partner_name: "",
         name: contact.name,
         mobile_number: contact.mobile_number,
         email: contact.email,
-        remark: "ลบ",
-      })),
-    ],
+        remark: "ลบ"
+      }))
+    ]
   };
 
-  emit("on-data-update", data); // ส่งข้อมูลไปยัง parent component
+  emit("on-data-update", data);
   console.log("UAAAAAAAAAAAAAAAAAAAAAAA:", data);
 };
 
-// ใช้ watch เพื่อตรวจจับการเปลี่ยนแปลงในข้อมูล
 watch(
   [addContacts, removeContacts, branchCode],
   () => {
-    updateData(); // อัปเดตข้อมูลทุกครั้งที่มีการเปลี่ยนแปลง
+    updateData();
   },
   { deep: true }
 );

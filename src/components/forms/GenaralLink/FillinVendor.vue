@@ -174,7 +174,7 @@ const selected_items = ref({
 });
 
 watch(data_input.value, (newValue) => {
-  console.log("uuuuuaaaaaaaaaaaaaa", newValue);
+  // console.log("oo", newValue);
   emit("form-update", newValue);
 });
 watch(data_input.value.company_data, (newValue) => {

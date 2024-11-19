@@ -181,7 +181,7 @@ const getPaymentTerm = async () => {
   try {
     // loading.value.roles = true;
     const response = await PaymentTermService.getPaymentTermAll(props.businessPartnerRoleId);
-    console.log("roleId",props.businessPartnerRoleId)
+    // console.log("roleId",props.businessPartnerRoleId)
     if (response.data?.is_success) {
       selected_items.value.items_payment_terms = response.data.data;
       // console.log("termmmmmmmm", selected_items.value.items_payment_terms);

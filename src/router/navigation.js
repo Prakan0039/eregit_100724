@@ -7,6 +7,16 @@ const navigate = [
     isActive: false,
     path: "/BusinessPartner/BusinessPartnerList"
   },
+
+  {
+    id: 2,
+    title:'Admin DashBoard',
+    icon: "mdi mdi-view-dashboard",
+    isActive: false,
+    path: "/AdminDashboard/AdminDashboardPage"
+  },
+
+
    {
     id: 4,
     title:'My Tasks',
@@ -28,6 +38,14 @@ const navigate = [
     icon: "mdi mdi-view-dashboard",
     isActive: false,
     path: "/VendorDashBoard"
+  },
+
+  {
+    id: 9,
+    title:'Member Management',
+    icon: "mdi mdi-account-cog",
+    isActive: false,
+    path: "/MemberManagementPage"
   },
 
   {

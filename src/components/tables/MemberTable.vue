@@ -4,7 +4,7 @@
       <v-card-item>
         <v-row align-center>
           <v-col cols="2">
-            <strong>Email</strong>
+            <strong>Emailsdd</strong>
           </v-col>
           <v-col cols="2">
             <strong>Status User</strong>
@@ -37,7 +37,7 @@
           <v-row no-gutters dense justify="space-around" >
 
             <v-col cols="2" align-self="center">
-               <span class="font-weight-bold">{{i.email}}</span>
+               <span class="font-weight-bold">{{i.user.email}}</span>
             </v-col>
             <v-col cols="2" align-self="center">
               <Active :value="i.is_active" />

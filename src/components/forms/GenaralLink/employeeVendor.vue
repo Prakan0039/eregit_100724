@@ -202,7 +202,7 @@ const displayItemsCompany = computed(() => {
   }));
 });
 watch(data_input.value, () => {
-  console.log("uuuuuaaaaaaaaaaaaaa", data_input.value);
+  // console.log("uuuuuaaaaaaaaaaaaaa", data_input.value);
   emit("form-update", data_input.value);
 });
 

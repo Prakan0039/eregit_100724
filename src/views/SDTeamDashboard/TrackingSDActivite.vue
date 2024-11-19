@@ -176,19 +176,19 @@ const selected_items = ref({
       name: "Business Partner Name",
     },
     {
-      id: "Vendor Number",
+      id: "vender_number",
       name: "vendor Number",
     },
     {
-      id: "tax_ID",
+      id: "tax_id",
       name: "Tax ID",
     },
     {
-      id: "contact_owner",
+      id: "contact_owner_email",
       name: "Contact Owner",
     },
     {
-      id: "Team_owner",
+      id: "team_owner_name",
       name: "Team Owner",
     },
   ],
@@ -219,7 +219,7 @@ const filter = ref({
   date_from: null,
   date_to: null,
   offset: 0,
-  limit: 8,
+  limit: 20,
   page: 1,
   pageSize: 1,
 });

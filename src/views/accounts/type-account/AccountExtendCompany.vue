@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <!-- {{ companyCodesPartner }} -->
     <v-app-bar class="custom-app-bar" v-if="itemsFileDocument.length > 0">
       <AttachedMenat
         :items="itemsFileDocument"
@@ -11,9 +12,9 @@
 
     <div>
       <v-row class="pa-10" justify="center" align="center">
-        <v-col class="d-flex justify-center" cols="12"
-          ><h2>Extend Company</h2></v-col
-        >
+        <v-col class="d-flex justify-center" cols="12">
+          <h2>Extend Company</h2>
+        </v-col>
       </v-row>
 
       <v-card class="pa-5" v-if="stepper === 0">
@@ -21,7 +22,7 @@
         <v-skeleton-loader :loading="isLoading" type="list-item-two-line">
           <v-radio-group v-model="typePartner" color="red">
             <v-radio label="Vendor" :value="1"></v-radio>
-            <v-radio label="Customer" :value="0"></v-radio>
+            <!-- <v-radio label="Customer" :value="0"></v-radio> -->
           </v-radio-group>
         </v-skeleton-loader>
       </v-card>
@@ -33,7 +34,6 @@
         <v-row dense>
           <v-col cols="12">
             <v-autocomplete
-
               v-model="companiesSelection"
               :items="displayItemsCompany"
               item-value="customValue"
@@ -48,9 +48,7 @@
                   style="color: black"
                   variant="outlined"
                   :color="getItemColor(item.value)"
-                >
-                  {{ item.title }}
-                </v-chip>
+                >{{ item.title }}</v-chip>
               </template>
             </v-autocomplete>
           </v-col>
@@ -93,10 +91,10 @@ const route = useRoute();
 const form_number = route.query.form_number;
 
 const displayItemsCompany = computed(() => {
-  return itemsCompanyData.value.map((item) => ({
+  return itemsCompanyData.value.map(item => ({
     ...item,
     displayName: `${item.company_code} - ${item.name_th}`,
-    customValue: { id: item.id, code: item.company_code },
+    customValue: { id: item.id, code: item.company_code }
   }));
 });
 
@@ -115,11 +113,11 @@ const getUploadDocumentByFormNumber = async () => {
       form_number
     );
     if (response.data?.is_success) {
-      itemsFileDocument.value = response.data.data.map((el) => {
+      itemsFileDocument.value = response.data.data.map(el => {
         return {
           file: null,
           file_name: el.document_name,
-          file_size: "no available",
+          file_size: "no available"
         };
       });
     }
@@ -168,7 +166,7 @@ const getCompanies = async () => {
   }
 };
 
-const getBusinessPartnerDetail = async (bp_number) => {
+const getBusinessPartnerDetail = async bp_number => {
   try {
     const response = await PartnerServive.getBusinessPartnerDetail(bp_number);
     if (response.data?.is_success) {
@@ -184,13 +182,13 @@ const getBusinessPartnerDetail = async (bp_number) => {
   }
 };
 
-const onSaveExtenCompany = async (dataBodySave) => {
+const onSaveExtenCompany = async dataBodySave => {
   try {
     const response = await PartnerServive.createExtendCompany(dataBodySave);
     if (response.data?.is_success) {
       router.push({
         name: "AccountManagement",
-        query: { path: "ArchiveTask" },
+        query: { path: "ArchiveTask" }
       });
     }
   } catch (e) {
@@ -206,13 +204,13 @@ const onSaveExtenCompany = async (dataBodySave) => {
 const companyCodesExits = ref({});
 const companyCodesPartner = ref({});
 
-const handleAttchFiles = (item_files) => {
+const handleAttchFiles = item_files => {
   attachFiles.value = item_files;
 };
 
-const getItemColor = (item) => {
+const getItemColor = item => {
   console.log;
-  return companyCodesPartner.value.some((checkItem) => checkItem.id === item.id)
+  return companyCodesPartner.value.some(checkItem => checkItem.id === item.id)
     ? "green"
     : "red";
 };
@@ -225,12 +223,12 @@ const handleOnClick = async () => {
         "กรุณาตรวจสอบข้อมูล คุณไม่สามารถแก้ไขได้แล้ว\nคลิกปุ่ม ตกลง เพื่อดำเนินการ"
       )
     ) {
-      const companyIds = companiesSelection.value.map((el) => el.id);
+      const companyIds = companiesSelection.value.map(el => el.id);
 
       const dataBodySave = {
         form_number: form_number,
         company_id: companyIds.join(","),
-        business_partner_role_id: 1,
+        business_partner_role_id: 1
       };
       await onSaveExtenCompany(dataBodySave);
     }
@@ -242,8 +240,8 @@ const handleOnClick = async () => {
     console.log("Company Ids : ", JSON.stringify(compIds));
 
     companyCodesExits.value = itemsCompanyData.value
-      .filter((company) => compIds.includes(company.id.toString()))
-      .map((company) => {
+      .filter(company => compIds.includes(company.id.toString()))
+      .map(company => {
         return { id: company.id, code: company.company_code };
       });
 
@@ -251,17 +249,27 @@ const handleOnClick = async () => {
     companiesSelection.value = companyCodesExits.value;
 
     if (typePartner.value == "1") {
-      const partnerDetailCode =
-        businessPartnerDetail.value.company_information.company_code_of_vendor.split(
-          ","
-        );
+      const partnerDetailCode = businessPartnerDetail.value.company_information.company_code_of_vendor
+        .toString()
+        .trim()
+        .split(",")
+        .map(code => code.trim());
+
       companyCodesPartner.value = itemsCompanyData.value
-        .filter((company) =>
-          partnerDetailCode.includes(company.company_code.toString())
-        )
-        .map((company) => {
+        .filter(company => partnerDetailCode.includes(company.company_code))
+        .map(company => {
           return { id: company.id, code: company.company_code };
         });
+
+      // const result = itemsCompanyData.value.filter(company => {
+      //   console.log("partnerDetailCode: " + partnerDetailCode + "  || company.company_code : " + company.company_code + " || " + partnerDetailCode.includes(company.company_code.toString()))
+      //   if (partnerDetailCode.includes(company.company_code)) {
+      //     return { id: company.id, code: company.company_code };
+      //   }
+      // });
+
+      // console.log("itemsCompanyData" , JSON.stringify(itemsCompanyData.value))
+      // console.log("partnerDetailCode : ", JSON.stringify(partnerDetailCode));
 
       console.log(
         "Business Partner Detail : ",
@@ -272,15 +280,14 @@ const handleOnClick = async () => {
       console.log("Partner Detail Code : ", JSON.stringify(partnerDetailCode));
       console.log("Company Code : ", JSON.stringify(companyCodesPartner.value));
     } else {
-      const partnerDetailCode =
-        businessPartnerDetail.value.company_information.company_code_of_customer.split(
-          ","
-        );
+      const partnerDetailCode = businessPartnerDetail.value.company_information.company_code_of_customer.split(
+        ","
+      );
       companyCodesPartner.value = itemsCompanyData.value
-        .filter((company) =>
+        .filter(company =>
           partnerDetailCode.includes(company.company_code.toString())
         )
-        .map((company) => {
+        .map(company => {
           return { id: company.id, code: company.company_code };
         });
 
@@ -301,18 +308,15 @@ const handleOnClick = async () => {
 </script>
 
 <style scoped>
-
 .custom-app-bar {
   height: 79px !important;
 }
 :deep(.v-text-field .v-field) {
   border-radius: 10px !important;
-
 }
 
 :deep(.v-chip--variant-tonal .v-chip__underlay) {
   background-color: #ed1c24 !important;
-
 }
 
 :deep(.v-chip.v-chip--density-default) {

@@ -1,8 +1,12 @@
 <template>
   <v-row dense>
-    <!-- {{ data_name.nameth1 }} -->
-    <v-col cols="12"><h2>ที่อยู่</h2></v-col>
-    <!-- {{ props.register_type }} -->
+    <!-- {{ props.registerFormDetail.business_partner_register_form.name_en }} -->
+
+
+    <v-col cols="12">
+      <h2>ที่อยู่</h2>
+    </v-col>
+
     <v-col cols="12">
       <!-- <AddressInputTH
         tag-desc="(TH)"
@@ -14,10 +18,29 @@
         :name="props.nameTh"
         :address="props.addressTh"
         @on-input="handleAddressTH"
-    /> -->
+      />-->
       <v-card class="pl-5 pr-5">
         <v-row dense>
-          <v-col cols="12">
+
+          <v-col cols="12" v-if="business_partner_type==1"  >
+            <v-card-title>
+              <h6>คำนำหน้าชื่อ (ภาษาไทย)</h6>
+            </v-card-title>
+            <v-col cols="12">
+              <v-radio-group
+                bg-color="#dfdfdf"
+                v-model="data_input_head_comp.address_th.name.gender"
+                inline
+               class="mt-0"
+              >
+                <v-radio label="นาย" value="นาย"></v-radio>
+                <v-radio label="นาง" value="นาง"></v-radio>
+                <v-radio label="นางสาว" value="นางสาว"></v-radio>
+              </v-radio-group>
+            </v-col>
+          </v-col>
+
+          <v-col cols="12" class="">
             <v-card-title>
               <h6>Name 1 (TH)</h6>
             </v-card-title>
@@ -137,7 +160,7 @@
             :address-item="data_input_head_comp.address_th.location"
             @on-input="handleAddressInput"
             class="ml-5 mt-n5"
-          /> -->
+            />-->
             <v-row dense>
               <v-col cols="12" class="mt-n1">
                 {{ data_input.value }}
@@ -212,6 +235,7 @@
         tag-desc="(EN)"
         :is-not-team="false"
         :is-address="true"
+        :isGender="1"
         :register_type="props.register_type"
         :isDisableAddress="false"
         key-title="name_en"
@@ -232,24 +256,28 @@
           tag-desc="(EN Branch)"
           @on-input="handleAddressEN"
         />
-      </v-card> -->
+      </v-card>-->
     </v-col>
-    <v-col cols="12"><CountryInput @on-input="handleCountry" /></v-col>
-    <v-col cols="12" v-for="(item, index) in props.contactItems" :key="index"
-      ><ContactInput
+    <v-col cols="12">
+      <CountryInput @on-input="handleCountry" />
+    </v-col>
+
+    <v-col cols="12" v-for="(item, index) in props.contactItems" :key="index">
+      <ContactInput
         :index="index"
         :name="item.name"
         :email="item.email"
         :phone="item.phone"
         @on-input="handleContact"
-    /></v-col>
+      />
+    </v-col>
   </v-row>
 </template>
 
 <script setup>
 import { ref, watch, watchEffect } from "vue";
 
-const textRequired = [(v) => !!v || "กรุณากรอกข้อมูลให้ครบถ้วน"];
+const textRequired = [v => !!v || "กรุณากรอกข้อมูลให้ครบถ้วน"];
 
 // import AddressInputTH from "../controls/AddressInput.vue";
 import AddressInputEN from "../controls/AddressInput.vue";
@@ -268,73 +296,73 @@ const props = defineProps({
   addressEn: String,
   addressTh: String,
   taxPayerIdNumber: {
-    type: String,
+    type: String
   },
 
   register_type: {
-    type: Number,
+    type: Number
   },
   addressItem: {
     type: Object,
-    default: null,
+    default: null
   },
   addressItemEn: {
     type: Object,
-    default: null,
+    default: null
   },
   contactItems: {
     type: Array,
-    default: () => [{ index: 0, name: "", email: "", phone: "" }],
+    default: () => [{ index: 0, name: "", email: "", phone: "" }]
   },
   registerFormDetail: {
     type: Object,
-    default: () => {},
-  },
+    default: () => {}
+  }
 });
 
 const rules_valid = ref({
-  companyData: [(v) => !!v || "กรุณากรอกข้อมูลให้ครบ"],
+  companyData: [v => !!v || "กรุณากรอกข้อมูลให้ครบ"],
   role: [
     () =>
       data_input.value.employee_data.data.some(Boolean) ||
-      "กรุณากรอกข้อมูลให้ครบ",
+      "กรุณากรอกข้อมูลให้ครบ"
   ],
   namerequire: [
-    (v) => (v != null && v.length <= 35) || "*กรุณากรอกชื่อไม่เกิน 35 ตัวอักษร",
+    v => (v != null && v.length <= 35) || "*กรุณากรอกชื่อไม่เกิน 35 ตัวอักษร",
 
-    (v) =>
+    v =>
       (v != null &&
         v.trim().length > 0 &&
         /^[^\s](.*[^\s])?$/.test(v.trim())) ||
-      "* กรุณากรอกข้อมูลให้ถูกต้อง",
+      "* กรุณากรอกข้อมูลให้ถูกต้อง"
   ],
 
   searchtermone: [
-    (v) => (v != null && v.length <= 20) || "*กรุณากรอกชื่อไม่เกิน 20 ตัวอักษร",
+    v => (v != null && v.length <= 20) || "*กรุณากรอกชื่อไม่เกิน 20 ตัวอักษร",
 
-    (v) =>
+    v =>
       (v != null &&
         v.trim().length > 0 &&
         /^[^\s](.*[^\s])?$/.test(v.trim())) ||
-      "* กรุณากรอกข้อมูลให้ถูกต้อง",
+      "* กรุณากรอกข้อมูลให้ถูกต้อง"
   ],
   //   namerequire: [
   //   (v) => (v != null && v.trim().length <= 35) || "*กรุณากรอกชื่อไม่เกิน 35 ตัวอักษร",
   //   (v) => (v != null && v.trim().length > 0) || "* กรุณากรอกข้อมูลให้ถูกต้อง",
   // ],
-  name: [(v) => !v || v.length <= 35 || "*กรุณากรอกชื่อไม่เกิน 35 ตัวอักษร"],
+  name: [v => !v || v.length <= 35 || "*กรุณากรอกชื่อไม่เกิน 35 ตัวอักษร"],
   addressrequire: [
-    (v) => (v != null && v.length <= 60) || "*กรุณากรอกชื่อไม่เกิน 60 ตัวอักษร",
+    v => (v != null && v.length <= 60) || "*กรุณากรอกชื่อไม่เกิน 60 ตัวอักษร",
 
-    (v) =>
+    v =>
       (v != null &&
         v.trim().length > 0 &&
         /^[^\s](.*[^\s])?$/.test(v.trim())) ||
-      "* กรุณากรอกข้อมูลให้ถูกต้อง",
+      "* กรุณากรอกข้อมูลให้ถูกต้อง"
   ],
   address2: [
-    (v) => v == null || v.length <= 40 || "*กรุณากรอกชื่อไม่เกิน 40 ตัวอักษร",
-  ],
+    v => v == null || v.length <= 40 || "*กรุณากรอกชื่อไม่เกิน 40 ตัวอักษร"
+  ]
 
   // radioRules: [(v) => !!v || "กรุณาเลือก 1 อัน"],
 });
@@ -346,8 +374,9 @@ const data_input = ref({
   district: null,
   parish: null,
   zip_code: null,
-  zip_code_value: "",
+  zip_code_value: ""
 });
+const fname = ref("");
 
 const itemsDistrict = ref([]);
 const itemsSubDistrict = ref([]);
@@ -356,26 +385,27 @@ const itemsPostCode = ref([]);
 const data_input_head_comp = ref({
   address_th: {
     name: {
+      gender:"",
       one: "",
       two: "",
       three: "",
-      four: "",
+      four: ""
     },
     search: {
       one: "",
-      two: "",
+      two: ""
     },
     address: {
       one: "",
-      two: "",
+      two: ""
     },
     location: {
       province: null,
       district: null,
       parish: null,
       zip_code: null,
-      zip_code_value: "",
-    },
+      zip_code_value: ""
+    }
   },
   address_en: {
     location: {
@@ -383,11 +413,11 @@ const data_input_head_comp = ref({
       district: null,
       parish: null,
       zip_code: null,
-      zip_code_value: "",
-    },
+      zip_code_value: ""
+    }
   },
   country_info: {},
-  contacts: [],
+  contacts: []
   //  props.contactItems.map((el) => {
   //   return {
   //     index: el.index,
@@ -399,6 +429,7 @@ const data_input_head_comp = ref({
 });
 
 const initail = ref(true);
+const business_partner_type = props?.registerFormDetail?.business_partner_profile_form?.business_partner_type?.id;
 
 function splitText(text) {
   // กำหนดความยาวแต่ละส่วน
@@ -436,7 +467,7 @@ function splitText(text) {
     part1: part1,
     part2: part2,
     part3: part3,
-    part4: part4,
+    part4: part4
   };
 }
 
@@ -461,17 +492,49 @@ function splitTextAddress(text) {
 
   return {
     part1: part1,
-    part2: part2,
+    part2: part2
   };
 }
 
 const company_th = ref(props.nameTh);
 const address_th = ref(props.addressTh);
 
+// function extractPrefix(name) {
+//   const prefixMatch = name.match(/^(นาย|นางสาว|นาง)/);
+//   return prefixMatch ? prefixMatch[0] : "";
+// }
 watchEffect(async () => {
   if (initail.value && props.registerFormDetail) {
     const txtSprict = splitText(company_th.value);
     const txtSprictAdress = splitTextAddress(address_th.value);
+
+    let regexTh = /^(นาย|นางสาว|นาง)/;
+      let matchTh = regexTh.exec(
+        props.registerFormDetail.business_partner_register_form.name_th
+      );
+      if (matchTh) {
+        switch (matchTh[0]) {
+          case "นาย":
+            props.registerFormDetail.business_partner_register_form.name_th =
+              props.registerFormDetail.business_partner_register_form.name_th.replace("นาย", "");
+            data_input_head_comp.value.address_th.name.gender = "นาย";
+            break;
+          case "นางสาว":
+            props.registerFormDetail.business_partner_register_form.name_th =
+              props.registerFormDetail.business_partner_register_form.name_th.replace(
+                "นางสาว",
+                ""
+              );
+            data_input_head_comp.value.address_th.name.gender = "นางสาว";
+            break;
+          case "นาง":
+            props.registerFormDetail.business_partner_register_form.name_th =
+              props.registerFormDetail.business_partner_register_form.name_th.replace("นาง", "");
+            data_input_head_comp.value.address_th.name.gender = "นาง";
+            break;
+        }
+      }
+
 
     if (
       props.registerFormDetail?.account_information_form?.name1_th &&
@@ -583,20 +646,20 @@ watchEffect(async () => {
   }
 });
 
-const handleAddressEN = (data_obj) => {
+const handleAddressEN = data_obj => {
   data_input_head_comp.value.address_en = data_obj;
 };
 
-const handleCountry = (data_obj) => {
+const handleCountry = data_obj => {
   data_input_head_comp.value.country_info = data_obj;
 };
 
-const handleContact = (data_obj) => {
+const handleContact = data_obj => {
   data_input_head_comp.value.contact_info[data_obj.index] = {
     index: data_obj.index,
     name: data_obj.name,
     phone: data_obj.phone,
-    email: data_obj.email,
+    email: data_obj.email
   };
 };
 
@@ -651,7 +714,7 @@ watch(
 
 watch(
   data_input_head_comp.value,
-  (newValue) => {
+  newValue => {
     emit("on-input", newValue);
   },
   { deep: true }

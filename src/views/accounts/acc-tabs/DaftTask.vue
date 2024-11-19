@@ -157,7 +157,7 @@ const onHandleItemClick = (item) => {
         query: { id: item.id, form_number: item.form_number },
       });
       break;
-    case "Change Info.":
+      case "Change Information":
       router.push({
         name: "AccountChangeInfo",
         query: { form_number: item.form_number },

@@ -797,16 +797,17 @@ const getRspSurveyResultDetail = async (bp_number) => {
       survey_result_details.value = response.data?.data;
       console.log("survey_result_details", survey_result_details.value)
       totalScore.value = Number (survey_result_details.value.survey_result.total_score)
+      console.log("totalScore.value", totalScore.value)
      calculateGrade();
 
     }
   } catch (e) {
     if (e.response) {
       const val = e.response.data;
-      handlingErrorsMessage(val.message, val?.data.error);
+      // handlingErrorsMessage(val.message, val?.data.error);
       return;
     }
-    handlingErrorsMessage("unknown", e.message);
+    // handlingErrorsMessage("unknown", e.message);
   } finally {
     loader.value.survey_result = false;
   }

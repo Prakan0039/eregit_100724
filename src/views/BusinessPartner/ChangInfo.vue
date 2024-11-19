@@ -1,12 +1,12 @@
 <template>
   <div>
-    {{ options.scope }}
     <ChangeInformation
       v-if="current_view === 1"
       :DataInfo="businessPartnerChangInfo"
       @on-next="handle_update_step"
       @on-input-item-contact="handleInputItemsContact"
     />
+    <v-form ref="formChangeInfo">
     <FormInformation
       v-if="current_view === 2"
       :IsAccount="options.selectedBank"
@@ -18,6 +18,7 @@
       @on-input-files="handleInputDocuments"
       @remove-file="handleFileRemoved"
     />
+    </v-form>
 
     <!-- <ChooseMultiFiles
     :max-file="10"
@@ -35,7 +36,11 @@ import FormInformation from "./FormInformation.vue";
 import { useRoute, useRouter } from "vue-router";
 import PartnerServive from "@/apis/PartnerServive";
 import { useErrorHandlingDialog } from "@/components/dialogs/ExceptionHandleDialogService";
+import { useConfirmationDialog } from "@/components/dialogs/ConfirmationDialogService";
+import ShowDialog from "@/components/dialogs/ConfirmDialog.vue";
 const { handlingErrorsMessage } = useErrorHandlingDialog();
+const { showDialog } = useConfirmationDialog();
+
 // const router = useRouter();
 const router = useRouter();
 const route = useRoute();
@@ -53,6 +58,7 @@ let options = reactive({
   scope: "",
   vendorDetails: "",
 });
+const formChangeInfo = ref(null);
 
 // Capture emitted items_contects from ChangeInformation
 const handleInputItemsContact = (newItemsContects) => {
@@ -222,6 +228,9 @@ const dataBodyChangInfo = ref({
   ],
 });
 const handleFormInformationCommit = async (data) => {
+  const is_valid = await formChangeInfo.value.validate();
+  console.log(is_valid["valid"]);
+  if (is_valid && !is_valid["valid"]) return;
   console.log("handleFormInformationCommit", data);
   dataBodyChangInfo.value.bp_number = route.query?.bp_number ?? null;
   dataBodyChangInfo.value.changed_part_id = options.scope;
@@ -343,7 +352,7 @@ const handleFormInformationCommit = async (data) => {
     ) {
       dataBodyChangInfo.value.change_contact_information =
         data.info_contact.change_contact_information.map((item) => ({
-          branch_code: item.branchCode?.trim() || "", // ใช้ trim() เพื่อลบช่องว่างถ้ามี
+          branch_code: item.branch_code?.trim() || "", // ใช้ trim() เพื่อลบช่องว่างถ้ามี
           business_partner_name: item.business_partner_name?.trim() || "",
           name: item.name?.trim() || "",
           mobile_number: item.mobile_number?.trim() || "",
@@ -366,6 +375,12 @@ const handleFormInformationCommit = async (data) => {
 
     // dataBodyChangInfo.value.change_contact_information[0].remark = "";
   }
+      const confirmed = await showDialog(
+      "ยืยยันการแก้ไขข้อมูล ?",
+      "กรุณาตรวจสอบข้อมูล คุณไม่สามารถกลับมาแก้ไขได้อีก\nคลิกปุ่ม ตกลง เพื่อดำเนินการ"
+    );
+
+    if (!confirmed) return;
 
   try {
     // for (let i = 0; i < dataBodyChangInfo.value.items_contects.length; i++) {
@@ -387,20 +402,27 @@ const handleFormInformationCommit = async (data) => {
       dataBodyChangInfo.value
     );
     if (response.data?.is_success) {
-      if (createDocumentBody.value.length > 0) {
-        await onCreatePartnerDocumentUploads();
-        // window.alert(response.data.message);
-        router.push({
-          path: "/BusinessPartner/BusinessPartnerList",
-        });
-      } else {
-        router.push({
-        path: "/BusinessPartner/BusinessPartnerList",
-      });
-      }
-      // handleToComapnyProfile(response.data.data?.form_number);
+      
+  if (createDocumentBody.value.length > 0) {
+    await onCreatePartnerDocumentUploads();
+    // window.alert(response.data.message);
+    router.push({
+      path: "/BusinessPartner/BusinessPartnerList",
+    }).then(() => {
 
-    }
+      window.scrollTo(0, 0);
+    });
+  } else {
+    console.log("Not onCreatePartnerDocumentUploads");
+    router.push({
+      path: "/BusinessPartner/BusinessPartnerList",
+    }).then(() => {
+
+      window.scrollTo(0, 0);
+    });
+  }
+  // handleToComapnyProfile(response.data.data?.form_number);
+}
   } catch (e) {
     if (e.response) {
       const val = e.response.data;

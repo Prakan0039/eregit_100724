@@ -352,9 +352,7 @@ const createRspSuveyEvaluationCriteria = async (objQuestion = {}) => {
   });
 };
 
-const updateRspSuveyEvaluationCriteria = async (
-  objQuestion = {}
-) => {
+const updateRspSuveyEvaluationCriteria = async (objQuestion = {}) => {
   return await axiosBase({
     method: "post",
     url: "/rsp/update-rsp-survey-evaluation-criteria",
@@ -603,8 +601,8 @@ const updateRspTraining = async (
     data: {
       rsp_training_id: training_id,
       name: String(name),
-      data:  String(file),
-      role_id:  String(role_id),
+      data: String(file),
+      role_id: String(role_id),
       published_at: active_at,
       updated_user_id: Number(sessionStorage.getItem("userId")),
     },
@@ -671,6 +669,22 @@ const permanentlyDeleteRspTraining = async (_rsp_traning_id) => {
   });
 };
 
+const getIncompletedRspTrainingResults = async (bp_number, limit, offset) => {
+  return await axiosBase({
+    method: "get",
+    url: `/rsp/get-incompleted-rsp-training-results?offset=${offset}&limit=${limit}&sort-by=id:desc&bp_number=${bp_number}`,
+    data: {},
+  });
+};
+
+const getCompletedRspTrainingResults = async (bp_number, limit, offset) => {
+  return await axiosBase({
+    method: "get",
+    url: `/rsp/get-completed-rsp-training-results?offset=${offset}&${limit}=10&sort-by=id:desc&bp_number=${bp_number}`,
+    data: {},
+  });
+};
+
 export default {
   getRspTraining,
   createRspTraining,
@@ -715,7 +729,7 @@ export default {
   getRspSurveys,
   createRspSuvey,
   getRspPolicyPagination,
-  // getRspSuveyQusetion,
+  
   createRspSuveyQusetion,
   createRspSuveyEvaluationCriteria,
   exportRspSurveyResult,
@@ -727,4 +741,7 @@ export default {
   updateRspSuveyQusetion,
   updateRspSuveyEvaluationCriteria,
   geteValuationCriteriaBySurvey,
+
+  getIncompletedRspTrainingResults,
+  getCompletedRspTrainingResults,
 };

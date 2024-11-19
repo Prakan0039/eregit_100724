@@ -2,6 +2,12 @@
   <!-- เปลี่ยนที่อยู่ -->
   <v-container fuild>
     <v-row dense no-gutters>
+      <!-- {{ changeAddress }} -->
+
+      <!-- {{ data_input.addressTh }} -->
+<!-- {{ propsVar.changeAddress?.province_th?.id }} -->
+      <!-- {{ propsVar.changeAddress }} -->
+
       <v-col cols="12"><h2>เปลี่ยนที่อยู่</h2></v-col>
       <v-col cols="12">
         <v-card class="">
@@ -196,7 +202,7 @@
                 variant="outlined"
               ></v-text-field>
             </v-col>
-            <AddressInputControlTH
+            <!-- <AddressInputControlTH
               tag-desc="(TH)"
               key-value="id"
               key-title="name_th"
@@ -204,7 +210,71 @@
               :address-item="data_input.addressTh"
               @on-input="handleAddressInputTH"
               class="ml-4 mr-4"
-            />
+            /> -->
+
+            <v-col cols="12" class="mt-n7">
+              <v-card-title class="">
+                <h6>จังหวัด</h6>
+              </v-card-title>
+              <v-autocomplete
+                v-model="data_input.addressTh.province"
+                :items="store.provinces"
+                item-title="name_th"
+                item-value="id"
+                density="compact"
+                class="ml-4 mr-4"
+              
+                variant="outlined"
+              ></v-autocomplete>
+            </v-col>
+    
+            <v-col cols="12" class="mt-n7">
+              <v-card-title class="">
+                <h6>เขต/อำเภอ</h6>
+              </v-card-title>
+              <v-autocomplete
+                v-model="data_input.addressTh.district"
+                :items="itemsDistrict"
+                class="ml-4 mr-4"
+                item-title="name_th"
+                item-value="id"
+                density="compact"
+                variant="outlined"
+              ></v-autocomplete>
+            </v-col>
+    
+            <v-col cols="12" class="mt-n7">
+              <v-card-title class="">
+                <h6>แขวง/ตำบล</h6>
+              </v-card-title>
+              <v-autocomplete
+                v-model="data_input.addressTh.parish"
+                class="ml-4 mr-4"
+                :items="itemsSubDistrict"
+                item-title="name_th"
+                item-value="id"
+                density="compact"
+                variant="outlined"
+              ></v-autocomplete>
+            </v-col>
+    
+            <v-col cols="12" class="mt-n7">
+              <v-card-title class="">
+                <h6>รหัสไปรษณีย์</h6>
+              </v-card-title>
+              <v-text-field
+                v-model="data_input.addressTh.zip_code"
+                item-title="code"
+                item-value="id"
+                density="compact"
+                dense
+                disabled
+                variant="outlined"
+                class="ml-4 mr-4"
+                readonly
+                bg-color="#dfdfdf"
+              ></v-text-field>
+            </v-col>
 
             <v-col cols="12" class="mt-n7">
               <v-card-title>
@@ -231,14 +301,6 @@
                 variant="outlined"
               ></v-text-field>
             </v-col>
-            <!-- <AddressInputControlEN
-              tag-desc="(EN)"
-              key-value="id"
-              key-title="name_en"
-              :is-disable-address="true"
-              :address-item="data_input.address"
-              class="ml-5"
-            /> -->
             <ManaulAddressInputControl
               :address-item="data_input.addressEn"
               tag-desc="(ภาษาอังกฤษ)"
@@ -252,10 +314,17 @@
   </v-container>
 </template>
 <script setup>
-import { ref, watch, watchEffect } from "vue";
-// import AddressInputControlEN from "@/components/controls/AddressInputControl.vue";
-import AddressInputControlTH from "@/components/controls/AddressInputControl.vue";
+import { ref, watch, onMounted, watchEffect, nextTick } from "vue";
+// import { ref } from "vue";
 import ManaulAddressInputControl from "@/components/controls/ManaulAddressInputControl.vue";
+
+import { useMyAddressStore } from "@/stores/addressDataStore";
+
+const store = useMyAddressStore();
+
+const itemsDistrict = ref([]);
+const itemsSubDistrict = ref([]);
+const itemsPostCode = ref([]);
 
 const propsVar = defineProps({
   changeAddress: {
@@ -266,11 +335,8 @@ const propsVar = defineProps({
 
 const emit = defineEmits(["on-data-update"]);
 
-// const itemsBranchCode = ref([]);
-// const itemsBranchDesc = ref([]);
-
 const required = [(v) => !!v || "กรุณากรอกข้อมูลให้ครบถ้วน"];
-
+// Initialize data_input object to hold form data
 const data_input = ref({
   partner_number: "",
   name_1_th: "",
@@ -299,13 +365,14 @@ const data_input = ref({
     province: null,
     district: null,
     parish: null,
-    zip_code: null,
+    zip_code_value: null,
   },
   branch_code: null,
   branch_description: null,
   business_partner_role: null,
 });
 
+// Prefill branch description based on branch code
 const prefillBranchDesc = (branchCode) => {
   switch (branchCode) {
     case "NVAT":
@@ -317,61 +384,107 @@ const prefillBranchDesc = (branchCode) => {
   }
 };
 
-watchEffect(() => {
-  data_input.value.partner_number =
-    propsVar.changeAddress?.business_partner_number;
+// Prefill form data on first mount
+onMounted(async () => {
+  if (data_input.value.addressTh.province) {
+    await loadDistricts(data_input.value.addressTh.province);
+    data_input.value.addressTh.district = propsVar.changeAddress?.district_th?.id;
 
-  data_input.value.name_1_th = propsVar.changeAddress?.name1_th;
-  data_input.value.name_2_th = propsVar.changeAddress?.name2_th;
-  data_input.value.name_3_th = propsVar.changeAddress?.name3_th;
-  data_input.value.name_4_th = propsVar.changeAddress?.name4_th;
+    if (data_input.value.addressTh.district) {
+      await loadSubDistricts(data_input.value.addressTh.district);
+      data_input.value.addressTh.parish = propsVar.changeAddress?.subdistrict_th?.id;
 
-  data_input.value.name_1_en = propsVar.changeAddress?.name1_en;
-  data_input.value.name_2_en = propsVar.changeAddress?.name2_en;
-  data_input.value.name_3_en = propsVar.changeAddress?.name3_en;
-  data_input.value.name_4_en = propsVar.changeAddress?.name4_en;
-
-  data_input.value.search_term1_th = propsVar.changeAddress?.search_term1_th;
-  data_input.value.search_term1_en = propsVar.changeAddress?.search_term1_th;
-
-  data_input.value.address_1_th = propsVar.changeAddress?.address_th;
-  data_input.value.address_2_th = propsVar.changeAddress?.address1_th;
-  data_input.value.address_3_th = propsVar.changeAddress?.address2_th;
-
-  data_input.value.address_1_en = propsVar.changeAddress?.address_en;
-  data_input.value.address_2_en = propsVar.changeAddress?.address1_en;
-  data_input.value.address_3_en = propsVar.changeAddress?.address2_en;
-
-  data_input.value.business_partner_role =
-    propsVar.changeAddress.business_partner_role?.id;
-
-  data_input.value.addressTh = {
-    province: propsVar.changeAddress?.province_th?.id,
-    district: propsVar.changeAddress?.district_th?.id,
-    parish: propsVar.changeAddress?.subdistrict_th?.id,
-    zip_code: propsVar.changeAddress?.postal_code_th?.id,
-  };
-
-  data_input.value.addressEn = {
-    province: propsVar.changeAddress?.province_en,
-    district: propsVar.changeAddress?.district_en,
-    parish: propsVar.changeAddress?.subdistrict_en,
-    zip_code: propsVar.changeAddress?.postal_code_en?.id,
-  };
-
-  data_input.value.branch_code = propsVar.changeAddress?.branch_code;
-  data_input.value.branch_description = prefillBranchDesc(
-    propsVar.changeAddress?.branch_code
-  );
+      if (data_input.value.addressTh.parish) {
+        await loadPostCodes(data_input.value.addressTh.parish);
+        data_input.value.addressTh.zip_code = itemsPostCode.value[0]?.code;
+      }
+    }
+  }
 });
 
+watch(
+  () => data_input.value.addressTh.zip_code,
+  async (newZipCode) => {
+    if (newZipCode) {
+      await nextTick();  
+      data_input.value.addressEn.zip_code_value = newZipCode;
+      console.log("addressEn.zip_code updated after nextTick:qqqqqqq", data_input.value.addressEn.zip_code_value);
+    }
+  }
+);
 
-const handleAddressInputTH = (address) => {
-  data_input.value.addressTh = address;
+
+// Watch province for changes and update districts accordingly
+watch(
+  () => data_input.value.addressTh.province,
+  async (newProvince, oldProvince) => {
+    if (newProvince !== oldProvince && newProvince) {
+      data_input.value.addressTh.district = null;
+      data_input.value.addressTh.parish = null;
+      data_input.value.addressTh.zip_code = null;
+
+      itemsDistrict.value = []; 
+      itemsSubDistrict.value = []; 
+      itemsPostCode.value = []; // Clear postcodes
+
+      // Load districts for the selected province
+      await loadDistricts(newProvince);
+    }
+  }
+);
+
+watch(
+  () => data_input.value.addressTh.district,
+  async (newDistrict, oldDistrict) => {
+    if (newDistrict !== oldDistrict && newDistrict) {
+      // Clear the parish and zip code when a new district is selected
+      data_input.value.addressTh.parish = null;
+      data_input.value.addressTh.zip_code = null;
+
+      itemsSubDistrict.value = []; 
+      itemsPostCode.value = []; 
+
+      await loadSubDistricts(newDistrict);
+    }
+  }
+);
+
+watch(
+  () => data_input.value.addressTh.parish,
+  async (newParish, oldParish) => {
+    if (newParish !== oldParish && newParish) {
+      await loadPostCodes(newParish);
+      data_input.value.addressTh.zip_code = itemsPostCode.value[0]?.code;
+    }
+  }
+);
+
+const loadDistricts = async (provinceId) => {
+  try {
+    await store.getDistrict(provinceId);
+    itemsDistrict.value = store.districts;  
+  } catch (error) {
+    console.error("Error loading districts:", error);
+  }
 };
 
-const handleAddressInputEn = (address) => {
-  data_input.value.addressEn = address;
+const loadSubDistricts = async (districtId) => {
+  try {
+    await store.getSubDistrict(districtId);
+    itemsSubDistrict.value = store.subDistricts; 
+  } catch (error) {
+    console.error("Error loading subdistricts:", error);
+  }
+};
+
+// Load postcodes for a given parish
+const loadPostCodes = async (parishId) => {
+  try {
+    await store.getPostCode(parishId);
+    itemsPostCode.value = store.postCodes;  
+  } catch (error) {
+    console.error("Error loading postcodes:", error);
+  }
 };
 
 watch(
@@ -382,6 +495,80 @@ watch(
       newValue: data_input.value,
     });
   },
-  { deep: true, immediate: true }
+  { deep: true }
 );
+
+// watch(
+//   () => data_input.value.addressTh.zip_code,
+//   (newZipCode) => {
+//     if (newZipCode) {
+//       // Set addressEn.zip_code to match addressTh.zip_code
+//       data_input.value.addressEn.zip_code = newZipCode;
+//     }
+//   },
+//   { deep: true }
+// );
+
+
+
+// Prefill address and other data from propsVar.changeAddress
+watchEffect(() => {
+  data_input.value.partner_number =
+    propsVar.changeAddress?.business_partner_number ?? null;
+
+  data_input.value.name_1_th = propsVar.changeAddress?.name1_th ?? null;
+  data_input.value.name_2_th = propsVar.changeAddress?.name2_th ?? null;
+  data_input.value.name_3_th = propsVar.changeAddress?.name3_th ?? null;
+  data_input.value.name_4_th = propsVar.changeAddress?.name4_th ?? null;
+
+  data_input.value.name_1_en = propsVar.changeAddress?.name1_en ?? null;
+  data_input.value.name_2_en = propsVar.changeAddress?.name2_en ?? null;
+  data_input.value.name_3_en = propsVar.changeAddress?.name3_en ?? null;
+  data_input.value.name_4_en = propsVar.changeAddress?.name4_en ?? null;
+
+  data_input.value.search_term1_th = propsVar.changeAddress?.search_term1_th ?? null;
+  data_input.value.search_term1_en = propsVar.changeAddress?.search_term1_th ?? null;
+
+  data_input.value.address_1_th = propsVar.changeAddress?.address_th ?? null;
+  data_input.value.address_2_th = propsVar.changeAddress?.address1_th ?? null;
+  data_input.value.address_3_th = propsVar.changeAddress?.address2_th ?? null;
+
+  data_input.value.address_1_en = propsVar.changeAddress?.address_en ?? null;
+  data_input.value.address_2_en = propsVar.changeAddress?.address1_en ?? null;
+  data_input.value.address_3_en = propsVar.changeAddress?.address2_en ?? null;
+
+  data_input.value.business_partner_role =
+    propsVar.changeAddress.business_partner_role?.id ?? null;
+
+  data_input.value.addressTh = {
+    province: propsVar.changeAddress?.province_th?.id ?? null,
+    district: propsVar.changeAddress?.district_th?.id ?? null,
+    parish: propsVar.changeAddress?.subdistrict_th?.id ?? null,
+    zip_code: propsVar.changeAddress?.postal_code_th?.id ?? null,
+  };
+
+  data_input.value.addressEn = {
+    province: propsVar.changeAddress?.province_en ?? null,
+    district: propsVar.changeAddress?.district_en ?? null,
+    parish: propsVar.changeAddress?.subdistrict_en ?? null,
+    zip_code_value: propsVar.changeAddress?.postal_code_th?.id ?? null,
+  };
+
+  data_input.value.branch_code = propsVar.changeAddress?.branch_code ?? null;
+  data_input.value.branch_description = prefillBranchDesc(
+    propsVar.changeAddress?.branch_code ?? null
+  );
+});
+
+const handleAddressInputTH = (address) => {
+  data_input.value.addressTh = address;
+};
+
+const handleAddressInputEn = (address) => {
+  data_input.value.addressEn = address;
+};
 </script>
+
+
+
+

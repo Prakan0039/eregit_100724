@@ -17,10 +17,12 @@
     <v-main class="d-flex align-center justify-center">
       <v-container fluid>
         <div class="pa-7 ma-9">
+          <!-- {{ store.sessionInfo.link_to }} -->
            <!-- <p>status: {{ status_code_bp_number }}</p> -->
           <v-card rounded class="mx-auto pa-4">
             <v-card-title class="d-flex align-center justify-center">
               <v-row dense no-gutters class="mb-4">
+                <!-- {{ store.sessionInfo.link_to  }} -->
                 <v-col cols="12" class="text-center mb-5">
                   <h3>
                     แบบรายงานและเปิดเผยความขัดแย้งและผลประโยชน์
@@ -403,12 +405,13 @@ import { useErrorHandlingDialog } from "@/components/dialogs/ExceptionHandleDial
 const route = useRoute();
 const router = useRouter();
 import UserService from "@/apis/UserService";
+import { useSessionInfoStore } from "@/stores/papdStore";
 const formNumberOnUrl = ref(route.query.form_number);
 import ExceptionHandleDialog from "@/components/dialogs/ExceptionHandleDialog.vue";
 // import ConfirmDialog from "@/components/dialogs/ConfirmDialog.vue";
 // const formNumberOnUrl = ref(route.query.form_number);
 // import AlertSuccessDialog from "@/components/dialogs/AlertSuccessDialog.vue";
-
+const store = useSessionInfoStore();
 const businessPartnerFormId = ref({});
 const registeredUserEmail = ref("");
 const user_id = ref("");
@@ -428,6 +431,7 @@ const input_data = ref({
   items_name: [],
   lastname: "",
 });
+let apiCompletedCount = 0;
 const detailFormBpNumber = ref({});
 const rules_valid = ref({
   require: [(v) => !!v || "กรุณากรอกข้อมูลให้ครบ"],
@@ -540,6 +544,8 @@ onMounted(async () => {
     await getBusinessPartnerByBpNumber(formNumberOnUrl.value);
   }
   user_id.value = sessionStorage.getItem("userId");
+  store.getsessionlinkstore();
+  // console.log("ommount", store.sessionInfo.link_to);
   // console.log("user_id", user_id.value);
   await getusers();
   await onLoadBusinessPartnerByBpNumberCondition1();
@@ -589,7 +595,7 @@ const getBusinessPartnerRegisterFormById = async () => {
 
       input_data.value.company_name = businessPartnerFormId.value.name_th;
 
-      console.log("businessPartnerFormId", businessPartnerFormId.value);
+      // console.log("businessPartnerFormId", businessPartnerFormId.value);
     }
   } catch (e) {
     if (e.response) {
@@ -609,7 +615,7 @@ const getBusinessPartnerByBpNumber = async () => {
     );
 
     if (response.data?.is_success) {
-      console.log("response.data?.is_success",response.data.data.taxpayer_id_number)
+      // console.log("response.data?.is_success",response.data.data.taxpayer_id_number)
 
       // status_code_bp_number.value = 200;
       input_data.value.company_name = response?.data?.data?.name_th ?? null;
@@ -650,7 +656,7 @@ const handleForm = async () => {
   dataBodySave.value.lastname = input_data.value.lastname;
   dataBodySave.value.is_related_employee = input_data.value.radio === "1";
   dataBodySave.value.description = input_data.value.more;
-  console.log("Form data:", dataBodySave.value);
+  // console.log("Form data:", dataBodySave.value);
 
   dataBodySave.value.related_employee = input_data.value.items_contects.map(
     (item) => {
@@ -665,25 +671,34 @@ const handleForm = async () => {
     }
   );
 
-  if (
-    await showAlertDisclosure(
-      "ลงทะเบียนสำเร็จเรียบร้อยเเล้ว",
-      "ระบบทำการส่งการลงทะเบียนแล้ว \nหากพบปัญหากรุณาติดต่อทาง Frasers Property Thailand"
-    )
-  ) {
+  // if (
+  //   await showAlertDisclosure(
+  //     "ลงทะเบียนสำเร็จเรียบร้อยเเล้ว",
+  //     "ระบบทำการส่งการลงทะเบียนแล้ว \nหากพบปัญหากรุณาติดต่อทาง Frasers Property Thailand"
+  //   )
+  // ) {
     try {
       const response = await PartnerServive.createDisclosureForm(
         dataBodySave.value
       );
+      apiCompletedCount++; 
       if (response.data?.is_success) {
         await onCreatePartnerDocumentUploads();
+        apiCompletedCount++; 
 
         if(status_code_bp_number.value != 200){
           await PartnerServive.createNewRegisterAccountTask(
             formNumberOnUrl.value
           );
+          apiCompletedCount++; 
         }
 
+        if (apiCompletedCount > 0) {
+      await showAlertDisclosure(
+        "ลงทะเบียนเสร็จเรียบร้อยแล้ว",
+        "ระบบทำการส่งการลงทะเบียนแล้ว \nหากพบปัญหากรุณาติดต่อทาง Frasers Property Thailand"
+      );
+    }
         if ( response.data?.is_success) {
           // console.log(
           //   "responsenewtask.data?.is_success",
@@ -691,7 +706,7 @@ const handleForm = async () => {
           // );
           // console.log("do_rsp_activity", do_rsp_activity.value);
           // console.log("do_rsp_activity", memberType.value);
-          if (memberType.value == 2 && do_rsp_activity.value) {
+          if (memberType.value == 2 && do_rsp_activity.value && store.sessionInfo.link_to !="ChaneInfoNon") {
             console.log("do_rsp_activity");
             router.push({
               path: "/SDTeamMangement/Survey/Document/1",
@@ -701,27 +716,21 @@ const handleForm = async () => {
                 bp_number: formNumberOnUrl.value,
               },
             });
-          } else {
-            console.log("do_rsp_activity");
+          } else if(store.sessionInfo.link_to =="ChaneInfoNon"){
+            // console.log("do_rsp_activitywwwwwwwwwww");
+
+            router.push({
+              path: "/change-info-non",
+              query: {
+                bp_number: formNumberOnUrl.value,
+              },
+            });
+          } else{
+            // console.log("do_rsp_activity");
             router.push({
               path: "/VendorDashBoard",
             });
           }
-          // console.log("bp_number",formNumberOnUrl.value)
-          //     // handleToLogOutProfile(response.data.data?.form_number);
-          //     router.push({
-          //       path: '/SDTeamMangement/Survey/Document/1',
-          //       query: {
-          //         prev_completed: 'completed',
-          //         state: 'created',
-          //         bp_number: '01719322342000'
-          //       }
-          //     });
-          // console.log("bp_number", bp_number)
-          //   router.push(
-          //   `/SDTeamMangement/Survey/Document/1?prev_completed=completed&state=created&bp_number=${formNumberOnUrl.value}`
-          //   // `/SDTeamMangement/Survey/Document/1?prev_completed=completed&state=created&bp_number=01713749080000`
-          // );
         }
       }
     } catch (e) {
@@ -732,7 +741,7 @@ const handleForm = async () => {
       }
       // handlingErrorsMessage("unknown", e.message);
     }
-  }
+  // }
 };
 
 // const handleToLogOutProfile = () => {

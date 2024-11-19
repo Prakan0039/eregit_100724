@@ -139,16 +139,16 @@ const required = [(v) => !!v || "กรุณากรอกข้อมูล�
 watch(
   () => propsVar,
   (newValue) => {
-    data_input.value.partner_number = newValue.partnerNumber;
-    data_input.value.partner_name = newValue.partnerName;
-    data_input.value.bank_account = newValue.accountName;
-    data_input.value.account_holder = newValue.accountHolder;
-    data_input.value.account_name = newValue.acc;
-    data_input.value.bank_key = newValue.bankKey;
-    data_input.value.remark = newValue.reMark;
-    data_input.value.bank_branch = newValue.bankBranch;
-    data_input.value.bank_id = newValue.bankId;
-    data_input.value.bankAccoutNumber = newValue.bankAccoutNumber;
+    data_input.value.partner_number = newValue.partnerNumber ?? null;
+    data_input.value.partner_name = newValue.partnerName ?? null;
+    data_input.value.bank_account = newValue.accountName ?? null;
+    data_input.value.account_holder = newValue.accountHolder ?? null;
+    data_input.value.account_name = newValue.acc ?? null;
+    data_input.value.bank_key = newValue.bankKey ?? null;
+    data_input.value.remark = newValue.reMark ?? null;
+    data_input.value.bank_branch = newValue.bankBranch ?? null;
+    data_input.value.bank_id = newValue.bankId ?? null;
+    data_input.value.bankAccoutNumber = newValue.bankAccoutNumber ?? null;
   },
   { deep: true, immediate: false }
 );

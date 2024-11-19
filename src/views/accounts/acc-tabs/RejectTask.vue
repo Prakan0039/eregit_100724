@@ -95,7 +95,7 @@ const onHandleMenuClicked = async (value) => {
   const { event_id, item_id } = value;
   switch (event_id) {
     case menu_items[0].id:
-      console.log("Move to Daft: ", item_id);
+      // console.log("Move to Daft: ", item_id);
       await updateAccountTaskById(item_id, "Draft");
       break;
   }
@@ -107,6 +107,7 @@ onMounted(async () => {
 const handlePaginationEvent = (page) => {
   filter.value.page = page;
   filter.value.offset = paginationUtils.pageOffset(page, filter.value.limit);
+  getAccountRejectAll();
 };
 
 const getAccountRejectAll = async (sortBy = "created_at:desc") => {
@@ -173,7 +174,7 @@ const onHAndleSortBy = async (sortBy) => {
 
 const onHandleSelection = (value) => {
   amountItemSelect.value = value.length;
-  console.log("onHandleSelection: ", JSON.stringify(value));
+  // console.log("onHandleSelection: ", JSON.stringify(value));
 };
 </script>
 

@@ -1,8 +1,5 @@
 <template>
   <v-container>
-    <div class="d-flex align-center justify-center">
-      <h2 class="py-5">Change Information</h2>
-    </div>
 
     <div class="d-flex align-center justify-center">
       <h2 class="pa-5">เปลี่ยนชื่อ</h2>
@@ -22,7 +19,7 @@
                 density="compact"
                 v-model="data_input.name_th"
                 dense
-                :rules="rules_valid.namethRules"
+                :rules="textRequired"
                 variant="outlined"
               ></v-text-field>
             </v-col>
@@ -32,7 +29,7 @@
                 <h6>ชื่อ (ภาษาอังกฤษ)</h6>
               </v-card-title>
               <v-text-field
-              :rules="rules_valid.nameenRules"
+              :rules="textRequired"
                 class="ml-4 mr-4"
                 density="compact"
                 v-model="data_input.name_en"
@@ -58,7 +55,7 @@ const data_input = ref({
   name_en: "",
 });
 
-
+const textRequired = [(v) => !!v || "กรุณากรอกข้อมูลให้ครบถ้วน"];
 const rules_valid = ref({
   namethRules: [
     v => !!v || "* กรุณากรอกชื่อ",

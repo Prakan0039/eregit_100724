@@ -1,5 +1,4 @@
 <template>
-  <!-- {{ register_form_detail[0].business_partner_register_form.created_user_id }} -->
 
   <v-container fluid class="mt-8">
     <div class="box-froms">
@@ -18,6 +17,7 @@
       <!-- {{ input_data.stepper_info_form?.step_one?.main_data
         ?.bp_type_selection }} -->
       <!-- {{input_data.register_info_form  }} -->
+
       <div v-if="is_id_form === FORM_ID.REQUEST_DOCS">
         <RequestDocument
           @on-back="handleReqDocumentBack"
@@ -35,6 +35,8 @@
           text="ขอเอกสารเพิ่มเติม"
           @button-clicked="handleMoreDocs"
         /> -->
+        <!-- {{ input_data.stepper_info_form.step_two.address_en.name.gender }} -->
+
         <ButtonControl
           v-if="is_id_form === FORM_ID.STEPPER_INFO"
           style="
@@ -119,7 +121,7 @@ const handleAttchFiles = (item_files) => {
 
 const handleDownloadDisclosur = () => {
   window.open(disclosureDocument.value.file_url, "_blank");
-  console.log("download_disclosur", disclosureDocument.value.file_url);
+  // console.log("download_disclosur", disclosureDocument.value.file_url);
 };
 
 const handleReverseForm = () => {
@@ -257,8 +259,8 @@ const handleCustCommit = async (stepper_info_data) => {
     `${input_data.value.stepper_info_form.step_two.address_en.name.one}${input_data.value.stepper_info_form.step_two.address_en.name.two}${input_data.value.stepper_info_form.step_two.address_en.name.three}${input_data.value.stepper_info_form.step_two.address_en.name.four}`;
 
   if (input_data.value.register_info_form.customer_type_data.data == 1) {
-    name_th = `${input_data.value.register_info_form.customer_info.th.pserson.gender?? ""}${input_data.value.stepper_info_form.step_two.address_th.name.one}${input_data.value.stepper_info_form.step_two.address_th.name.two}${input_data.value.stepper_info_form.step_two.address_th.name.three}${input_data.value.stepper_info_form.step_two.address_th.name.four}`;
-    name_en = `${input_data.value.register_info_form?.customer_info?.en?.pserson.gender?? ""}${input_data.value.stepper_info_form.step_two.address_en.name.one}${input_data.value.stepper_info_form.step_two.address_en.name.two}${input_data.value.stepper_info_form.step_two.address_en.name.three}${input_data.value.stepper_info_form.step_two.address_en.name.four}`;
+    name_th = `${input_data.value.stepper_info_form.step_two.address_th.name.gender?? ""}${input_data.value.stepper_info_form.step_two.address_th.name.one}${input_data.value.stepper_info_form.step_two.address_th.name.two}${input_data.value.stepper_info_form.step_two.address_th.name.three}${input_data.value.stepper_info_form.step_two.address_th.name.four}`;
+    name_en = `${input_data.value.stepper_info_form.step_two.address_en.name.gender?? ""}${input_data.value.stepper_info_form.step_two.address_en.name.one}${input_data.value.stepper_info_form.step_two.address_en.name.two}${input_data.value.stepper_info_form.step_two.address_en.name.three}${input_data.value.stepper_info_form.step_two.address_en.name.four}`;
   }
   const requestSaveDaftBusinessPartnerRegis = {
     form_number:
@@ -305,9 +307,9 @@ const handleCustCommit = async (stepper_info_data) => {
       ), // data.register_info_form.term_data.data
       registered_user_email: "user@example.com", // unknow
       // created_at: "2023-11-10T14:20:12", // auto fill
-      // created_user_id: Number(sessionStorage.getItem("userId")), // auto fill
+      // created_user_id: 1, // auto fill
       // updated_at: "2023-11-12T10:30:45", // auto fill
-      // updated_user_id: Number(sessionStorage.getItem("userId")), // auto fill
+      // updated_user_id: 1, // auto fill
     },
 
     business_partner_profile_form: {
@@ -418,9 +420,9 @@ const handleCustCommit = async (stepper_info_data) => {
         input_data.value.stepper_info_form?.step_one?.other?.bank_account ??
         null,
       // created_at: "2023-11-10T14:20:12", // auto fill
-      // created_user_id: Number(sessionStorage.getItem("userId")), // auto fill
+      // created_user_id: 1, // auto fill
       // updated_at: "2023-11-12T10:30:45", // auto fill
-      // updated_user_id: Number(sessionStorage.getItem("userId")), // auto fill
+      // updated_user_id: 1, // auto fill
     },
 
     account_information_form: {
@@ -769,10 +771,6 @@ const handleCustCommit = async (stepper_info_data) => {
   }
 };
 
-// const handleMoreDocs = () => {
-//   is_id_form.value = FORM_ID.REQUEST_DOCS;
-// };
-
 const handleSaveDaft = async () => {
   if (
     !(await showDialog(
@@ -786,9 +784,13 @@ const handleSaveDaft = async () => {
   let name_en =
     `${input_data.value.stepper_info_form.step_two.address_en.name.one}${input_data.value.stepper_info_form.step_two.address_en.name.two}${input_data.value.stepper_info_form.step_two.address_en.name.three}${input_data.value.stepper_info_form.step_two.address_en.name.four}`;
 
+  // if (input_data.value.register_info_form.customer_type_data.data == 1) {
+  //   name_th = `${input_data.value.register_info_form.customer_info.th.pserson.gender?? ""}${input_data.value.stepper_info_form.step_two.address_th.name.one}${input_data.value.stepper_info_form.step_two.address_th.name.two}${input_data.value.stepper_info_form.step_two.address_th.name.three}${input_data.value.stepper_info_form.step_two.address_th.name.four}`;
+  //   name_en = `${input_data.value.register_info_form?.customer_info?.en?.pserson.gender?? ""}${input_data.value.stepper_info_form.step_two.address_en.name.one}${input_data.value.stepper_info_form.step_two.address_en.name.two}${input_data.value.stepper_info_form.step_two.address_en.name.three}${input_data.value.stepper_info_form.step_two.address_en.name.four}`;
+  // }
   if (input_data.value.register_info_form.customer_type_data.data == 1) {
-    name_th = `${input_data.value.register_info_form.customer_info.th.pserson.gender?? ""}${input_data.value.stepper_info_form.step_two.address_th.name.one}${input_data.value.stepper_info_form.step_two.address_th.name.two}${input_data.value.stepper_info_form.step_two.address_th.name.three}${input_data.value.stepper_info_form.step_two.address_th.name.four}`;
-    name_en = `${input_data.value.register_info_form?.customer_info?.en?.pserson.gender?? ""}${input_data.value.stepper_info_form.step_two.address_en.name.one}${input_data.value.stepper_info_form.step_two.address_en.name.two}${input_data.value.stepper_info_form.step_two.address_en.name.three}${input_data.value.stepper_info_form.step_two.address_en.name.four}`;
+    name_th = `${input_data.value.stepper_info_form.step_two.address_th.name.gender?? ""}${input_data.value.stepper_info_form.step_two.address_th.name.one}${input_data.value.stepper_info_form.step_two.address_th.name.two}${input_data.value.stepper_info_form.step_two.address_th.name.three}${input_data.value.stepper_info_form.step_two.address_th.name.four}`;
+    name_en = `${input_data.value.stepper_info_form.step_two.address_en.name.gender?? ""}${input_data.value.stepper_info_form.step_two.address_en.name.one}${input_data.value.stepper_info_form.step_two.address_en.name.two}${input_data.value.stepper_info_form.step_two.address_en.name.three}${input_data.value.stepper_info_form.step_two.address_en.name.four}`;
   }
 
   const requestSaveDaftBusinessPartnerRegis = {
@@ -830,9 +832,9 @@ const handleSaveDaft = async () => {
       ), // data.register_info_form.term_data.data
       registered_user_email: "user@example.com", // unknow
       // created_at: "2023-11-10T14:20:12", // auto fill
-      // created_user_id: Number(sessionStorage.getItem("userId")), // auto fill
+      // created_user_id: 1, // auto fill
       // updated_at: "2023-11-12T10:30:45", // auto fill
-      // updated_user_id: Number(sessionStorage.getItem("userId")), // auto fill
+      // updated_user_id: 1, // auto fill
     },
 
     business_partner_profile_form: {
@@ -938,9 +940,9 @@ const handleSaveDaft = async () => {
         input_data.value.stepper_info_form?.step_one?.other?.bank_account ??
         null,
       // created_at: "2023-11-10T14:20:12", // auto fill
-      // created_user_id: Number(sessionStorage.getItem("userId")), // auto fill
+      // created_user_id: 1, // auto fill
       // updated_at: "2023-11-12T10:30:45", // auto fill
-      // updated_user_id: Number(sessionStorage.getItem("userId")), // auto fill
+      // updated_user_id: 1, // auto fill
     },
 
     account_information_form: {
@@ -1269,7 +1271,7 @@ const handleSaveDaft = async () => {
   } catch (e) {
     if (e.response) {
       const val = e.response.data;
-
+      
       if (val?.data?.error ?? null) {
         handlingErrorsMessage(val.message, val?.data?.error);
       } else {

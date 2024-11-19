@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <!-- <div> -->
     <div class="d-flex align-center justify-center">
       <h2 class="py-5">Change Information</h2>
     </div>
@@ -13,7 +13,7 @@
 
     <ChangeInfoContact @on-data-update="handleContact" v-if="props.IsContact === '5'" />
     <!-- <ChangeInfoBusiness v-if="IsBusiness" /> -->
-  </div>
+  <!-- </div> -->
   <v-container>
     <!-- <ChangeInformationDetail @on-input-files="handleInputFiles" /> -->
     <v-row dense class="mb-5">
@@ -42,6 +42,7 @@
   <!-- <v-col cols="12" class="d-flex align-center justify-center">
     <ButtonControl text="ส่ง" @button-clicked="handleNext" />
   </v-col>-->
+  
   <v-col cols="12" class="d-flex align-center justify-center">
     <ButtonControl
     style="min-width: 100px; height: 35px"
