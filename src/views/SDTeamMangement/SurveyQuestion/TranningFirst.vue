@@ -7,6 +7,7 @@
         @prev="stepperPrev"
       />
     </v-card-text>
+    <!-- {{ bp_number }} -->
     <v-card>
       <v-card-item class="ml-15">
         <v-row dense class="mt-5">
@@ -42,15 +43,7 @@
             </h5>
             <h5>ในการทำงาน</h5>
             <br />
-            <!-- <h5 style="color: red">
-              กรุณาติดตามการเรียนรู้ใหม่ๆได้ เร็วๆนี้
-            </h5> -->
-            <!-- <v-col>
-              <v-icon color="red">mdi-star</v-icon>
-              <span style="font-weight: bold; color: red"
-                >กรุณาติดตามการเรียนรู้ใหม่ๆได้ เร็วๆนี้</span
-              >
-            </v-col> -->
+
             <v-col v-if="!bp_number">
               <v-icon color="red">mdi-star</v-icon>
               <span style="font-weight: bold; color: red"
@@ -134,7 +127,7 @@ const stepper = ref({
 
 onBeforeMount(() => {
   state.value = route.query.state;
-  bp_number.value = route.params.bp_number;
+  bp_number.value = sessionStorage.getItem("bp_numbers");
 });
 
 const handleSend = async () => {

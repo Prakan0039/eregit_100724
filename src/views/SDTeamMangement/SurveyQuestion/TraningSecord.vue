@@ -1,4 +1,5 @@
 <template>
+  <!-- {{ itemsTrannig }} -->
   <v-container style="padding: auto; fluid">
     <v-card-text>
       <ToolbarSurvey
@@ -46,6 +47,7 @@
           v-for="(item, index) in itemsTrannig"
           :item="item"
           :key="index"
+           :menus-index="menus_index"
           @handle-item-click="handleItemClicked"
         />
         <PaginationControl
@@ -130,7 +132,7 @@ const onLoadComplated = async () => {
       options.value.offset
     );
     if (response.data?.is_success) {
-      // itemsTrannig.value = response.data.data.completed_rsp_training_result;
+      itemsTrannig.value = response.data.data.completed_rsp_training_result;
 
       const headers = response.headers;
       const itemsOffset = Number(headers["items-offset"]);

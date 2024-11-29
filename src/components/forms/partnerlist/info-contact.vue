@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <!-- <h1 class="text-center">Change Information</h1> -->
+     <!-- {{ bpNumber }} -->
     <h2 class="text-center">ข้อมูลผู้ติดต่อ</h2>
 
     <v-card class="pa-5 mb-5">
@@ -11,6 +12,8 @@
         required
         variant="outlined"
         density="compact"
+        item-title="name"
+        item-value="id"
       ></v-select>
     </v-card>
 
@@ -54,12 +57,10 @@
         </v-row>
       </div>
 
-      <!-- ปุ่มเพิ่มฟิลด์ผู้ติดต่อใหม่ -->
-      <!-- <v-btn color="green" @click="addNewContact('เพิ่ม')">+ เพิ่มผู้ติดต่อ</v-btn> -->
+
       <ButtonControl icon="mdi mdi-plus" text="เพิ่ม" @button-clicked="addNewContact('เพิ่ม')" />
     </v-card>
 
-    <!-- ฟอร์มยกเลิกผู้ติดต่อ -->
     <v-card class="pa-4 mb-5">
       <h3 class="py-3">ยกเลิกผู้ติดต่อ</h3>
 
@@ -97,20 +98,27 @@
         </v-row>
       </div>
 
-      <!-- ปุ่มเพิ่มฟิลด์ผู้ติดต่อใหม่ -->
-      <!-- <v-btn color="red" @click="addNewContact('ยกเลิก')">+ เพิ่มผู้ติดต่อ (ยกเลิก)</v-btn> -->
+
       <ButtonControl icon="mdi mdi-plus" text="เพิ่ม" @button-clicked="addNewContact('ยกเลิก')" />
     </v-card>
   </v-container>
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
+import PartnerServive from "@/apis/PartnerServive";
+import { useRoute, useRouter } from "vue-router";
+
 import ButtonControl from "@/components/controls/ButtonControl.vue";
 
 const emit = defineEmits(["on-data-update"]);
+const route = useRoute();
+const router = useRouter();
+const bpNumber = ref(route.query.bp_number);
 
-const branchOptions = ["NVAT", "00000"];
+// const branchOptions = ["NVAT", "00000"];
+const branchOptions = ref([]);
+
 
 const branchCode = ref(null);
 
@@ -130,6 +138,31 @@ const removeContacts = ref([
     email: ""
   }
 ]);
+
+onMounted(async () => {
+  await getBranchList();
+  console.log("Branch Options: ", branchOptions.value); // ตรวจสอบ branchOptions
+
+});
+
+const getBranchList = async () => {
+  try {
+    const response = await PartnerServive.getBranchListByPbNumber(bpNumber.value);
+    if (response.data?.is_success) {
+      // ดึง branch_code ทุกชุดและเก็บใน branchOptions
+      branchOptions.value = response.data.data?.branch.map(el => el.branch_code);
+    }
+  } catch (e) {
+    if (e.response) {
+      const val = e.response.data;
+      handlingErrorsMessage(val.message, val?.data.error); 
+    } else {
+      handlingErrorsMessage("unknown", e.message);
+    }
+  }
+};
+
+
 
 const addNewContact = type => {
   if (type === "เพิ่ม") {

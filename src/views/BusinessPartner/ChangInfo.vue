@@ -231,6 +231,14 @@ const handleFormInformationCommit = async (data) => {
   const is_valid = await formChangeInfo.value.validate();
   console.log(is_valid["valid"]);
   if (is_valid && !is_valid["valid"]) return;
+
+  const confirmed = await showDialog(
+      "ยืยยันการแก้ไขข้อมูล ?",
+      "กรุณาตรวจสอบข้อมูล คุณไม่สามารถกลับมาแก้ไขได้อีก\nคลิกปุ่ม ตกลง เพื่อดำเนินการ"
+    );
+
+    if (!confirmed) return;
+    
   console.log("handleFormInformationCommit", data);
   dataBodyChangInfo.value.bp_number = route.query?.bp_number ?? null;
   dataBodyChangInfo.value.changed_part_id = options.scope;
@@ -375,12 +383,12 @@ const handleFormInformationCommit = async (data) => {
 
     // dataBodyChangInfo.value.change_contact_information[0].remark = "";
   }
-      const confirmed = await showDialog(
-      "ยืยยันการแก้ไขข้อมูล ?",
-      "กรุณาตรวจสอบข้อมูล คุณไม่สามารถกลับมาแก้ไขได้อีก\nคลิกปุ่ม ตกลง เพื่อดำเนินการ"
-    );
+    //   const confirmed = await showDialog(
+    //   "ยืยยันการแก้ไขข้อมูล ?",
+    //   "กรุณาตรวจสอบข้อมูล คุณไม่สามารถกลับมาแก้ไขได้อีก\nคลิกปุ่ม ตกลง เพื่อดำเนินการ"
+    // );
 
-    if (!confirmed) return;
+    // if (!confirmed) return;
 
   try {
     // for (let i = 0; i < dataBodyChangInfo.value.items_contects.length; i++) {

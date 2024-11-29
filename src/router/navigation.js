@@ -8,13 +8,13 @@ const navigate = [
     path: "/BusinessPartner/BusinessPartnerList"
   },
 
-  {
-    id: 2,
-    title:'Admin DashBoard',
-    icon: "mdi mdi-view-dashboard",
-    isActive: false,
-    path: "/AdminDashboard/AdminDashboardPage"
-  },
+  // {
+  //   id: 2,
+  //   title:'Admin DashBoard',
+  //   icon: "mdi mdi-view-dashboard",
+  //   isActive: false,
+  //   path: "/AdminDashboard/AdminDashboardPage"
+  // },
 
 
    {
@@ -40,45 +40,45 @@ const navigate = [
     path: "/VendorDashBoard"
   },
 
-  {
-    id: 9,
-    title:'Member Management',
-    icon: "mdi mdi-account-cog",
-    isActive: false,
-    path: "/MemberManagementPage"
-  },
+  // {
+  //   id: 9,
+  //   title:'Member Management',
+  //   icon: "mdi mdi-account-cog",
+  //   isActive: false,
+  //   path: "/MemberManagementPage"
+  // },
 
-  {
-    id: 10,
-    title:'User Management',
-    icon: "mdi mdi-account-cog",
-    isActive: false,
-    path: "/UserManagement"
-  },
+  // {
+  //   id: 10,
+  //   title:'User Management',
+  //   icon: "mdi mdi-account-cog",
+  //   isActive: false,
+  //   path: "/UserManagement"
+  // },
 
-  {
-    id: 16,
-    title:'Role Management',
-    icon: "mdi mdi-account-lock",
-    isActive: false,
-    path: "/ListRolesPage"
-  },
+  // {
+  //   id: 16,
+  //   title:'Role Management',
+  //   icon: "mdi mdi-account-lock",
+  //   isActive: false,
+  //   path: "/ListRolesPage"
+  // },
 
-  {
-    id: 11,
-    title:'Master Data',
-    icon: "mdi mdi-help-circle",
-    isActive: false,
-    path: "/MasterDataManagement"
-  },
+  // {
+  //   id: 11,
+  //   title:'Master Data',
+  //   icon: "mdi mdi-help-circle",
+  //   isActive: false,
+  //   path: "/MasterDataManagement"
+  // },
 
-  {
-    id: 19,
-    title:'SD team mangement',
-    icon: "mdi mdi-clipboard-list",
-    isActive: false,
-    path: "/SDTeamMangement/SDActiveMangement"
-  },
+  // {
+  //   id: 19,
+  //   title:'SD team mangement',
+  //   icon: "mdi mdi-clipboard-list",
+  //   isActive: false,
+  //   path: "/SDTeamMangement/SDActiveMangement"
+  // },
   // {
   //   id: 2,
   //   title:'User Management',

@@ -9,7 +9,6 @@
             <v-col cols="12" class="text-center mb-5">
               <h3>
                 แบบรายงานและเปิดเผยความขัดแย้งและผลประโยชน์
-                <!-- {{ formNumberOnUrl }} -->
               </h3>
             </v-col>
             <v-row justify="center" align="center">
@@ -61,7 +60,6 @@
               <v-card-title>
                 <h6>ข้าพเจ้าชื่อ</h6>
               </v-card-title>
-              <!-- <h4 class="ml-">เลขประจำผู้เสียภาษีอากร</h4> -->
             </v-col>
             <v-col cols="2">
               <v-radio-group

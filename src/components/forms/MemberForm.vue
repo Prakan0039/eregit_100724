@@ -92,7 +92,7 @@ import { ref, onBeforeMount, watch } from "vue";
 import roleService from "@/apis/RoleService";
 import UserService from "@/apis/UserService";
 import { useConfirmationDialog } from "@/components/dialogs/ConfirmationDialogService";
-
+import PartnerServive from "@/apis/PartnerServive";
 import { useErrorHandlingDialog } from "@/components/dialogs/ExceptionHandleDialogService";
 const { handlingErrorsMessage } = useErrorHandlingDialog();
 const { showDialog } = useConfirmationDialog();
@@ -208,7 +208,7 @@ const handleCreated = async () => {
     const v_Email = input_data.email;
     const v_Role = input_data.role;
 
-    const response = await userService.createdUser(v_Email, v_Role);
+    const response = await PartnerServive.createPartnerMember(v_Email, v_Role);
     if (response) {
       handleDismissEvent();
     }
@@ -230,7 +230,7 @@ const handleUpdated = async () => {
     const v_Email = input_data.email;
     const v_RoleId = input_data.role;
     const v_Status = input_data.status;
-    const response = await userService.updatedUser(v_Email, v_RoleId, v_Status);
+    const response = await PartnerServive.updatePartnerMember(v_Email, v_RoleId, v_Status);
     if (response) {
       handleDismissEvent();
     }
@@ -259,6 +259,7 @@ const handleUpdated = async () => {
 
 const handleDismissEvent = () => {
   emit("is-view", "user-main");
+  
 };
 
 const handleSubmitEvent = async () => {

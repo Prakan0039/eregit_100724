@@ -381,7 +381,7 @@
                     <strong class="font-weight-medium text-grey-lighten-1">
                       ยังไม่ได้เรียนรู้ 
                       <span class="text-secondary">
-                        {{ training.completed_amount + '/' + training.total_amount }}
+                        {{ (training.completed_amount || 0) + '/' + (training.total_amount || 0) }}
                       </span>
                     </strong>
                   </div>

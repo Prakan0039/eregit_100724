@@ -620,6 +620,31 @@ const getBusinessPartnerMember = async (_bp_number) => {
   });
 };
 
+const createPartnerMember = async (body) => {
+  return await axiosBase({
+    method: "post",
+    url: "/partner/created-business-partner-member",
+    data: {
+      ...body,
+      user_id: Number(sessionStorage.getItem("userId")),
+      updated_user_id: Number(sessionStorage.getItem("userId")),
+    },
+  });
+};
+
+const updatePartnerMember = async (body) => {
+  return await axiosBase({
+    method: "post",
+    url: "/update-business-partner-member",
+    data: {
+      ...body,
+      // user_id: Number(sessionStorage.getItem("userId")),
+      
+      updated_user_id: Number(sessionStorage.getItem("userId")),
+    },
+  });
+};
+
 export default {
   getBusinessPartnerDetail,
   getBusinessPartnerDetailBranchCode,
@@ -675,5 +700,7 @@ export default {
   getChangeInfoAmount,
   getVendorAmount,
   getCustomerAmount,
-  getBusinessPartnerMember
+  getBusinessPartnerMember,
+  createPartnerMember,
+  updatePartnerMember
 };

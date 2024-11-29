@@ -36,10 +36,8 @@ const isItem = ref({});
 
 onBeforeMount(() => {
   currentComponent.value = ListMember;
-  // let auth_email = sessionStorage.getItem("auth_email");
   bp_num.value = sessionStorage.getItem("bp_numbers");
   console.log("bp_number_dashbaord", bp_num.value);
-  // console.log(auth_email);
 });
 
 const toggleTitle =(e)=> { console.log(e); isTitle.value = e}

@@ -3,6 +3,7 @@
     <div class="d-flex align-center justify-center">
       <h2 class="py-5">Change Information</h2>
     </div>
+    <!-- <v-form ref="formChangeInfo"> -->
     <ChangeInfoAccount @on-data-update="handleAccount" v-if="props.IsAccount === '1'" />
 
     <ChangeInfoChangeName @on-data-update="handleChangeName" v-if="props.IsChangename === '2'" />
@@ -14,6 +15,7 @@
     <ChangeInfoContact @on-data-update="handleContact" v-if="props.IsContact === '5'" />
     <!-- <ChangeInfoBusiness v-if="IsBusiness" /> -->
   <!-- </div> -->
+<!-- </v-form> -->
   <v-container>
     <!-- <ChangeInformationDetail @on-input-files="handleInputFiles" /> -->
     <v-row dense class="mb-5">
@@ -35,6 +37,7 @@
         />
       </div>
     </v-card>
+    
   </v-col>
 </v-row>
   </v-container>
@@ -74,6 +77,7 @@ const itemUpdate = ref({
   info_contact: null,
   file_update: []
 });
+const formChangeInfo = ref(null);
 
 const emit = defineEmits([
   "on-button-ok-click",

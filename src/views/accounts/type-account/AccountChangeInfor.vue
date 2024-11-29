@@ -1,6 +1,6 @@
 <template>
   <v-container fuild>
-    <div >
+    <div>
       <v-app-bar class="custom-app-bar" v-if="itemsFileDocument.length > 0">
         <AttachedMenat
           :items="itemsFileDocument"
@@ -10,17 +10,7 @@
         />
       </v-app-bar>
       <div class="d-flex justify-end mb-5 mt-5">
-        <!-- <ButtonControl
-          icon="mdi mdi-file-document"
-          class="mr-2"
-          text="ขอเอกสารเพิ่มเติม"
-          @click="handleSwitchToRewwuestDoc"
-        /> -->
-        <ButtonControl
-          @click="handleOnDaftSave"
-          icon="mdi mdi-content-save-cog"
-          text="Save Daft"
-        />
+        <ButtonControl @click="handleOnDaftSave" icon="mdi mdi-content-save-cog" text="Save Daft" />
       </div>
 
       <div v-show="is_id_form === FORM_ID.REQUEST_DOCS">
@@ -90,11 +80,7 @@
             @on-data-update="handleItemsContactUpdate"
           />
           <div class="d-flex justify-center">
-            <ButtonControl
-              @click="handleOnClick"
-              icon="mdi mdi-content-save-cog"
-              text="บันทึก"
-            />
+            <ButtonControl @click="handleOnClick" icon="mdi mdi-content-save-cog" text="บันทึก" />
           </div>
         </v-form>
       </div>
@@ -130,7 +116,7 @@ const attachFiles = ref([]);
 const itemsFileDocument = ref([]);
 const FORM_ID = {
   CHANGE_INFO: 0,
-  REQUEST_DOCS: 1,
+  REQUEST_DOCS: 1
 };
 
 const is_id_form = ref(FORM_ID.CHANGE_INFO);
@@ -147,11 +133,11 @@ const getUploadDocumentByFormNumber = async () => {
       form_number
     );
     if (response.data?.is_success) {
-      itemsFileDocument.value = response.data.data.map((el) => {
+      itemsFileDocument.value = response.data.data.map(el => {
         return {
           file: null,
           file_name: el.document_name,
-          file_size: "no available",
+          file_size: "no available"
         };
       });
     }
@@ -171,7 +157,7 @@ const getUploadDocumentByFormNumber = async () => {
 const isBankInfo = computed(() => {
   if (dataChangeInfoRequest.value.changed_part)
     return dataChangeInfoRequest.value.changed_part.some(
-      (el) => el.id == Enum.ChangePartForm.BANK_INFO
+      el => el.id == Enum.ChangePartForm.BANK_INFO
     );
   return false;
 });
@@ -179,7 +165,7 @@ const isBankInfo = computed(() => {
 const isAddBranchInfo = computed(() => {
   if (dataChangeInfoRequest.value.changed_part)
     return dataChangeInfoRequest.value.changed_part.some(
-      (el) => el.id == Enum.ChangePartForm.ADD_BRANCH
+      el => el.id == Enum.ChangePartForm.ADD_BRANCH
     );
   return false;
 });
@@ -187,7 +173,7 @@ const isAddBranchInfo = computed(() => {
 const isChangeAddressInfo = computed(() => {
   if (dataChangeInfoRequest.value.changed_part)
     return dataChangeInfoRequest.value.changed_part.some(
-      (el) => el.id == Enum.ChangePartForm.ADDRESS_INFO
+      el => el.id == Enum.ChangePartForm.ADDRESS_INFO
     );
   return false;
 });
@@ -195,7 +181,7 @@ const isChangeAddressInfo = computed(() => {
 const isChangeNameInfo = computed(() => {
   if (dataChangeInfoRequest.value.changed_part)
     return dataChangeInfoRequest.value.changed_part.some(
-      (el) => el.id == Enum.ChangePartForm.NAME_INFO
+      el => el.id == Enum.ChangePartForm.NAME_INFO
     );
   return false;
 });
@@ -203,12 +189,12 @@ const isChangeNameInfo = computed(() => {
 const isChangeContactInfo = computed(() => {
   if (dataChangeInfoRequest.value.changed_part)
     return dataChangeInfoRequest.value.changed_part.some(
-      (el) => el.id == Enum.ChangePartForm.CONTACT_INFO
+      el => el.id == Enum.ChangePartForm.CONTACT_INFO
     );
   return false;
 });
 
-const handleAttchFiles = (item_files) => {
+const handleAttchFiles = item_files => {
   attachFiles.value = item_files;
 };
 
@@ -217,39 +203,40 @@ const itemsChangeInfo = ref({
   change_name_information: [],
   add_branch_information: [],
   change_address_information: [],
-  change_contact_information: [],
+  change_contact_information: []
 });
 
-const handleBankAccountUpdate = (dataUpdated) => {
+const handleBankAccountUpdate = dataUpdated => {
   const { index, newValue } = dataUpdated;
   itemsChangeInfo.value.change_bank_information[index] = newValue;
 };
 
-const handleChangeName = (dataUpdated) => {
+const handleChangeName = dataUpdated => {
   const { index, newValue } = dataUpdated;
   itemsChangeInfo.value.change_name_information[index] = newValue;
   console.log(JSON.stringify(itemsChangeInfo.value.change_name_information));
 };
 
-const handleBranchUpdate = (dataUpdated) => {
+const handleBranchUpdate = dataUpdated => {
   const { index, newValue } = dataUpdated;
   itemsChangeInfo.value.add_branch_information[index] = newValue;
 };
 
-const handleAddressUpdate = (dataUpdated) => {
+const handleAddressUpdate = dataUpdated => {
   const { index, newValue } = dataUpdated;
   itemsChangeInfo.value.change_address_information[index] = newValue;
 };
 
-const handleItemsContactUpdate = (dataUpdated) => {
+const handleItemsContactUpdate = dataUpdated => {
   const { index, newValue } = dataUpdated;
   itemsChangeInfo.value.change_contact_information[index] = newValue;
 };
 
 const getChangeInfomationRequestByFormNumber = async () => {
   try {
-    const response =
-      await PartnerServive.getChangeInfomationRequestByFormNumber(form_number);
+    const response = await PartnerServive.getChangeInfomationRequestByFormNumber(
+      form_number
+    );
     if (response.data?.is_success) {
       dataChangeInfoRequest.value = response.data?.data;
     }
@@ -288,10 +275,10 @@ const handleOnDaftSave = async () => {
     const payloadDraft = {
       form_number: dataChangeInfoRequest.value.form_number,
       changed_part_id: dataChangeInfoRequest.value.changed_part
-        .map((el) => el.id)
+        .map(el => el.id)
         .join(","),
-      change_bank_information:
-        itemsChangeInfo.value.change_bank_information.map((el) => {
+      change_bank_information: itemsChangeInfo.value.change_bank_information.map(
+        el => {
           return {
             business_partner_number: el.partner_number,
             business_partner_name: el.partner_name,
@@ -301,11 +288,12 @@ const handleOnDaftSave = async () => {
             bank_account_holder: el.account_holder,
             bank_branch: el.bank_branch,
             bank_account_number: el.bankAccoutNumber,
-            remark: el.remark,
+            remark: el.remark
           };
-        }),
-      change_name_information:
-        itemsChangeInfo.value.change_name_information.map((el) => {
+        }
+      ),
+      change_name_information: itemsChangeInfo.value.change_name_information.map(
+        el => {
           return {
             business_partner_number: el.partner_number,
             name_th: el.new_name_th_1,
@@ -319,11 +307,12 @@ const handleOnDaftSave = async () => {
             name2_en: el.new_name_en_2,
             name3_en: el.new_name_en_3,
             name4_en: el.new_name_en_4,
-            search_term1_en: el.new_search_term_en,
+            search_term1_en: el.new_search_term_en
           };
-        }),
+        }
+      ),
       add_branch_information: itemsChangeInfo.value.add_branch_information.map(
-        (el) => {
+        el => {
           return {
             business_partner_number: el.partner_number,
             branch_code: el.branch_code,
@@ -353,12 +342,12 @@ const handleOnDaftSave = async () => {
             district_en: el.addressEn?.district,
             subdistrict_en: el.addressEn?.parish,
             postal_code_en: el.addressEn?.zip_code,
-            country: "TH",
+            country: "TH"
           };
         }
       ),
-      change_address_information:
-        itemsChangeInfo.value.change_address_information.map((el) => {
+      change_address_information: itemsChangeInfo.value.change_address_information.map(
+        el => {
           return {
             business_partner_number: el.partner_number,
             branch_code: el.branch_code,
@@ -392,11 +381,12 @@ const handleOnDaftSave = async () => {
             created_at: new Date(),
             created_user_id: 187,
             updated_at: new Date(),
-            updated_user_id: 1,
+            updated_user_id: 1
           };
-        }),
-      change_contact_information:
-        itemsChangeInfo.value.change_contact_information.map((el) => {
+        }
+      ),
+      change_contact_information: itemsChangeInfo.value.change_contact_information.map(
+        el => {
           return {
             business_partner_number: el.partner_number,
             branch_code: el.branch_code,
@@ -404,15 +394,16 @@ const handleOnDaftSave = async () => {
             name: el.contact_name,
             mobile_number: el.telephone,
             email: el.email,
-            remark: el.remark,
+            remark: el.remark
           };
-        }),
+        }
+      )
     };
 
     if (await onSaveDraftChangeInfomation(payloadDraft)) {
       router.push({
         name: "AccountManagement",
-        query: { path: "DaftTask" },
+        query: { path: "DaftTask" }
       });
     }
   }
@@ -420,7 +411,7 @@ const handleOnDaftSave = async () => {
 
 const handleOnClick = async () => {
   const is_valid = await formChangeInfo.value.validate();
-  console.log(is_valid["valid"])
+  console.log(is_valid["valid"]);
   if (is_valid && !is_valid["valid"]) return;
   if (
     await showDialog(
@@ -428,14 +419,13 @@ const handleOnClick = async () => {
       "กรุณาตรวจสอบข้อมูล คุณไม่สามารถแก้ไขได้แล้ว\nคลิกปุ่ม ตกลง เพื่อดำเนินการ"
     )
   ) {
-    
     const payloadSave = {
       form_number: dataChangeInfoRequest.value.form_number,
       changed_part_id: dataChangeInfoRequest.value.changed_part
-        .map((el) => el.id ?? null)
+        .map(el => el.id ?? null)
         .join(","),
-      change_bank_information:
-        itemsChangeInfo.value.change_bank_information.map((el) => {
+      change_bank_information: itemsChangeInfo.value.change_bank_information.map(
+        el => {
           return {
             business_partner_number: el.partner_number,
             business_partner_name: el.partner_name,
@@ -445,11 +435,12 @@ const handleOnClick = async () => {
             bank_account_holder: el.account_holder,
             bank_branch: el.bank_branch,
             bank_account_number: el.bankAccoutNumber,
-            remark: el.remark,
+            remark: el.remark
           };
-        } ) ,
-      change_name_information:
-        itemsChangeInfo.value.change_name_information.map((el) => {
+        }
+      ),
+      change_name_information: itemsChangeInfo.value.change_name_information.map(
+        el => {
           return {
             business_partner_number: el.partner_number,
             name_th: el.new_name_th_1,
@@ -463,11 +454,12 @@ const handleOnClick = async () => {
             name2_en: el.new_name_en_2,
             name3_en: el.new_name_en_3,
             name4_en: el.new_name_en_4,
-            search_term1_en: el.new_search_term_en,
+            search_term1_en: el.new_search_term_en
           };
-        }),
+        }
+      ),
       add_branch_information: itemsChangeInfo.value.add_branch_information.map(
-        (el) => {
+        el => {
           return {
             business_partner_number: el.partner_number,
             branch_code: el.branch_code,
@@ -497,12 +489,12 @@ const handleOnClick = async () => {
             district_en: el.addressEn?.district,
             subdistrict_en: el.addressEn?.parish,
             postal_code_en: el.addressEn?.zip_code,
-            country: "TH",
+            country: "TH"
           };
         }
       ),
-      change_address_information:
-        itemsChangeInfo.value.change_address_information.map((el) => {
+      change_address_information: itemsChangeInfo.value.change_address_information.map(
+        el => {
           return {
             business_partner_number: el.partner_number,
             branch_code: el.branch_code,
@@ -536,11 +528,12 @@ const handleOnClick = async () => {
             created_at: new Date(),
             created_user_id: 187,
             updated_at: new Date(),
-            updated_user_id: 1,
+            updated_user_id: 1
           };
-        }),
-      change_contact_information:
-        itemsChangeInfo.value.change_contact_information.map((el) => {
+        }
+      ),
+      change_contact_information: itemsChangeInfo.value.change_contact_information.map(
+        el => {
           return {
             business_partner_number: el.partner_number,
             branch_code: el.branch_code,
@@ -548,21 +541,22 @@ const handleOnClick = async () => {
             name: el.contact_name,
             mobile_number: el.telephone,
             email: el.email,
-            remark: el.remark,
+            remark: el.remark
           };
-        }),
+        }
+      )
     };
 
     if (await onSaveChangeInfomation(payloadSave)) {
       router.push({
         name: "AccountManagement",
-        query: { path: "ExportTask" },
+        query: { path: "ExportTask" }
       });
     }
   }
 };
 
-const onSaveChangeInfomation = async (payloadSave) => {
+const onSaveChangeInfomation = async payloadSave => {
   try {
     const response = await PartnerServive.saveChangInfomation(payloadSave);
     if (response.data?.is_success) {
@@ -579,7 +573,7 @@ const onSaveChangeInfomation = async (payloadSave) => {
   }
 };
 
-const onSaveDraftChangeInfomation = async (payloadSave) => {
+const onSaveDraftChangeInfomation = async payloadSave => {
   try {
     const response = await PartnerServive.saveDraftChangInfomation(payloadSave);
     if (response.data?.is_success) {
